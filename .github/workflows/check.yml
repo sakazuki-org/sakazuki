@@ -76,7 +76,7 @@ jobs:
         run: docker build --build-arg RUBY_VERSION="$(cat .ruby-version)" --check .
 
       - name: Run Actionlint
-        uses: raven-actions/actionlint@3a24062651993d40fed1019b58ac6fbdfbf276cc
+        uses: raven-actions/actionlint@205b530c5d9fa8f44ae9ed59f341a0db994aa6f8
 
       - name: Install ghalint
         uses: Lucky3028/install-ghalint@b623e2c9f9238b88ba13dbf30fb3b65320c42ce9
