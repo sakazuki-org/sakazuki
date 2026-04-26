@@ -12,9 +12,7 @@ rules:
       - check.yml
       - codeql.yml
       - esbuild-bundle-analyzer.yml
-      - fix-command.yml
       - fly.yml
-      - slash-command-dispatch.yml
       - test.yml
   secrets-outside-env:
     config:
