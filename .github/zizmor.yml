@@ -16,3 +16,8 @@ rules:
       - fly.yml
       - slash-command-dispatch.yml
       - test.yml
+  secrets-outside-env:
+    config:
+      allow:
+        # codecov は deploy に関係ないので GitHub deploy environment 外を許可
+        - CODECOV_TOKEN
