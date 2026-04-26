@@ -76,5 +76,12 @@ Rails.application.configure do
 
   # DockerでBetterErrorsを動かすための設定
   BetterErrors::Middleware.allow_ip!("0.0.0.0/0")
+
+  # Feature flags
+  config.x.cloudinary_enabled = false
+  config.x.adsense_enabled = false
+  config.x.letter_opener_enabled = true
+  config.x.fast_password_hashing = false
+  config.x.dev_tools_enabled = true
 end
 # rubocop:enable Metrics/BlockLength

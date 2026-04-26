@@ -111,7 +111,7 @@ module SakesHelper
     else
       # rubocop:disable Style/HashExcept
       (amount / 180).to_s.reverse.each_char.zip(UNITS).filter { |value, _unit| value != "0" }
-                    .reverse.join
+                                                      .reverse.join
       # rubocop:enable Style/HashExcept
     end
   end

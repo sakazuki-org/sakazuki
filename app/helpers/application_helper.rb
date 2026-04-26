@@ -51,7 +51,7 @@ module ApplicationHelper
   #
   # @return [String] Google AdSense用のscriptタグ
   def adsense_tags
-    return unless Rails.env.production? && ENV["GOOGLE_ADSENSE_CLIENT"].present?
+    return unless Rails.application.config.x.adsense_enabled && ENV["GOOGLE_ADSENSE_CLIENT"].present?
 
     client = ENV.fetch("GOOGLE_ADSENSE_CLIENT", nil)
     src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=#{client}"

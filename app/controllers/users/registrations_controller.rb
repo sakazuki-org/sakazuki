@@ -4,8 +4,6 @@ module Users
   class RegistrationsController < Devise::RegistrationsController
     before_action :redirect_to_root, only: %i[new create]
 
-    # rubocop:disable Lint/UselessMethodDefinition
-
     # GET /resource/sign_up
     def new
       super
@@ -15,8 +13,6 @@ module Users
     def create
       super
     end
-
-    # rubocop:enable Lint/UselessMethodDefinition
 
     # GET /resource/edit
     # def edit

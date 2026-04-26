@@ -99,5 +99,12 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Feature flags
+  config.x.cloudinary_enabled = true
+  config.x.adsense_enabled = true
+  config.x.letter_opener_enabled = false
+  config.x.fast_password_hashing = false
+  config.x.dev_tools_enabled = false
 end
 # rubocop:enable Metrics/BlockLength

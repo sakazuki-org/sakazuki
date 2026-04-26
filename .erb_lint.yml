@@ -33,9 +33,6 @@ linters:
         Enabled: false
       Rails/OutputSafety:
         Enabled: false
-      # rubocop-erbの都合でオフにしたのをオンにする
-      Layout/RedundantLineBreak:
-        Enabled: true
   RequireScriptNonce:
     enabled: true
   StrictLocals:

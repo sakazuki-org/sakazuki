@@ -14,6 +14,7 @@ jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
+    environment: fly-deploy
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6

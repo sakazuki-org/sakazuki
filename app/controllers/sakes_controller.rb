@@ -59,7 +59,7 @@ class SakesController < ApplicationController
       store_photos(@sake, sake_params)
       redirect_to(@sake, status: :see_other, flash: { create_sake: { name: @sake.name, id: @sake.id } })
     else
-      render(:new, status: :unprocessable_entity)
+      render(:new, status: :unprocessable_content)
     end
   end
 
@@ -78,7 +78,7 @@ class SakesController < ApplicationController
 
       redirect_after_update
     else
-      render(:edit, status: :unprocessable_entity)
+      render(:edit, status: :unprocessable_content)
     end
   end
   # rubocop:enable Metrics/MethodLength
@@ -155,7 +155,7 @@ class SakesController < ApplicationController
     if update_from_edit?
       redirect_to(@sake, status: :see_other)
     else
-      redirect_back(fallback_location: @sake)
+      redirect_back_or_to(@sake)
     end
   end
 

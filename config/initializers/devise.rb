@@ -28,7 +28,7 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
   config.mailer_sender =
-    if Rails.env.production? && Rails.application.credentials.mail.present?
+    if Rails.application.credentials.mail.present?
       Rails.application.credentials.mail[:user_name]
     else
       "example@example.com"
@@ -131,7 +131,7 @@ Devise.setup do |config|
   # a value less than 10 in other environments. Note that, for bcrypt (the default
   # algorithm), the cost increases exponentially with the number of stretches (e.g.
   # a value of 20 is already extremely slow: approx. 60 seconds for 1 calculation).
-  config.stretches = Rails.env.test? ? 1 : 12
+  config.stretches = Rails.application.config.x.fast_password_hashing ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
   # config.pepper = "979da75efec9cbeaa7dc0a03719f0923053c6abba5f67c9625df1ab5fb6bee" +

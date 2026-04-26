@@ -23,6 +23,6 @@ class Photo < ApplicationRecord
   # @note production環境以外ではcl_image_tagにパスを渡すことで`angle: ignore`のような変換オプションを無視する
   # @return [String] 画像への参照
   def cl_reference
-    Rails.env.production? ? image.full_public_id : image.url
+    Rails.application.config.x.cloudinary_enabled ? image.full_public_id : image.url
   end
 end

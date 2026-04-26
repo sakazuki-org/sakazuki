@@ -1,5 +1,5 @@
 class ImageUploader < CarrierWave::Uploader::Base
-  if Rails.env.production?
+  if Rails.application.config.x.cloudinary_enabled
     include Cloudinary::CarrierWave
   else
     include CarrierWave::Vips
@@ -7,7 +7,9 @@ class ImageUploader < CarrierWave::Uploader::Base
     storage :file
   end
 
-  process(resize_to_limit: [4032, 4032], convert: "avif", quality: "auto", ocr: "adv_ocr:ja") if Rails.env.production?
+  if Rails.application.config.x.cloudinary_enabled
+    process(resize_to_limit: [4032, 4032], convert: "avif", quality: "auto", ocr: "adv_ocr:ja")
+  end
 
   version :thumb do
     # HACK: 1:1でスマホで２つ並んでも潰れないサイズ
@@ -15,7 +17,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   version :large_twitter_card do
-    if Rails.env.production?
+    if Rails.application.config.x.cloudinary_enabled
       cloudinary_transformation(
         format: "webp", crop: :thumb, width: 600, height: 300, sign_url: true,
         gravity: :ocr_text
