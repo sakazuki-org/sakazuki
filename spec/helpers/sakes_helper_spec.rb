@@ -5,8 +5,8 @@ RSpec.describe SakesHelper do
 
   describe "empty_to_default" do
     context "with some first argument" do
-      value = 1
-      default_value = 2
+      let(:value) { 1 }
+      let(:default_value) { 2 }
 
       it "returns first value" do
         expect(empty_to_default(value, default_value)).to eq(value)
@@ -14,8 +14,8 @@ RSpec.describe SakesHelper do
     end
 
     context "with nil for first argument" do
-      nil_value = nil
-      default_value = 2
+      let(:nil_value) { nil }
+      let(:default_value) { 2 }
 
       it "returns second value" do
         expect(empty_to_default(nil_value, default_value)).to eq(default_value)
@@ -23,8 +23,8 @@ RSpec.describe SakesHelper do
     end
 
     context "with empty string for first argument" do
-      empty_string = ""
-      default_value = 2
+      let(:empty_string) { "" }
+      let(:default_value) { 2 }
 
       it "returns second value" do
         expect(empty_to_default(empty_string, default_value)).to eq(default_value)

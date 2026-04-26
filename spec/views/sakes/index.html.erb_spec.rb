@@ -37,7 +37,7 @@ RSpec.describe "sakes/index", type: :system do
     end
 
     context "with search" do
-      search = "ヒットしない検索語句"
+      let(:search) { "ヒットしない検索語句" }
 
       before do
         fill_in("text_search", with: search)
@@ -72,7 +72,7 @@ RSpec.describe "sakes/index", type: :system do
     end
 
     context "with search" do
-      search = "検索中の酒"
+      let(:search) { "検索中の酒" }
 
       before do
         fill_in("text_search", with: search)
