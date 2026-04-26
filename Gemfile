@@ -92,7 +92,7 @@ end
 
 group :development do
   # Auto annotation to schema
-  gem "annotate"
+  gem "annotaterb"
 
   # Generate dockerfile for fly deploy
   gem "dockerfile-rails"

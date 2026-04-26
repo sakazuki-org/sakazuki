@@ -104,7 +104,6 @@ Rails.application.configure do
   config.x.cloudinary_enabled = true
   config.x.adsense_enabled = true
   config.x.letter_opener_enabled = false
-  config.x.annotate_models_enabled = false
   config.x.fast_password_hashing = false
   config.x.dev_tools_enabled = false
 end

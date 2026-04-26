@@ -81,7 +81,6 @@ Rails.application.configure do
   config.x.cloudinary_enabled = false
   config.x.adsense_enabled = false
   config.x.letter_opener_enabled = true
-  config.x.annotate_models_enabled = true
   config.x.fast_password_hashing = false
   config.x.dev_tools_enabled = true
 end
