@@ -2,7 +2,6 @@ module Users
   class InvitationsController < Devise::InvitationsController
     before_action :accept_admin, only: %i[new create]
 
-    # rubocop:disable Lint/UselessMethodDefinition
     def new
       super
     end
@@ -10,8 +9,6 @@ module Users
     def create
       super
     end
-
-    # rubocop:enable Lint/UselessMethodDefinition
 
     private
 
