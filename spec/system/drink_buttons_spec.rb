@@ -4,15 +4,15 @@ RSpec.describe "Drink Buttons" do
   let!(:sealed_sake) { create(:sake, bottle_level: "sealed") }
   let!(:opened_sake) { create(:sake, bottle_level: "opened") }
   let!(:empty_sake) { create(:sake, bottle_level: "empty", taste_value: 1, aroma_value: 2) }
-  let(:user) { create(:user) }
-  let(:open_text) { I18n.t("sakes.drink_button.open") }
-  let(:empty_text) { I18n.t("sakes.drink_button.empty") }
 
   before do
     visit sakes_path
   end
 
   describe "link text" do
+    let(:open_text) { I18n.t("sakes.drink_button.open") }
+    let(:empty_text) { I18n.t("sakes.drink_button.empty") }
+
     context "with sealed bottle" do
       it "has open button with i18n text" do
         id = "sake_buttons_#{sealed_sake.id}"
@@ -55,6 +55,8 @@ RSpec.describe "Drink Buttons" do
   end
 
   context "without login" do
+    let(:user) { create(:user) }
+
     before do
       sign_out(user)
     end
@@ -109,6 +111,8 @@ RSpec.describe "Drink Buttons" do
   end
 
   context "with login" do
+    let(:user) { create(:user) }
+
     before do
       login_as(user)
     end
