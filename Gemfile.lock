@@ -160,7 +160,7 @@ GEM
     enum_help (0.0.20)
       activesupport (>= 3.0.0)
     era_ja (1.3.0)
-    erb (6.0.0)
+    erb (6.0.1.1)
     erb_lint (0.9.0)
       activesupport
       better_html (>= 2.0.1)
