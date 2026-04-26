@@ -53,7 +53,7 @@ RSpec.describe "Sake Form Brew Year" do
     end
 
     context "when creating sake whoes BY is past year" do
-      ago = Time.current.ago(10.years)
+      let(:ago) { Time.current.ago(10.years) }
 
       before do
         visit new_sake_path
