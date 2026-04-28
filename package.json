@@ -18,7 +18,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "@eslint/js": "^9.38.0",
-    "@markuplint/erb-parser": "^4.6.21",
+    "@markuplint/erb-parser": "^4.6.23",
     "@stylistic/eslint-plugin": "^5.5.0",
     "@types/bootstrap": "^5.2.10",
     "eslint": "^9.39.1",
