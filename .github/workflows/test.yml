@@ -2,17 +2,6 @@ name: Test
 
 on:
   pull_request:
-    paths:
-      - "app/**"
-      - "spec/**"
-      - "config/**"
-      - "db/**"
-      - "Gemfile"
-      - "Gemfile.lock"
-      - "package.json"
-      - "yarn.lock"
-      - ".ruby-version"
-      - ".github/workflows/test.yml"
 
 permissions: {}
 
@@ -21,8 +10,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read # Needed to read changes to skip test or not
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+    steps:
+      # v4.0.1
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d
+        id: filter
+        with:
+          filters: |
+            src:
+              - "app/**"
+              - "spec/**"
+              - "config/**"
+              - "db/**"
+              - "Gemfile"
+              - "Gemfile.lock"
+              - "package.json"
+              - "yarn.lock"
+              - ".ruby-version"
+              - ".github/workflows/test.yml"
+
   test:
     name: test
+    needs: changes
+    if: needs.changes.outputs.src == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     services:
