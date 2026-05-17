@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
+    "types": ["*"],
     "esModuleInterop": true,
     "moduleResolution": "bundler",
-    "module": "esnext",
-    "strict": true,
     "noUncheckedIndexedAccess": true,
     "target": "esnext",
     "skipLibCheck": true,
