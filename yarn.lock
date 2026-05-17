@@ -370,10 +370,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:^9.38.0":
-  version: 9.39.1
-  resolution: "@eslint/js@npm:9.39.1"
-  checksum: 10/b10b9b953212c0f3ffca475159bbe519e9e98847200c7432d1637d444fddcd7b712d2b7710a7dc20510f9cfbe8db330039b2aad09cb55d9545b116d940dbeed2
+"@eslint/js@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@eslint/js@npm:10.0.1"
+  peerDependencies:
+    eslint: ^10.0.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10/27ff77b8f0aab350b2f7a69d974eabb816bb9f4cab986b1538782269d6bfdc29e351803fa7a62c22c0b786341324f1a28b86bc83956ddfa189aa6bead1a87758
   languageName: node
   linkType: hard
 
@@ -2257,7 +2262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^10.3.0":
+"eslint@npm:^10.4.0":
   version: 10.4.0
   resolution: "eslint@npm:10.4.0"
   dependencies:
@@ -4492,7 +4497,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sakazuki@workspace:."
   dependencies:
-    "@eslint/js": "npm:^9.38.0"
+    "@eslint/js": "npm:^10.0.1"
     "@hotwired/stimulus": "npm:^3.2.2"
     "@hotwired/turbo-rails": "npm:^8.0.20"
     "@markuplint/erb-parser": "npm:^4.6.23"
@@ -4503,7 +4508,7 @@ __metadata:
     bootstrap-icons: "npm:^1.13.1"
     chart.js: "npm:^4.5.1"
     esbuild: "npm:^0.28.0"
-    eslint: "npm:^10.3.0"
+    eslint: "npm:^10.4.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-jsdoc: "npm:^62.9.0"
     globals: "npm:^16.5.0"
@@ -4519,7 +4524,7 @@ __metadata:
     stylelint-config-standard-scss: "npm:^17.0.0"
     ts-deepmerge: "npm:^7.0.3"
     typescript: "npm:^6.0.3"
-    typescript-eslint: "npm:^8.59.2"
+    typescript-eslint: "npm:^8.59.3"
   languageName: unknown
   linkType: soft
 
@@ -5051,7 +5056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.59.2":
+"typescript-eslint@npm:^8.59.3":
   version: 8.59.3
   resolution: "typescript-eslint@npm:8.59.3"
   dependencies:
