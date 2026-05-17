@@ -6,7 +6,7 @@
       <%= link_to(
             sanitize("#{image_tag('choko.svg', class: 'sakazuki-header-logo')}SAKAZUKI", tag: %w[img]),
             root_path,
-            { class: "navbar-brand d-flex align-items-center" },
+            { class: "navbar-brand d-flex align-items-center", data: { controller: "random-drink" } },
           ) %>
 
       <%# ハンバーガーメニューボタン %>

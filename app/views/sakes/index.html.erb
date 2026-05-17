@@ -10,13 +10,15 @@
           <% header = t(".header_with_search", search: searched_word) %>
           <% hit = @sakes.length.to_s %>
           <% h1 = t(".h1_with_search", search: searched_word, hit:) %>
+          <%= title(header, h1) %>
         <% else %>
           <%# 通常タイトル %>
           <% header = t(".header") %>
           <% include_empty = include_empty?(params[:q]) %>
           <% h1 = t(".h1_with_stock", stock: stock(include_empty)) %>
+          <%= title(header, h1) %>
+          <%= render(partial: "shuffle") %>
         <% end %>
-        <%= title(header, h1) %>
       </h1>
     </div>
     <div class="col">

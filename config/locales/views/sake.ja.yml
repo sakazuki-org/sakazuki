@@ -79,3 +79,6 @@ ja:
       price_is_per_go: 一合当たりのお値段となり〼
     menu_one_drink:
       new_arrival: 新着
+    shuffle:
+      title: 日本酒ガチャ
+      retry_gacha: もう一度引く

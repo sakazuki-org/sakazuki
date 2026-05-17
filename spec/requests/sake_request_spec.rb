@@ -117,5 +117,12 @@ RSpec.describe "Sakes" do
         expect { delete sake_path(id) }.to change(Sake, :count).by(-1)
       end
     end
+
+    describe "GET /sakes/random request (random)" do
+      it "returns 200 response" do
+        get random_sakes_path
+        expect(response).to have_http_status :ok
+      end
+    end
   end
 end
