@@ -57,7 +57,7 @@ jobs:
       - name: Set up Ruby
         env:
           BUNDLE_WITHOUT: development
-        uses: ruby/setup-ruby@7372622e62b60b3cb750dcd2b9e32c247ffec26a
+        uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f
         with:
           bundler-cache: true
       - name: Setup Database
@@ -82,7 +82,7 @@ jobs:
         run: bundle exec rspec
 
       - name: Upload code coverage
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
