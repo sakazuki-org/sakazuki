@@ -261,7 +261,7 @@ GEM
     multipart-post (2.4.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.5.10)
+    net-imap (0.5.14)
       date
       net-protocol
     net-pop (0.1.2)
@@ -453,7 +453,7 @@ GEM
       railties (>= 6.0.0)
     stringio (3.2.0)
     thor (1.5.0)
-    timeout (0.4.3)
+    timeout (0.6.1)
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
