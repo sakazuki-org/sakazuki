@@ -312,7 +312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-utils@npm:^4.8.0, @eslint-community/eslint-utils@npm:^4.9.0":
+"@eslint-community/eslint-utils@npm:^4.8.0":
   version: 4.9.0
   resolution: "@eslint-community/eslint-utils@npm:4.9.0"
   dependencies:
@@ -1027,19 +1027,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stylistic/eslint-plugin@npm:^5.5.0":
-  version: 5.6.1
-  resolution: "@stylistic/eslint-plugin@npm:5.6.1"
+"@stylistic/eslint-plugin@npm:^5.10.0":
+  version: 5.10.0
+  resolution: "@stylistic/eslint-plugin@npm:5.10.0"
   dependencies:
-    "@eslint-community/eslint-utils": "npm:^4.9.0"
-    "@typescript-eslint/types": "npm:^8.47.0"
+    "@eslint-community/eslint-utils": "npm:^4.9.1"
+    "@typescript-eslint/types": "npm:^8.56.0"
     eslint-visitor-keys: "npm:^4.2.1"
     espree: "npm:^10.4.0"
     estraverse: "npm:^5.3.0"
     picomatch: "npm:^4.0.3"
   peerDependencies:
-    eslint: ">=9.0.0"
-  checksum: 10/1d6a11f98f14fbb20e09c3b6a7fc6cdd2aeceb02ed7cd62becb4fc21a520d314ea45ebf979e9c1e792ca386da282aca2d7a3b991b200d3050f0236735b8f882a
+    eslint: ^9.0.0 || ^10.0.0
+  checksum: 10/d55706b09a55defbc5afbfc251c4ecc0acfcbc3e741c34bec461365b399d2c9d89a6cafac069356ea03e231f3b12d5cc9550e66603ac343c29e07f2b2cd30464
   languageName: node
   linkType: hard
 
@@ -1261,10 +1261,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:^8.47.0":
-  version: 8.48.0
-  resolution: "@typescript-eslint/types@npm:8.48.0"
-  checksum: 10/cd14a7ecd1cb6af94e059a713357b9521ffab08b2793a7d33abda7006816e77f634d49d1ec6f1b99b47257a605347d691bd02b2b11477c9c328f2a27f52a664f
+"@typescript-eslint/types@npm:^8.56.0":
+  version: 8.59.4
+  resolution: "@typescript-eslint/types@npm:8.59.4"
+  checksum: 10/43e7ab668f1649dee76829a5b1eb0807b7576b39aee5b23fe10936d99536cba350ec1e377c2ea2242971435d460e28f3d3d4307357ac9f8184403573ece85ca6
   languageName: node
   linkType: hard
 
@@ -4502,7 +4502,7 @@ __metadata:
     "@hotwired/turbo-rails": "npm:^8.0.20"
     "@markuplint/erb-parser": "npm:^4.6.23"
     "@popperjs/core": "npm:^2.11.8"
-    "@stylistic/eslint-plugin": "npm:^5.5.0"
+    "@stylistic/eslint-plugin": "npm:^5.10.0"
     "@types/bootstrap": "npm:^5.2.10"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"

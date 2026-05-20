@@ -19,7 +19,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@markuplint/erb-parser": "^4.6.23",
-    "@stylistic/eslint-plugin": "^5.5.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/bootstrap": "^5.2.10",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
