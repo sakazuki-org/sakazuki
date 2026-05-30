@@ -31,25 +31,17 @@ RSpec.describe "User account lock and unlock" do
     end
 
     it "unlocks and allows sign-in with the correct password" do
-      # 正しいパスワードでログイン
-      visit new_user_session_path
-      fill_in("user_email", with: user.email)
-      fill_in("user_password", with: user.password)
-      click_button("commit")
+      sign_in_via_header_button(user)
 
       # ログアウトボタンが表示されていることでログインを確認
       expect(page).to have_selector(:test_id, "sign_out")
     end
   end
 
-  context "after 1 hour from account lock" do
+  context "when 1 hour later from account lock" do
     it "unlocks and allows sign-in with the correct password" do
       travel(1.hour + 1.minute) do
-        # 正しいパスワードでログイン
-        visit new_user_session_path
-        fill_in("user_email", with: user.email)
-        fill_in("user_password", with: user.password)
-        click_button("commit")
+        sign_in_via_header_button(user)
 
         # ログアウトボタンが表示されていることでログインを確認
         expect(page).to have_selector(:test_id, "sign_out")
