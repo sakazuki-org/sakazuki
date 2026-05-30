@@ -3,6 +3,7 @@ module Users
     # GET /resource/confirmation?confirmation_token=abcdef
     # reconfirmable (メアド変更時の確認メール) の着地点としてのみ利用する。
     # token なし or 不正なリクエストはページの存在を伏せるため 404 を返す。
+    # rubocop:disable Metrics/AbcSize
     def show
       raise(ActionController::RoutingError, "Not Found") if params[:confirmation_token].blank?
 
@@ -12,5 +13,6 @@ module Users
       set_flash_message!(:notice, :confirmed)
       respond_with_navigational(resource) { redirect_to(after_confirmation_path_for(resource_name, resource)) }
     end
+    # rubocop:enable Metrics/AbcSize
   end
 end
