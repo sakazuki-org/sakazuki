@@ -30,8 +30,8 @@ RSpec.describe "User email change with reconfirmable" do
   end
 
   it "applies the email change after visiting the confirmation link" do
-    ActionMailer::Base.deliveries.last.body.encoded[%r{/users/confirmation\?confirmation_token=[^"\s<]+}]
-    visit(url)
+    confirmation_url = ActionMailer::Base.deliveries.last.body.encoded[%r{/users/confirmation\?confirmation_token=[^"\s<]+}]
+    visit(confirmation_url)
 
     expect(user.reload.email).to eq(new_email)
   end
