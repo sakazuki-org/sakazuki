@@ -20,7 +20,7 @@ RSpec.describe "User account lock and unlock" do
     expect(ActionMailer::Base.deliveries.last.to).to include(user.email)
   end
 
-  it "shows a error flash message" do
+  it "shows an error flash message" do
     expect(page).to have_content(I18n.t("devise.failure.locked"))
   end
 
