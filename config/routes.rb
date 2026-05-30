@@ -7,7 +7,11 @@ Rails.application.routes.draw do
   post "users/confirmation", to: not_found
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  devise_for :users, controllers: { registrations: "users/registrations", invitations: "users/invitations", confirmations: "users/confirmations" }
+  devise_for :users,
+             controllers: {
+               registrations: "users/registrations", invitations: "users/invitations",
+               confirmations: "users/confirmations"
+             }
   root "sakes#index"
   resources :sakes do
     get :menu, on: :collection
