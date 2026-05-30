@@ -9,3 +9,5 @@ ja:
         cancel_my_account_confirmation: |
           アカウントを削除するともとに戻せません。
           登録された酒は削除されません。
+    failure:
+      invited: 招待途中です。メールボックスを確認してください
