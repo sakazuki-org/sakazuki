@@ -7,8 +7,8 @@ RSpec.describe "User account lock and unlock" do
     # テスト前にメールキューをクリアしておく
     ActionMailer::Base.deliveries.clear
 
-    # ユーザーがパスワードを複数回間違えてロックされる
-    Devise.maximum_attempts.times {
+    # ユーザーがパスワードを5回間違えてロックされる
+    5.times {
       visit new_user_session_path
       fill_in("user_email", with: user.email)
       fill_in("user_password", with: "wrong_password")
