@@ -2,19 +2,8 @@ require "capybara/rails"
 require "capybara/rspec"
 require "capybara-playwright-driver"
 
-# playwright CLI(npmで導入)へのパス。環境変数で上書き可。
-PLAYWRIGHT_CLI_EXECUTABLE_PATH = ENV.fetch(
-  "PLAYWRIGHT_CLI_EXECUTABLE_PATH",
-  Rails.root.join("node_modules/.bin/playwright").to_s,
-)
-
 Capybara.register_driver(:playwright) do |app|
-  Capybara::Playwright::Driver.new(
-    app,
-    playwright_cli_executable_path: PLAYWRIGHT_CLI_EXECUTABLE_PATH,
-    browser_type: :chromium,
-    headless: true,
-  )
+  Capybara::Playwright::Driver.new(app, browser_type: :firefox, headless: true)
 end
 
 Capybara.configure do |config|
