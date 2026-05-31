@@ -26,7 +26,7 @@ RSpec.describe "Sake Index Order" do
 
     context "with checked 'show empty bottles'", :js do
       before do
-        check("check_empty_bottle") # show empty bottles
+        find(:test_id, "check_empty_bottle").click # show empty bottles
       end
 
       it "shows sakes sorted by id" do
