@@ -34,9 +34,6 @@ services:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_HOSTNAME: db
-      CAPYBARA_SERVER_HOST: web
-      REMOTE_DRIVER_HOST: selenium
-      REMOTE_DRIVER_PORT: 4444
     build:
       context: .
       target: development
@@ -48,9 +45,3 @@ services:
       - "3000:3000"
     depends_on:
       - db
-      - selenium
-  selenium:
-    image: selenium/standalone-firefox:latest
-    shm_size: 512m
-    ports:
-      - 4444:4444

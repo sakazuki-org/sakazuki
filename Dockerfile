@@ -120,6 +120,9 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/ ./.yarn/releases/
 RUN yarn install && yarn cache clean
 
+# Install Playwright browsers and system dependencies for system tests
+RUN ./node_modules/.bin/playwright install --with-deps chromium
+
 # Copy application code
 COPY . .
 

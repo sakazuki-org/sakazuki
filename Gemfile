@@ -140,8 +140,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
 
-  # Selenium used by Capybara
-  gem "selenium-webdriver"
+  # Playwright driver used by Capybara
+  gem "capybara-playwright-driver"
 
   # Simple coverage
   gem "simplecov"

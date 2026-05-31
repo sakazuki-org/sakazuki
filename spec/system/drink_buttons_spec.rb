@@ -39,7 +39,7 @@ RSpec.describe "Drink Buttons" do
 
     context "with empty bottle", :js do
       before do
-        check("check_empty_bottle")
+        find(:test_id, "check_empty_bottle").click
       end
 
       it "does not have open button with i18n text" do
