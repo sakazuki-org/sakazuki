@@ -40,13 +40,11 @@ RSpec.describe "Sake Index Pagination" do
 
     describe "listed sakes" do
       it "includes 12th sake" do
-        regexp = /#{sealed12.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed12.name)
       end
 
       it "includes 13th sake" do
-        regexp = /#{sealed13.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed13.name)
       end
     end
   end
@@ -63,13 +61,11 @@ RSpec.describe "Sake Index Pagination" do
 
     context "with page 1" do
       it "includes 12th sake" do
-        regexp = /#{sealed12.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed12.name)
       end
 
       it "does not include 13th sake" do
-        regexp = /#{sealed13.name}/
-        expect(page.text).not_to match(regexp)
+        expect(page).to have_no_text(sealed13.name)
       end
     end
 
@@ -81,13 +77,11 @@ RSpec.describe "Sake Index Pagination" do
       end
 
       it "does not include 12th sake" do
-        regexp = /#{sealed12.name}/
-        expect(page.text).not_to match(regexp)
+        expect(page).to have_no_text(sealed12.name)
       end
 
       it "includes 13th sake" do
-        regexp = /#{sealed13.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed13.name)
       end
     end
   end

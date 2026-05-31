@@ -23,18 +23,15 @@ RSpec.describe "With Empty Bottle" do
   describe "listed sakes" do
     context "without empty bottles" do
       it "includes sealed sake" do
-        regexp = /#{sealed.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed.name)
       end
 
       it "includes opened sake" do
-        regexp = /#{opened.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(opened.name)
       end
 
       it "does not include empty sake" do
-        regexp = /#{empty.name}/
-        expect(page.text).not_to match(regexp)
+        expect(page).to have_no_text(empty.name)
       end
     end
   end
@@ -47,18 +44,15 @@ RSpec.describe "With Empty Bottle" do
 
     context "without empty bottles" do
       it "includes sealed sake" do
-        regexp = /#{sealed.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(sealed.name)
       end
 
       it "includes opened sake" do
-        regexp = /#{opened.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(opened.name)
       end
 
       it "includes empty sake" do
-        regexp = /#{empty.name}/
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(empty.name)
       end
     end
   end
