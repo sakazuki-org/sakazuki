@@ -26,7 +26,7 @@
 - Ruby = (See .ruby-version file)
 - Bundler
 - Node.js >= 22
-- PostgreSQL >= 12.0
+- PostgreSQL >= 18
 - libvips (development only)
 
 ## Setup
