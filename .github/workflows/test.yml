@@ -72,7 +72,7 @@ jobs:
       - name: Install Yarn Dependencies
         run: yarn workspaces focus --all
       - name: Install Playwright browsers
-        run: ./node_modules/.bin/playwright install --with-deps chromium
+        run: ./node_modules/.bin/playwright install --with-deps firefox
       - name: Set up Ruby
         env:
           BUNDLE_WITHOUT: development

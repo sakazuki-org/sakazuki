@@ -11,13 +11,6 @@
 POSTGRES_USERNAME=
 POSTGRES_PASSWORD=
 
-### Capybara / Playwright
-
-# Path to the Playwright CLI installed via npm (defaults to ./node_modules/.bin/playwright).
-#
-# PLAYWRIGHT_CLI_EXECUTABLE_PATH=./node_modules/.bin/playwright
-
-
 ### Google AdSense
 
 # Client ID
