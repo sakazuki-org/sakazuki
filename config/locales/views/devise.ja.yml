@@ -1,4 +1,8 @@
 ja:
+  activerecord:
+    attributes:
+      user:
+        remember_me: ログインを1週間記憶する
   devise:
     registrations:
       edit:
