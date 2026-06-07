@@ -11,30 +11,21 @@ class SakesController < ApplicationController
   helper_method :include_empty?
 
   # GET /sakes
-  # rubocop:disable Metrics/AbcSize
   def index
     # コピーとnil防止
     query = initialize_query(params[:q])
     searching = searching?(query)
-    # 空き瓶の表示制御
-    # - 明示的に「含む」指定があればそのまま
-    # - 検索時で瓶状態の指定がなければ、デフォルトで空き瓶を含む
-    # - それ以外（通常のindex・明示的に除外）は空き瓶なし
-    unless include_empty?(query)
-      searching && !bottle_level_specified?(query) ? to_include_empty!(query) : to_default_bottle!(query)
-    end
+    # 空き瓶の表示有無をクエリに反映する
+    apply_bottle_visibility!(query, searching:)
     # 空白区切りでandサーチ
     to_multi_search!(query) if query[:all_text_cont]
 
     # Ransack search and sort
     @search = Sake.ransack(query)
     @search.sorts = ["bottle_level", "id desc"]
-    @sakes = @search.result.includes(:photos)
-
-    # Kaminari pager（検索時はページネーションせず全件表示する）
-    @sakes = @sakes.page(params[:page]) if include_empty?(query) && !searching
+    # 検索時はページネーションせず全件表示する
+    @sakes = paginate_sakes(@search.result.includes(:photos), query, searching)
   end
-  # rubocop:enable Metrics/AbcSize
 
   # GET /sakes/1
   def show; end
@@ -105,6 +96,21 @@ class SakesController < ApplicationController
   end
 
   private
+
+  # 酒一覧にKaminariのページネーションをかけてViewへ渡す
+  #
+  # 空き瓶を含む通常一覧のみページネーションする。検索時は件数表示と
+  # 整合させるため、ページネーションせず全件を返す。
+  #
+  # @param sakes [ActiveRecord::Relation] 酒一覧
+  # @param query [Hash{Symbol => String}] クエリパラメータ
+  # @param searching [Boolean] 検索中ならtrue
+  # @return [ActiveRecord::Relation] 必要に応じてページネーションした酒一覧
+  def paginate_sakes(sakes, query, searching)
+    return sakes unless include_empty?(query) && !searching
+
+    sakes.page(params[:page])
+  end
 
   # コピー機能の対象キーかどうか
   #
