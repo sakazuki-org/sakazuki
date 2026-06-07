@@ -39,6 +39,25 @@ module SakesSearch
     !query.nil? && query[:bottle_level_not_eq].present?
   end
 
+  # クエリに空き瓶の表示有無を反映する
+  #
+  # - 明示的に「含む」指定があればそのまま
+  # - 検索時で瓶状態の指定がなければ、デフォルトで空き瓶を含む
+  # - それ以外（通常のindex・明示的に除外）は空き瓶なし
+  #
+  # @param query [Hash{Symbol => String}] クエリパラメータ
+  # @param searching [Boolean] 検索中ならtrue
+  # @return [void]
+  def apply_bottle_visibility!(query, searching:)
+    return if include_empty?(query)
+
+    if searching && !bottle_level_specified?(query)
+      to_include_empty!(query)
+    else
+      to_default_bottle!(query)
+    end
+  end
+
   # クエリにデフォルトの瓶状態を設定する
   #
   # クエリの瓶状態が設定されていないときは、空き瓶の表示をオフにする。
