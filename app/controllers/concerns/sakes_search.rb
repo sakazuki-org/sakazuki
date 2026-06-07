@@ -20,7 +20,23 @@ module SakesSearch
   # @param query [Hash{Symbol => String}] クエリパラメータ
   # @return [Boolean] 空き瓶を表示するならtrue
   def include_empty?(query)
-    !query.nil? && query[:bottle_level_not_eq] == Sake::BOTTOM_BOTTLE.to_s
+    !query.nil? && query[:bottle_level_not_eq].to_s == Sake::BOTTOM_BOTTLE.to_s
+  end
+
+  # 検索中かどうか
+  #
+  # @param query [Hash{Symbol => String}, nil] クエリパラメータ
+  # @return [Boolean] 検索語が入力されているならtrue
+  def searching?(query)
+    !query.nil? && query[:all_text_cont].present?
+  end
+
+  # 瓶状態（空き瓶の表示有無）が明示的に指定されているか
+  #
+  # @param query [Hash{Symbol => String}, nil] クエリパラメータ
+  # @return [Boolean] 瓶状態が指定されているならtrue
+  def bottle_level_specified?(query)
+    !query.nil? && query[:bottle_level_not_eq].present?
   end
 
   # クエリにデフォルトの瓶状態を設定する
@@ -31,6 +47,14 @@ module SakesSearch
   # @return [void]
   def to_default_bottle!(query)
     query[:bottle_level_not_eq] = Sake.bottle_levels["empty"]
+  end
+
+  # クエリを空き瓶を含む状態に設定する
+  #
+  # @param query [Hash{Symbol => String}] クエリパラメータ
+  # @return [void]
+  def to_include_empty!(query)
+    query[:bottle_level_not_eq] = Sake::BOTTOM_BOTTLE
   end
 
   # 文字列を空白で分割して検索用文字列を生成する
