@@ -1,6 +1,6 @@
+require "capybara-playwright-driver"
 require "capybara/rails"
 require "capybara/rspec"
-require "capybara-playwright-driver"
 
 Capybara.register_driver(:playwright) do |app|
   Capybara::Playwright::Driver.new(app, browser_type: :firefox, headless: true)
