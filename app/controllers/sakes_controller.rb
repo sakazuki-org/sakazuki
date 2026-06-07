@@ -4,27 +4,13 @@ class SakesController < ApplicationController
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
   include SakesHelper
-  include SakesSearch
   include SakesPhotos
-
-  # Viewで使える用に宣言する
-  helper_method :include_empty?
 
   # GET /sakes
   def index
-    # コピーとnil防止
-    query = initialize_query(params[:q])
-    searching = searching?(query)
-    # 空き瓶の表示有無をクエリに反映する
-    apply_bottle_visibility!(query, searching:)
-    # 空白区切りでandサーチ
-    to_multi_search!(query) if query[:all_text_cont]
-
-    # Ransack search and sort
-    @search = Sake.ransack(query)
-    @search.sorts = ["bottle_level", "id desc"]
-    # 検索時はページネーションせず全件表示する
-    @sakes = paginate_sakes(@search.result.includes(:photos), query, searching)
+    @query = SakesQuery.new(word: params.dig(:q, :all_text_cont), include_empty: index_include_empty)
+    @search = @query.ransack
+    @sakes = @query.result(page: params[:page])
   end
 
   # GET /sakes/1
@@ -97,19 +83,29 @@ class SakesController < ApplicationController
 
   private
 
-  # 酒一覧にKaminariのページネーションをかけてViewへ渡す
+  # indexで空き瓶を含めるかの意図を解釈する
   #
-  # 空き瓶を含む通常一覧のみページネーションする。検索時は件数表示と
-  # 整合させるため、ページネーションせず全件を返す。
+  # 検索ボタン経由（commitあり）なら明示指定を無視してデフォルト推論に委ね、
+  # トグル操作（commitなし）なら送られてきた明示値（true/false）に従う。
+  # これにより「検索時は空き瓶を含む」と「検索中にトグルでOFFにした状態を維持」を両立する。
   #
-  # @param sakes [ActiveRecord::Relation] 酒一覧
-  # @param query [Hash{Symbol => String}] クエリパラメータ
-  # @param searching [Boolean] 検索中ならtrue
-  # @return [ActiveRecord::Relation] 必要に応じてページネーションした酒一覧
-  def paginate_sakes(sakes, query, searching)
-    return sakes unless include_empty?(query) && !searching
+  # @return [Boolean, nil] 空き瓶を含めるか。nilなら未指定（デフォルト推論に委ねる）
+  def index_include_empty
+    return if params[:commit].present?
 
-    sakes.page(params[:page])
+    boolean_param(params[:include_empty])
+  end
+
+  # パラメータの真偽値を解釈する
+  #
+  # 「未指定（nil）」と「明示的なfalse」を区別できるよう、nilはnilのまま返す。
+  #
+  # @param value [String, nil] パラメータ値
+  # @return [Boolean, nil] 真偽値。未指定ならnil
+  def boolean_param(value)
+    return if value.nil?
+
+    ActiveModel::Type::Boolean.new.cast(value)
   end
 
   # コピー機能の対象キーかどうか
