@@ -8,8 +8,10 @@ RSpec.describe "Search With Empty Bottle" do
 
   before do
     visit sakes_path
-    fill_in("text_search", with: "生道井")
-    click_button("submit_search")
+    within("sake_search") do
+      fill_in("text_search", with: "生道井")
+      click_button("submit_search")
+    end
   end
 
   describe "search results" do
@@ -33,7 +35,9 @@ RSpec.describe "Search With Empty Bottle" do
 
     context "when unchecked during search" do
       before do
-        uncheck(I18n.t("sakes.index.all_bottles"))
+        within("sake_search") do
+          uncheck(I18n.t("sakes.index.all_bottles"))
+        end
       end
 
       it "does not include empty sake" do
