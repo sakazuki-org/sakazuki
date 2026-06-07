@@ -11,11 +11,18 @@ class SakesController < ApplicationController
   helper_method :include_empty?
 
   # GET /sakes
+  # rubocop:disable Metrics/AbcSize
   def index
     # コピーとnil防止
     query = initialize_query(params[:q])
-    # デフォルトは空き瓶なし
-    to_default_bottle!(query) unless include_empty?(query)
+    searching = searching?(query)
+    # 空き瓶の表示制御
+    # - 明示的に「含む」指定があればそのまま
+    # - 検索時で瓶状態の指定がなければ、デフォルトで空き瓶を含む
+    # - それ以外（通常のindex・明示的に除外）は空き瓶なし
+    unless include_empty?(query)
+      searching && !bottle_level_specified?(query) ? to_include_empty!(query) : to_default_bottle!(query)
+    end
     # 空白区切りでandサーチ
     to_multi_search!(query) if query[:all_text_cont]
 
@@ -24,9 +31,10 @@ class SakesController < ApplicationController
     @search.sorts = ["bottle_level", "id desc"]
     @sakes = @search.result.includes(:photos)
 
-    # Kaminari pager
-    @sakes = @sakes.page(params[:page]) if include_empty?(query)
+    # Kaminari pager（検索時はページネーションせず全件表示する）
+    @sakes = @sakes.page(params[:page]) if include_empty?(query) && !searching
   end
+  # rubocop:enable Metrics/AbcSize
 
   # GET /sakes/1
   def show; end

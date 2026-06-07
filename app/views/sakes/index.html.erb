@@ -20,7 +20,7 @@
       </h1>
     </div>
     <div class="col">
-      <%= search_form_for(@search, html: { data: { turbo_frame: "sakes" } }) do |f| %>
+      <%= search_form_for(@search, html: { data: { turbo_frame: "sakes", controller: "sake-search" } }) do |f| %>
         <div class="row mx-0 align-items-center">
           <div class="col ps-0 input-group">
             <%= f.label(:all_text_cont, "search word", class: "form-label visually-hidden") %>
@@ -28,13 +28,20 @@
                   :all_text_cont,
                   class: "form-control",
                   value: params.dig(:q, :all_text_cont),
-                  data: { testid: "text_search" },
+                  data: {
+                    testid: "text_search",
+                    sake_search_target: "word",
+                    action: "keydown.enter->sake-search#includeEmptyOnSearch",
+                  },
                 ) %>
             <%= tag.button(
                   tag.i(class: "bi-search"),
                   type: "submit",
                   class: "btn btn-primary",
-                  data: { testid: "submit_search" },
+                  data: {
+                    testid: "submit_search",
+                    action: "click->sake-search#includeEmptyOnSearch",
+                  },
                 ) %>
           </div>
           <div class="col-auto">
@@ -44,7 +51,7 @@
                     {
                       class: "form-check-input",
                       id: "all_bottle_level",
-                      data: { testid: "check_empty_bottle" },
+                      data: { testid: "check_empty_bottle", sake_search_target: "includeEmpty" },
                       onChange: "this.form.submit()",
                     },
                     Sake::BOTTOM_BOTTLE,
@@ -64,7 +71,7 @@
             <%= render(partial: "sake", collection: @sakes) %>
           </div>
         </div>
-        <% if include_empty?(params[:q]) %>
+        <% if include_empty?(params[:q]) && searched_word.blank? %>
           <div class="col" data-testid="pagination">
             <div class="d-none d-sm-block">
               <%= paginate(@sakes) %>
