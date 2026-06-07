@@ -23,7 +23,7 @@ RSpec.describe "Sake Index Total Spec" do
 
     context "with empty bottle", :js do
       before do
-        check("check_empty_bottle")
+        find(:test_id, "check_empty_bottle").click
       end
 
       it "shows 1升5合 as total amount of sake" do

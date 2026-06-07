@@ -51,8 +51,7 @@ RSpec.describe "Sake Index Pagination" do
 
   context "with empty bottles", :js do
     before do
-      label = I18n.t("sakes.index.all_bottles")
-      check(label)
+      find(:test_id, "check_empty_bottle").click
     end
 
     it "exists" do

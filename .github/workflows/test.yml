@@ -70,7 +70,9 @@ jobs:
           node-version: "22"
           cache: "yarn"
       - name: Install Yarn Dependencies
-        run: yarn workspaces focus --all --production
+        run: yarn workspaces focus --all
+      - name: Install Playwright browsers
+        run: ./node_modules/.bin/playwright install --with-deps chromium
       - name: Set up Ruby
         env:
           BUNDLE_WITHOUT: development
