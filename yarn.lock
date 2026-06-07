@@ -562,12 +562,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@markuplint/erb-parser@npm:^4.6.23":
-  version: 4.18.0
-  resolution: "@markuplint/erb-parser@npm:4.18.0"
+"@markuplint/erb-parser@npm:^4.18.3":
+  version: 4.18.3
+  resolution: "@markuplint/erb-parser@npm:4.18.3"
   dependencies:
-    "@markuplint/html-parser": "npm:4.18.0"
-  checksum: 10/308f2407e02d492db88657e64e590f846593d62181c8da7f76c5cea86531fa905f00841390dd56f75a0977cb87e55c1e7f9cb85ee1358189e3194eaacdd0c9e0
+    "@markuplint/html-parser": "npm:4.18.3"
+  checksum: 10/d8bbc836f742a6eb38f087f6ab453df1808c591d48f374724af9865ad89b1440fe06a82dcb75a70eec1f75de216fab54f41946a3d67e6a7c9f6dede7d2dd5500
   languageName: node
   linkType: hard
 
@@ -594,15 +594,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@markuplint/html-parser@npm:4.18.0":
-  version: 4.18.0
-  resolution: "@markuplint/html-parser@npm:4.18.0"
+"@markuplint/html-parser@npm:4.18.3":
+  version: 4.18.3
+  resolution: "@markuplint/html-parser@npm:4.18.3"
   dependencies:
     "@markuplint/ml-ast": "npm:4.18.0"
-    "@markuplint/parser-utils": "npm:4.18.0"
+    "@markuplint/parser-utils": "npm:4.18.3"
     parse5: "npm:8.0.1"
     type-fest: "npm:5.6.0"
-  checksum: 10/bf6d857e46557fe6e91efd74fecf184241632380815fdaac032fc251de5a0188e11383e962708f9183ef5a348391864ae2f4876ddbbca14aba33f058a05e012e
+  checksum: 10/bdff714a311f0c8a588729c36a80bf1f4f27829a742331caa65a23282e9d51d5cf7d25a6b4289704233976e1b2351a01839f163d45eb54b8a770182b7c868020
   languageName: node
   linkType: hard
 
@@ -713,9 +713,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@markuplint/parser-utils@npm:4.18.0":
-  version: 4.18.0
-  resolution: "@markuplint/parser-utils@npm:4.18.0"
+"@markuplint/parser-utils@npm:4.18.3":
+  version: 4.18.3
+  resolution: "@markuplint/parser-utils@npm:4.18.3"
   dependencies:
     "@markuplint/ml-ast": "npm:4.18.0"
     "@markuplint/ml-spec": "npm:4.18.0"
@@ -725,7 +725,7 @@ __metadata:
     espree: "npm:11.2.0"
     type-fest: "npm:5.6.0"
     uuid: "npm:13.0.0"
-  checksum: 10/e20078cc07da0ac0c4b70c21820315eaa8c07c8fa983f56cf6425316fb67b898dc7050f2a9cf5b771d47657bd753fdee3e6ff833ee50e52f099fe90d9ff23d2d
+  checksum: 10/96964012d2cb824b3a29530f4dca81bdb568207e0970c45c42074f71c2b499f84ab35141f733d7e5356a27042beb6114780bb51540544369c8112a9823091109
   languageName: node
   linkType: hard
 
@@ -4550,7 +4550,7 @@ __metadata:
     "@eslint/js": "npm:^10.0.1"
     "@hotwired/stimulus": "npm:^3.2.2"
     "@hotwired/turbo-rails": "npm:^8.0.23"
-    "@markuplint/erb-parser": "npm:^4.6.23"
+    "@markuplint/erb-parser": "npm:^4.18.3"
     "@popperjs/core": "npm:^2.11.8"
     "@stylistic/eslint-plugin": "npm:^5.10.0"
     "@types/bootstrap": "npm:^5.2.10"
