@@ -17,7 +17,7 @@ jobs:
     environment: fly-deploy
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
         with:
           persist-credentials: false
       - name: Detect ruby version
