@@ -576,18 +576,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@markuplint/html-parser@npm:4.18.3":
-  version: 4.18.3
-  resolution: "@markuplint/html-parser@npm:4.18.3"
-  dependencies:
-    "@markuplint/ml-ast": "npm:4.18.0"
-    "@markuplint/parser-utils": "npm:4.18.3"
-    parse5: "npm:8.0.1"
-    type-fest: "npm:5.6.0"
-  checksum: 10/bdff714a311f0c8a588729c36a80bf1f4f27829a742331caa65a23282e9d51d5cf7d25a6b4289704233976e1b2351a01839f163d45eb54b8a770182b7c868020
-  languageName: node
-  linkType: hard
-
 "@markuplint/html-spec@npm:4.18.0":
   version: 4.18.0
   resolution: "@markuplint/html-spec@npm:4.18.0"
@@ -660,22 +648,6 @@ __metadata:
     is-plain-object: "npm:5.0.0"
     type-fest: "npm:5.6.0"
   checksum: 10/ec41b6b9de91081cafc36e90c1ce7409a5a434f3528f6e0205174d275d92cb4905380ab1d0f181b021dfc3412b2fc32cefb13a9864847f895f9afd37c0164c9b
-  languageName: node
-  linkType: hard
-
-"@markuplint/parser-utils@npm:4.18.3":
-  version: 4.18.3
-  resolution: "@markuplint/parser-utils@npm:4.18.3"
-  dependencies:
-    "@markuplint/ml-ast": "npm:4.18.0"
-    "@markuplint/ml-spec": "npm:4.18.0"
-    "@markuplint/types": "npm:4.18.0"
-    "@types/uuid": "npm:11.0.0"
-    debug: "npm:4.4.3"
-    espree: "npm:11.2.0"
-    type-fest: "npm:5.6.0"
-    uuid: "npm:13.0.0"
-  checksum: 10/96964012d2cb824b3a29530f4dca81bdb568207e0970c45c42074f71c2b499f84ab35141f733d7e5356a27042beb6114780bb51540544369c8112a9823091109
   languageName: node
   linkType: hard
 
