@@ -96,6 +96,12 @@ class SakesController < ApplicationController
     @sakes = Sake.includes(:photos).ransack(query).result
   end
 
+  # GET /sakes/random
+  def random
+    @sake = Sake.where(bottle_level: %w[sealed opened]).order("RANDOM()").first
+    render(json: @sake)
+  end
+
   private
 
   # コピー機能の対象キーかどうか
