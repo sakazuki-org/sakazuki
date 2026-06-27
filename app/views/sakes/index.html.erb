@@ -5,7 +5,7 @@
     <div class="col">
       <h1 class="mb-0" data-testid="total_sake">
         <% searched_word = params.dig(:q, :all_text_cont) %>
-        <% if @query.searching? then %>
+        <% if searching? then %>
           <%# 検索中タイトル %>
           <% header = t(".header_with_search", search: searched_word) %>
           <% hit = @sakes.total_count.to_s %>
@@ -13,7 +13,7 @@
         <% else %>
           <%# 通常タイトル %>
           <% header = t(".header") %>
-          <% h1 = t(".h1_with_stock", stock: stock(@query.include_empty?)) %>
+          <% h1 = t(".h1_with_stock", stock: stock(include_empty?)) %>
         <% end %>
         <%= title(header, h1) %>
       </h1>
@@ -46,7 +46,7 @@
               <%= check_box_tag(
                     "include_empty",
                     "true",
-                    @query.include_empty?,
+                    include_empty?,
                     class: "form-check-input",
                     id: "all_bottle_level",
                     data: { testid: "check_empty_bottle" },
@@ -66,7 +66,7 @@
             <%= render(partial: "sake", collection: @sakes) %>
           </div>
         </div>
-        <% unless @query.default_index? %>
+        <% unless default_index? %>
           <div class="col" data-testid="pagination">
             <div class="d-none d-sm-block">
               <%= paginate(@sakes) %>

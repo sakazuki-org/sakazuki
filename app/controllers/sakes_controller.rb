@@ -1,16 +1,14 @@
-# rubocop:disable Metrics/ClassLength
 class SakesController < ApplicationController
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
   include SakesHelper
   include SakesPhotos
+  include SakesSearch
 
   # GET /sakes
   def index
-    @query = SakesQuery.new(word: params.dig(:q, :all_text_cont), include_empty: index_include_empty)
-    @search = @query.ransack
-    @sakes = @query.result(page: params[:page])
+    build_index_search
   end
 
   # GET /sakes/1
@@ -82,31 +80,6 @@ class SakesController < ApplicationController
   end
 
   private
-
-  # indexで空き瓶を含めるかの意図を解釈する
-  #
-  # 検索ボタン経由（commitあり）なら明示指定を無視してデフォルト推論に委ね、
-  # トグル操作（commitなし）なら送られてきた明示値（true/false）に従う。
-  # これにより「検索時は空き瓶を含む」と「検索中にトグルでOFFにした状態を維持」を両立する。
-  #
-  # @return [Boolean, nil] 空き瓶を含めるか。nilなら未指定（デフォルト推論に委ねる）
-  def index_include_empty
-    return if params[:commit].present?
-
-    boolean_param(params[:include_empty])
-  end
-
-  # パラメータの真偽値を解釈する
-  #
-  # 「未指定（nil）」と「明示的なfalse」を区別できるよう、nilはnilのまま返す。
-  #
-  # @param value [String, nil] パラメータ値
-  # @return [Boolean, nil] 真偽値。未指定ならnil
-  def boolean_param(value)
-    return if value.nil?
-
-    ActiveModel::Type::Boolean.new.cast(value)
-  end
 
   # コピー機能の対象キーかどうか
   #
@@ -182,4 +155,3 @@ class SakesController < ApplicationController
     flash[key] = { name: @sake.name, id: @sake.id } # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 end
-# rubocop:enable Metrics/ClassLength
