@@ -111,8 +111,12 @@ RSpec.describe "Sake Index Pagination" do
 
     context "with page 2" do
       before do
+        # ページネーションはPC用(.d-sm-block)とスマホ用の2つが描画され、表示はCSSで切り替わる。
+        # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
         within(:test_id, "pagination") do
-          click_link("2")
+          within(".d-sm-block") do
+            click_link("2")
+          end
         end
       end
 
