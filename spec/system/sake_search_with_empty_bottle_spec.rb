@@ -8,12 +8,13 @@ RSpec.describe "Search With Empty Bottle" do
 
   before do
     visit sakes_path
-    within("sake_search") do
+    within("#sake_search") do
       fill_in("text_search", with: "生道井")
       click_button("submit_search")
     end
   end
 
+  # 検索ボタン経由（commit）はサーバ側でデフォルトON判定するため、JSなしで成立する
   describe "search results" do
     it "includes matched sealed sake" do
       expect(page).to have_text(sealed.name)
@@ -33,9 +34,10 @@ RSpec.describe "Search With Empty Bottle" do
       expect(page).to have_checked_field(I18n.t("sakes.index.all_bottles"))
     end
 
-    context "when unchecked during search" do
+    # トグルOFFはonChangeでのフォーム送信に依るためJSが要る
+    context "when unchecked during search", :js do
       before do
-        within("sake_search") do
+        within("#sake_search") do
           uncheck(I18n.t("sakes.index.all_bottles"))
         end
       end
