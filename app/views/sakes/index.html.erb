@@ -40,9 +40,13 @@
           </div>
           <div class="col-auto">
             <div class="form-check form-switch">
-              <%# 検索ボタン経由（commit）ならサーバがデフォルトで空き瓶を含む。
-                # トグル操作時はこのtrue/falseの明示値に従う（§docs commit方式）。 %>
+              <%# check_box_tag はチェックされていないとパラメータが送信されない。
+                # hidden_field_tag で false を送信する。
+                # 同じ名前の値は、後が優先される。 %>
               <%= hidden_field_tag("include_empty", "false", id: nil) %>
+              <%# 空き瓶を含めるかは検索中かにも依存する。
+                # Rails の checkbox を使わず check_box_tag を使い、
+                # concerns/sakes_search.rb で空き瓶を含むか制御している %>
               <%= check_box_tag(
                     "include_empty",
                     "true",
