@@ -19,7 +19,7 @@
       </h1>
     </div>
     <div class="col">
-      <%= search_form_for(@search, html: { id: "sake_search", data: { turbo_frame: "sakes" } }) do |f| %>
+      <%= search_form_for(@search, html: { data: { turbo_frame: "sakes" } }) do |f| %>
         <div class="row mx-0 align-items-center">
           <div class="col ps-0 input-group">
             <%= f.label(:all_text_cont, "search word", class: "form-label visually-hidden") %>
