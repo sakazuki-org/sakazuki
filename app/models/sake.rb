@@ -126,12 +126,6 @@ class Sake < ApplicationRecord
     bottle_level == "opened"
   end
 
-  # どの瓶状態（bottle_level）にもマッチしない値
-  #
-  # 酒indexにおいて全ての酒を表示するために使われる。
-  BOTTOM_BOTTLE = -1
-  public_constant :BOTTOM_BOTTLE
-
   # 酒が空か
   # @return [Boolean] 酒が空ならtrue、未開封や開封済みならfalse
   def empty?

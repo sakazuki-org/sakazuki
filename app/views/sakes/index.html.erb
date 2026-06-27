@@ -5,22 +5,21 @@
     <div class="col">
       <h1 class="mb-0" data-testid="total_sake">
         <% searched_word = params.dig(:q, :all_text_cont) %>
-        <% if searched_word.present? then %>
+        <% if @query.searching? then %>
           <%# 検索中タイトル %>
           <% header = t(".header_with_search", search: searched_word) %>
-          <% hit = @sakes.length.to_s %>
+          <% hit = @sakes.total_count.to_s %>
           <% h1 = t(".h1_with_search", search: searched_word, hit:) %>
         <% else %>
           <%# 通常タイトル %>
           <% header = t(".header") %>
-          <% include_empty = include_empty?(params[:q]) %>
-          <% h1 = t(".h1_with_stock", stock: stock(include_empty)) %>
+          <% h1 = t(".h1_with_stock", stock: stock(@query.include_empty?)) %>
         <% end %>
         <%= title(header, h1) %>
       </h1>
     </div>
     <div class="col">
-      <%= search_form_for(@search, html: { data: { turbo_frame: "sakes", controller: "sake-search" } }) do |f| %>
+      <%= search_form_for(@search, html: { id: "sake_search", data: { turbo_frame: "sakes" } }) do |f| %>
         <div class="row mx-0 align-items-center">
           <div class="col ps-0 input-group">
             <%= f.label(:all_text_cont, "search word", class: "form-label visually-hidden") %>
@@ -28,36 +27,32 @@
                   :all_text_cont,
                   class: "form-control",
                   value: params.dig(:q, :all_text_cont),
-                  data: {
-                    testid: "text_search",
-                    sake_search_target: "word",
-                    action: "keydown.enter->sake-search#includeEmptyOnSearch",
-                  },
+                  data: { testid: "text_search" },
                 ) %>
             <%= tag.button(
                   tag.i(class: "bi-search"),
                   type: "submit",
+                  name: "commit",
+                  value: "search",
                   class: "btn btn-primary",
-                  data: {
-                    testid: "submit_search",
-                    action: "click->sake-search#includeEmptyOnSearch",
-                  },
+                  data: { testid: "submit_search" },
                 ) %>
           </div>
           <div class="col-auto">
             <div class="form-check form-switch">
-              <%= f.checkbox(
-                    :bottle_level_not_eq,
-                    {
-                      class: "form-check-input",
-                      id: "all_bottle_level",
-                      data: { testid: "check_empty_bottle", sake_search_target: "includeEmpty" },
-                      onChange: "this.form.submit()",
-                    },
-                    Sake::BOTTOM_BOTTLE,
-                    Sake.bottle_levels["empty"],
+              <%# 検索ボタン経由（commit）ならサーバがデフォルトで空き瓶を含む。
+                # トグル操作時はこのtrue/falseの明示値に従う（§docs commit方式）。 %>
+              <%= hidden_field_tag("include_empty", "false", id: nil) %>
+              <%= check_box_tag(
+                    "include_empty",
+                    "true",
+                    @query.include_empty?,
+                    class: "form-check-input",
+                    id: "all_bottle_level",
+                    data: { testid: "check_empty_bottle" },
+                    onchange: "this.form.submit()",
                   ) %>
-              <%= f.label(t(".all_bottles"), class: "form-check-label", for: "all_bottle_level") %>
+              <%= label_tag("all_bottle_level", t(".all_bottles"), class: "form-check-label") %>
             </div>
           </div>
           <div class="col-lg-4 d-none d-lg-block"></div>
@@ -71,7 +66,7 @@
             <%= render(partial: "sake", collection: @sakes) %>
           </div>
         </div>
-        <% if include_empty?(params[:q]) && searched_word.blank? %>
+        <% unless @query.default_index? %>
           <div class="col" data-testid="pagination">
             <div class="d-none d-sm-block">
               <%= paginate(@sakes) %>
