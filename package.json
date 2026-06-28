@@ -21,7 +21,7 @@
     "@markuplint/erb-parser": "^4.18.3",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/bootstrap": "^5.2.11",
-    "eslint": "^10.4.0",
+    "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsdoc": "^63.0.2",
     "globals": "^17.6.0",
