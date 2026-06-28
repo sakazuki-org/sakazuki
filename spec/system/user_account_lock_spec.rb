@@ -21,7 +21,7 @@ RSpec.describe "User account lock and unlock" do
   end
 
   it "shows an error flash message" do
-    expect(page).to have_content(I18n.t("devise.failure.locked"))
+    expect(page).to have_text(I18n.t("devise.failure.locked"))
   end
 
   context "when the user visits the unlock link from the email" do
