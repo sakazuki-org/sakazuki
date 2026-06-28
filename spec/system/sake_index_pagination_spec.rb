@@ -85,5 +85,46 @@ RSpec.describe "Sake Index Pagination" do
       end
     end
   end
+
+  # 検索時もページネーションする（ページネーションしないのはデフォルトindexのみ）
+  context "when searching" do
+    before do
+      within("#sake_search") do
+        fill_in("text_search", with: "未開封")
+        click_button("submit_search")
+      end
+    end
+
+    it "paginates" do
+      expect(page).to have_css('[data-testid="pagination"]')
+    end
+
+    it "includes 12th sake on page 1" do
+      regexp = /#{sealed12.name}/
+      expect(page.text).to match(regexp)
+    end
+
+    it "does not include 13th sake on page 1" do
+      regexp = /#{sealed13.name}/
+      expect(page.text).not_to match(regexp)
+    end
+
+    context "with page 2" do
+      before do
+        # ページネーションはPC用(.d-sm-block)とスマホ用の2つが描画され、表示はCSSで切り替わる。
+        # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
+        within(:test_id, "pagination") do
+          within(".d-sm-block") do
+            click_link("2")
+          end
+        end
+      end
+
+      it "includes 13th sake" do
+        regexp = /#{sealed13.name}/
+        expect(page.text).to match(regexp)
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleMemoizedHelpers
