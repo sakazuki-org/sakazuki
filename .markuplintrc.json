@@ -3,10 +3,7 @@
   "parser": {
     "\\.erb$": "@markuplint/erb-parser"
   },
-  "excludeFiles": [
-    "app/views/layouts/mailer.html.erb",
-    "app/views/sakes/_kura_datalist.html.erb"
-  ],
+  "excludeFiles": ["app/views/layouts/mailer.html.erb"],
   "rules": {
     "required-h1": false
   },
