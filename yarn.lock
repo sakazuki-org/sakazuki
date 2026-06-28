@@ -4350,7 +4350,7 @@ __metadata:
     stylelint: "npm:^17.13.0"
     stylelint-config-standard: "npm:^40.0.0"
     stylelint-config-standard-scss: "npm:^17.0.0"
-    ts-deepmerge: "npm:^7.0.3"
+    ts-deepmerge: "npm:^8.0.0"
     typescript: "npm:^6.0.3"
     typescript-eslint: "npm:^8.60.0"
   languageName: unknown
@@ -4846,10 +4846,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-deepmerge@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "ts-deepmerge@npm:7.0.3"
-  checksum: 10/fbe1d5d7b2561430c0faa17f76e84e9b025ab1ea01812b5bbab9d5aebdad1eca8263908d9359a17348de66eb27fd42b9861f92bd1eba70906b1ae647729c3680
+"ts-deepmerge@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "ts-deepmerge@npm:8.0.0"
+  checksum: 10/27f342a8f43ddba97bd9ea84733cd6e1019ae5a67a07ce1d9720dec3068a781f47d8c34599e66301548cd398cfb5db4a0d275625c279a1eb81e5a70ed7e7a112
   languageName: node
   linkType: hard
 

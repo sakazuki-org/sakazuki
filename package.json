@@ -13,7 +13,7 @@
     "rater-js": "^1.0.1",
     "sass": "^1.100.0",
     "simplelightbox": "^2.14.3",
-    "ts-deepmerge": "^7.0.3"
+    "ts-deepmerge": "^8.0.0"
   },
   "version": "0.1.0",
   "devDependencies": {
