@@ -114,7 +114,7 @@ class SakesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_sake
-    @sake = Sake.includes(:photos).find(params[:id])
+    @sake = Sake.includes(:photos).find(params.expect(:id))
   end
 
   # Only allow a list of trusted parameters through.
