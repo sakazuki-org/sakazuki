@@ -1,31 +1,14 @@
-# rubocop:disable Metrics/ClassLength
 class SakesController < ApplicationController
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
   include SakesHelper
-  include SakesSearch
   include SakesPhotos
-
-  # Viewで使える用に宣言する
-  helper_method :include_empty?
+  include SakesSearch
 
   # GET /sakes
   def index
-    # コピーとnil防止
-    query = initialize_query(params[:q])
-    # デフォルトは空き瓶なし
-    to_default_bottle!(query) unless include_empty?(query)
-    # 空白区切りでandサーチ
-    to_multi_search!(query) if query[:all_text_cont]
-
-    # Ransack search and sort
-    @search = Sake.ransack(query)
-    @search.sorts = ["bottle_level", "id desc"]
-    @sakes = @search.result.includes(:photos)
-
-    # Kaminari pager
-    @sakes = @sakes.page(params[:page]) if include_empty?(query)
+    build_index_search
   end
 
   # GET /sakes/1
@@ -131,7 +114,7 @@ class SakesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_sake
-    @sake = Sake.includes(:photos).find(params[:id])
+    @sake = Sake.includes(:photos).find(params.expect(:id))
   end
 
   # Only allow a list of trusted parameters through.
@@ -172,4 +155,3 @@ class SakesController < ApplicationController
     flash[key] = { name: @sake.name, id: @sake.id } # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 end
-# rubocop:enable Metrics/ClassLength
