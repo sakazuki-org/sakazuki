@@ -185,14 +185,3 @@ RSpec/AlignLeftLetBrace:
 # let式の右括弧のインデントを揃えるのを強制しない
 RSpec/AlignRightLetBrace:
   Enabled: false
-
-### rubocop-rspec
-
-## Disabled
-
-# アクセシビリティのために明示的にclick_link or click_buttonを使う
-# Capybara/AmbiguousClick Copとコンフリクトする
-# Capybaraの次回メージャーアップデート3.0で削除予定のCop、とのこと
-# https://docs.rubocop.org/rubocop-capybara/cops_capybara.html#capybaraclicklinkorbuttonstyle
-Capybara/ClickLinkOrButtonStyle:
-  Enabled: false
