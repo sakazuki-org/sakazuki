@@ -2054,6 +2054,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fsevents@npm:2.3.2":
+  version: 2.3.2
+  resolution: "fsevents@npm:2.3.2"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10/6b5b6f5692372446ff81cf9501c76e3e0459a4852b3b5f1fc72c103198c125a6b8c72f5f166bdd76ffb2fca261e7f6ee5565daf80dca6e571e55bcc589cc1256
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>":
+  version: 2.3.2
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#optional!builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  dependencies:
+    node-gyp: "npm:latest"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
 "get-east-asian-width@npm:^1.5.0":
   version: 1.6.0
   resolution: "get-east-asian-width@npm:1.6.0"
@@ -3354,6 +3373,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.61.1":
+  version: 1.61.1
+  resolution: "playwright-core@npm:1.61.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 10/b0e7b1d4de7ca6c1a57eb88f1709609a8b7637092f149e703d84d6c8e01835992ec5ca26b86f1a32fb5f5bc1aad042c3ae27311e131b3dda8a27824a543eb3c7
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.60.0":
+  version: 1.61.1
+  resolution: "playwright@npm:1.61.1"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.61.1"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 10/0cd1a8a7e106202e785450763973bf326d4aa112ed195bbd78b17af43dcfd12e29bc8204ae61c88f748dd0f2bdf69a7827bc3bbf8c1ec4c71b8e35586e05f13c
+  languageName: node
+  linkType: hard
+
 "postcss-media-query-parser@npm:^0.2.3":
   version: 0.2.3
   resolution: "postcss-media-query-parser@npm:0.2.3"
@@ -3574,6 +3617,7 @@ __metadata:
     just-zip-it: "npm:^3.2.0"
     markdownlint-cli: "npm:^0.49.0"
     markuplint: "npm:^4.18.3"
+    playwright: "npm:^1.60.0"
     prettier: "npm:^3.9.1"
     rater-js: "npm:^1.0.1"
     sass: "npm:^1.101.0"

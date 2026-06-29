@@ -1,25 +1,15 @@
+require "capybara-playwright-driver"
 require "capybara/rails"
 require "capybara/rspec"
-require "selenium-webdriver"
+
+Capybara.register_driver(:playwright) do |app|
+  Capybara::Playwright::Driver.new(app, browser_type: :firefox, headless: true)
+end
 
 Capybara.configure do |config|
   # driver設定: https://www.rubydoc.info/gems/capybara/Capybara#configure-class_method
   config.default_driver = :rack_test
-  if ENV["REMOTE_DRIVER_HOST"]
-    config.app_host = ENV.fetch("CAPYBARA_APP_HOST", nil)
-    config.server_host = ENV.fetch("CAPYBARA_SERVER_HOST", nil)
-    Capybara.register_driver(:remote_firefox_headless) do |app|
-      host = ENV["REMOTE_DRIVER_HOST"]
-      port = ENV.fetch("REMOTE_DRIVER_PORT", 4444)
-      url = "http://#{host}:#{port}/wd/hub"
-      options = Selenium::WebDriver::Firefox::Options.new
-      options.add_argument("-headless")
-      Capybara::Selenium::Driver.new(app, browser: :remote, options:, url:)
-    end
-    config.javascript_driver = :remote_firefox_headless
-  else
-    config.javascript_driver = :selenium_headless
-  end
+  config.javascript_driver = :playwright
 
   # "data-testid"をCapybaraのclick_linkなどで使えるように、Optional attributeに登録する
   config.test_id = "data-testid"
@@ -47,14 +37,9 @@ Capybara.add_selector(:test_id) do
   css { |val| %([data-testid="#{val}"]) }
 end
 
-# CapybaraのSelenium呼び出しでの警告を抑える
-# 以下Issueで報告されているが、カピバラのバージョンタグのアップデートが1年以上されていない。
-# https://github.com/teamcapybara/capybara/issues/2779
-Selenium::WebDriver.logger.ignore(:clear_local_storage, :clear_session_storage)
-
 # ページ遷移を待つ
 #
-# Capybaraでselenium driverなどを使うと、テスト処理にページ遷移が追いつかずテストが落ちることがある。
+# JS実行driverを使うと、テスト処理にページ遷移が追いつかずテストが落ちることがある。
 # このメソッドでページ遷移を待つことができる。
 # 対象ページにはdata-testidに自身のパスを持つことを想定している。
 #
