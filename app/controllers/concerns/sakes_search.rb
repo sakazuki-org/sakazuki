@@ -25,10 +25,9 @@ module SakesSearch
   def build_index_search
     @search = Sake.ransack(ransack_query).tap { |search| search.sorts = SORTS }
     listed = listed_sakes
-    @sakes = searching? ? listed.page(params[:page]) : listed
-    # 集計は@sakesではなくページネーション前のlistedで行う。
-    # @sakesはLIMITがかかり、ページに載っている分しか数えられない
-    @count = listed.count
+    paged = searching? ? listed.page(params[:page]) : listed
+    @sakes = paged.includes(:photos).load
+    @count = sake_count
     @amount = alcohol_amount(listed)
   end
 
@@ -36,10 +35,23 @@ module SakesSearch
   #
   # 検索していないときは在庫（空き瓶以外）に絞る。検索時は空き瓶も含めた全酒が対象。
   #
+  # 写真の includes はここでは付けない。
+  # 付けると写真を複数持つ酒が枚数の分だけ重複して集計されてしまう。
+  #
   # @return [ActiveRecord::Relation] ページネーション前の酒
   def listed_sakes
-    scope = @search.result.includes(:photos)
+    scope = @search.result
     searching? ? scope : scope.where.not(bottle_level: :empty)
+  end
+
+  # 見出しに出す酒の本数
+  #
+  # 検索時は @sakes に LIMIT がかかるため、Kaminari の total_count でヒット本数を数える。
+  # 検索していないときは @sakes が全件ロード済みなので配列長を素直に使う。
+  #
+  # @return [Integer] 酒の本数
+  def sake_count
+    searching? ? @sakes.total_count : @sakes.size
   end
 
   # 見出しに出す酒量

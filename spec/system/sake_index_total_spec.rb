@@ -34,4 +34,19 @@ RSpec.describe "Sake Index Total Spec" do
       end
     end
   end
+
+  describe "total amount of sake having multiple photos" do
+    before do
+      sake_with_photos(photo_count: 2, sake_options: { bottle_level: "sealed", size: 720 })
+      visit sakes_path
+      # 空検索は全酒の一覧になる
+      fill_in("text_search", with: "")
+      click_button("submit_search")
+    end
+
+    it "counts the sake once" do
+      # 720 + 1800 + 300 + 720 = 3540 ml = 1升9合。写真の数だけ酒が重複して数えられてはいけない
+      expect(find(:test_id, "total_sake")).to have_text(to_shakkan(3540))
+    end
+  end
 end
