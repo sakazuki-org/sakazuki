@@ -35,15 +35,6 @@
                   data: { testid: "submit_search" },
                 ) %>
           </div>
-          <div class="col-auto">
-            <%# 空検索は全酒の一覧になる。検索語なしのRansackクエリが全件を返す %>
-            <%= link_to(
-                  t(".all_sakes"),
-                  sakes_path(q: { all_text_cont: "" }),
-                  class: "btn btn-outline-secondary",
-                  data: { turbo_frame: "sakes", testid: "all_sakes" },
-                ) %>
-          </div>
           <div class="col-lg-4 d-none d-lg-block"></div>
         </div>
       <% end %>

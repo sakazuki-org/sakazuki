@@ -24,9 +24,11 @@ RSpec.describe "With Empty Bottle" do
     end
   end
 
-  describe "all sakes link" do
+  describe "all sakes by empty search" do
     before do
-      find(:test_id, "all_sakes").click
+      # 空検索は全酒の一覧になる
+      fill_in("text_search", with: "")
+      click_button("submit_search")
     end
 
     it "includes sealed sake" do

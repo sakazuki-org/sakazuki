@@ -5,7 +5,6 @@ ja:
       header_with_search: "検索: %{search}"
       header_history: 日本酒履歴
       count: "%{hit}本"
-      all_sakes: 全ての酒
     sake:
       edit: 編集
       tokutei_meisho_none: :sakes.show_abstract.tokutei_meisho_none
