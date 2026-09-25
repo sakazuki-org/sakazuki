@@ -3,23 +3,19 @@
 <%= turbo_frame_tag("sakes", target: "_top", data: { turbo_action: :advance }) do %>
   <div class="row row-cols-1 g-3">
     <div class="col">
-      <h1 class="mb-0" data-testid="total_sake">
-        <% amount = to_shakkan(@amount) %>
-        <% if !searching? then %>
-          <%# 在庫一覧タイトル %>
-          <% header = t(".header") %>
-          <% h1 = t(".h1_with_stock", stock: amount) %>
-        <% elsif search_word.present? then %>
-          <%# 検索中タイトル %>
-          <% header = t(".header_with_search", search: search_word) %>
-          <% h1 = t(".h1_with_search", search: search_word, hit: @sakes.total_count.to_s, amount:) %>
-        <% else %>
-          <%# 全酒タイトル。空検索は今までに買った酒すべての一覧になる %>
-          <% header = t(".header") %>
-          <% h1 = t(".h1_with_all", hit: @sakes.total_count.to_s, amount:) %>
-        <% end %>
-        <%= title(header, h1) %>
-      </h1>
+      <% if !searching? then %>
+        <% header = t(".header") %>
+      <% elsif search_word.present? then %>
+        <% header = t(".header_with_search", search: search_word) %>
+      <% else %>
+        <%# 空検索は今までに買った酒すべての一覧になる %>
+        <% header = t(".header_history") %>
+      <% end %>
+      <div class="d-flex align-items-baseline gap-3">
+        <%# h1とブラウザのタイトルを同じ文言にする %>
+        <h1 class="mb-0"><%= title(header) %></h1>
+        <div class="fs-3" data-testid="total_sake"><%= t(".count", hit: @count) %> - <%= to_shakkan(@amount) %></div>
+      </div>
     </div>
     <div class="col">
       <%= search_form_for(@search, html: { data: { turbo_frame: "sakes" } }) do |f| %>

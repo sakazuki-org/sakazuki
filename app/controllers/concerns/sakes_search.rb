@@ -16,7 +16,7 @@ module SakesSearch
 
   private
 
-  # index用にRansackオブジェクトと酒一覧・酒量を組み立て、@search/@sakes/@amountへ設定する
+  # index用にRansackオブジェクトと酒一覧・本数・酒量を組み立て、@search/@sakes/@count/@amountへ設定する
   #
   # 検索していないときは在庫（空き瓶以外）を全件1ページに表示する。
   # 検索時は空き瓶を含む全酒が対象で、ページネーションする。
@@ -24,20 +24,32 @@ module SakesSearch
   # @return [void]
   def build_index_search
     @search = Sake.ransack(ransack_query).tap { |search| search.sorts = SORTS }
+    listed = listed_sakes
+    @sakes = searching? ? listed.page(params[:page]) : listed
+    # 集計は@sakesではなくページネーション前のlistedで行う。
+    # @sakesはLIMITがかかり、ページに載っている分しか数えられない
+    @count = listed.count
+    @amount = alcohol_amount(listed)
+  end
+
+  # 一覧に出す酒のスコープ
+  #
+  # 検索していないときは在庫（空き瓶以外）に絞る。検索時は空き瓶も含めた全酒が対象。
+  #
+  # @return [ActiveRecord::Relation] ページネーション前の酒
+  def listed_sakes
     scope = @search.result.includes(:photos)
-    @sakes = searching? ? scope.page(params[:page]) : scope.where.not(bottle_level: :empty)
-    @amount = alcohol_amount
+    searching? ? scope : scope.where.not(bottle_level: :empty)
   end
 
   # 見出しに出す酒量
   #
   # 検索時はヒットした酒の総量、検索していないときは在庫量を返す。
-  # 集計には@sakesではなくページネーション前のスコープを使う。@sakesはLIMITがかかり、
-  # ページに載っている分しか数えられない。
   #
+  # @param listed [ActiveRecord::Relation] 一覧に出す酒
   # @return [Integer] 酒量[ml]
-  def alcohol_amount
-    searching? ? @search.result.sum(:size) : Sake.alcohol_stock
+  def alcohol_amount(listed)
+    searching? ? listed.sum(:size) : Sake.alcohol_stock
   end
 
   # @return [String, nil] 検索語（all_text_cont）。空文字列はnilとして扱う
