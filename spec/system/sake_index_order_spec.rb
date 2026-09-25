@@ -13,7 +13,7 @@ RSpec.describe "Sake Index Order" do
       visit sakes_path
     end
 
-    context "without checked 'show empty bottles'" do
+    context "without empty bottles" do
       it "shows opened sakes before sealed sakes" do
         regexp = /#{sealed_new.name}.*#{sealed_old.name}.*#{opened_new.name}.*#{opened_old.name}/m
         expect(page).to have_text(regexp)
@@ -24,9 +24,9 @@ RSpec.describe "Sake Index Order" do
       end
     end
 
-    context "with checked 'show empty bottles'", :js do
+    context "with all sakes" do
       before do
-        find(:test_id, "check_empty_bottle").click # show empty bottles
+        find(:test_id, "all_sakes").click
       end
 
       it "shows sakes sorted by id" do

@@ -44,8 +44,8 @@ RSpec.describe "sakes/index", type: :system do
         click_button("submit_search")
       end
 
-      it "contains search word and hit count" do
-        h1 = I18n.t("sakes.index.h1_with_search", search:, hit: "0")
+      it "contains search word, hit count and amount" do
+        h1 = I18n.t("sakes.index.h1_with_search", search:, hit: "0", amount: "0合")
         expect(page).to have_text(h1)
       end
     end
@@ -56,8 +56,8 @@ RSpec.describe "sakes/index", type: :system do
         click_button("submit_search")
       end
 
-      it "contains total amount of sake" do
-        h1 = I18n.t("sakes.index.h1_with_stock", stock: "4合")
+      it "contains count and amount of all sakes" do
+        h1 = I18n.t("sakes.index.h1_with_all", hit: "1", amount: "4合")
         expect(page).to have_text(h1)
       end
     end

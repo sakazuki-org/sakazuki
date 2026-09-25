@@ -1,7 +1,7 @@
 # 酒一覧(index)の検索条件を組み立てるconcern
 #
-# ユーザーの意図（検索語・空き瓶を含めるか）をparamsから解釈し、Ransackクエリと
-# 表示用の一覧（@search/@sakes）を組み立てる。検索仕様の関心をコントローラから分離する。
+# ユーザーの検索語をparamsから解釈し、Ransackクエリと表示用の一覧（@search/@sakes/@amount）を
+# 組み立てる。検索仕様の関心をコントローラから分離する。
 module SakesSearch
   extend ActiveSupport::Concern
 
@@ -11,22 +11,33 @@ module SakesSearch
 
   included do
     # Viewでも検索状態を参照できるようにする
-    helper_method :searching?, :include_empty?, :default_index?
+    helper_method :searching?, :search_word
   end
 
   private
 
-  # index用にRansackオブジェクトと酒一覧を組み立て、@search/@sakesへ設定する
+  # index用にRansackオブジェクトと酒一覧・酒量を組み立て、@search/@sakes/@amountへ設定する
   #
-  # デフォルトindex（検索語なし & 空き瓶なし）のみ在庫を全件1ページに表示し、
-  # それ以外（検索時・空き瓶を含む一覧）はページネーションする。
+  # 検索していないときは在庫（空き瓶以外）を全件1ページに表示する。
+  # 検索時は空き瓶を含む全酒が対象で、ページネーションする。
   #
   # @return [void]
   def build_index_search
     @search = Sake.ransack(ransack_query).tap { |search| search.sorts = SORTS }
     scope = @search.result.includes(:photos)
-    scope = scope.where.not(bottle_level: :empty) unless include_empty?
-    @sakes = default_index? ? scope : scope.page(params[:page])
+    @sakes = searching? ? scope.page(params[:page]) : scope.where.not(bottle_level: :empty)
+    @amount = alcohol_amount
+  end
+
+  # 見出しに出す酒量
+  #
+  # 検索時はヒットした酒の総量、検索していないときは在庫量を返す。
+  # 集計には@sakesではなくページネーション前のスコープを使う。@sakesはLIMITがかかり、
+  # ページに載っている分しか数えられない。
+  #
+  # @return [Integer] 酒量[ml]
+  def alcohol_amount
+    searching? ? @search.result.sum(:size) : Sake.alcohol_stock
   end
 
   # @return [String, nil] 検索語（all_text_cont）。空文字列はnilとして扱う
@@ -34,55 +45,13 @@ module SakesSearch
     params.dig(:q, :all_text_cont).presence
   end
 
+  # 検索フォームから来たか
+  #
+  # 検索語が空でも全酒の一覧として扱う。今までに買った酒を振り返るために使う。
+  #
   # @return [Boolean] 検索中ならtrue
   def searching?
-    search_word.present?
-  end
-
-  # 空き瓶を含めて表示するかどうか
-  #
-  # トグルスイッチによる空き瓶を含む・含まないの明示指定（intent）があればそれを尊重する。
-  # 未指定なら「検索中かどうか」でデフォルトを決める。
-  # 検索時は空き瓶を含む、通常のindexは含まない。
-  #
-  # @return [Boolean] 空き瓶を含めるならtrue
-  def include_empty?
-    return @include_empty if defined?(@include_empty)
-
-    intent = include_empty_intent
-    @include_empty = intent.nil? ? searching? : intent
-  end
-
-  # トグルスイッチによる空き瓶を含めるか指示があったか
-  #
-  # ユーザーがトグルスイッチで明示的に空き瓶を含める・含めないを指定した場合は true/false を返す。
-  # 検索ボタン経由では nil を返す。
-  #
-  # @return [true, false, nil]
-  #   - true: 空き瓶を含む
-  #   - false: 空き瓶を含まない
-  #   - nil: 未指定
-  def include_empty_intent
-    return if params[:commit].present?
-
-    boolean_param(params[:include_empty])
-  end
-
-  # パラメータの真偽値を解釈する
-  #
-  # 「未指定（nil）」と「明示的なfalse」を区別できるよう、nilはnilのまま返す。
-  #
-  # @param value [String, nil] パラメータ値
-  # @return [Boolean, nil] 真偽値。未指定ならnil
-  def boolean_param(value)
-    return if value.nil?
-
-    ActiveModel::Type::Boolean.new.cast(value)
-  end
-
-  # @return [Boolean] デフォルトのindex表示（検索語なし & 空き瓶なし）ならtrue
-  def default_index?
-    !searching? && !include_empty?
+    params[:q].present?
   end
 
   # Ransackへ渡すクエリを組み立てる

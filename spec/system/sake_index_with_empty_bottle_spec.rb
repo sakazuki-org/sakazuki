@@ -10,49 +10,35 @@ RSpec.describe "With Empty Bottle" do
     visit sakes_path
   end
 
-  describe "switch to include empty bottle" do
-    context "when access sake index" do
-      it "is false" do
-        label = I18n.t("sakes.index.all_bottles")
-        checkbox = find(:test_id, "check_empty_bottle")
-        expect(checkbox).to have_no_checked_field(label)
-      end
-    end
-  end
-
   describe "listed sakes" do
-    context "without empty bottles" do
-      it "includes sealed sake" do
-        expect(page).to have_text(sealed.name)
-      end
+    it "includes sealed sake" do
+      expect(page).to have_text(sealed.name)
+    end
 
-      it "includes opened sake" do
-        expect(page).to have_text(opened.name)
-      end
+    it "includes opened sake" do
+      expect(page).to have_text(opened.name)
+    end
 
-      it "does not include empty sake" do
-        expect(page).to have_no_text(empty.name)
-      end
+    it "does not include empty sake" do
+      expect(page).to have_no_text(empty.name)
     end
   end
 
-  context "with empty bottles", :js do
+  describe "all sakes link" do
     before do
-      find(:test_id, "check_empty_bottle").click
+      find(:test_id, "all_sakes").click
     end
 
-    context "without empty bottles" do
-      it "includes sealed sake" do
-        expect(page).to have_text(sealed.name)
-      end
+    it "includes sealed sake" do
+      expect(page).to have_text(sealed.name)
+    end
 
-      it "includes opened sake" do
-        expect(page).to have_text(opened.name)
-      end
+    it "includes opened sake" do
+      expect(page).to have_text(opened.name)
+    end
 
-      it "includes empty sake" do
-        expect(page).to have_text(empty.name)
-      end
+    it "includes empty sake" do
+      expect(page).to have_text(empty.name)
     end
   end
 end

@@ -175,15 +175,6 @@ module SakesHelper
     value.blank? || value == "unknown" ? "lowlight-value" : "highlight-value"
   end
 
-  # 酒index用に酒の総量を尺貫法を使って返す
-  #
-  # @param include_empty [Boolean] trueなら空き瓶込みでカウントする
-  # @return [String] 尺貫法による酒の在庫量
-  def stock(include_empty)
-    ml = Sake.alcohol_stock(include_empty:)
-    to_shakkan(ml)
-  end
-
   # 酒の最終更新日を現在日時との差に応じて適切な日付フォーマットで返す
   #
   # Railsのデフォルトi18nキーによる標準形式で表示する。

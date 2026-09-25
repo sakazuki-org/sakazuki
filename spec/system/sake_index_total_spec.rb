@@ -15,15 +15,15 @@ RSpec.describe "Sake Index Total Spec" do
     end
 
     context "without empty bottle" do
-      it "shows 9合 as total amount of sake" do
+      it "shows 9合 as stock of sake" do
         # 720 + 1800/2 = 1620 ml = 9合
         expect(find(:test_id, "total_sake")).to have_text(to_shakkan(1620))
       end
     end
 
-    context "with empty bottle", :js do
+    context "with all sakes" do
       before do
-        find(:test_id, "check_empty_bottle").click
+        find(:test_id, "all_sakes").click
       end
 
       it "shows 1升5合 as total amount of sake" do

@@ -135,14 +135,9 @@ class Sake < ApplicationRecord
   # 残っている酒の総量をmlで返す
   #
   # 開封済みのお酒は瓶の半量が残っているとして概算する。
-  # @param include_empty [Boolean] trueなら飲んだ分も含めた総量を計算する
   # @return [Integer] 酒の総量[ml]
-  def self.alcohol_stock(include_empty: false)
-    if include_empty
-      sum(:size)
-    else
-      where(bottle_level: "sealed").sum(:size) + (where(bottle_level: "opened").sum(:size) / 2)
-    end
+  def self.alcohol_stock
+    where(bottle_level: "sealed").sum(:size) + (where(bottle_level: "opened").sum(:size) / 2)
   end
 
   # 酒が新着ならtrue、さもなくばfalse
