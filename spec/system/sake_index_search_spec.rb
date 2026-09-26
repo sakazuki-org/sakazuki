@@ -46,7 +46,8 @@ RSpec.describe "Searching" do
 
   describe "searched sakes" do
     before do
-      search_for("ほしいずみ")
+      fill_in("text_search", with: "ほしいずみ")
+      click_button("submit_search")
     end
 
     it "does not include sealed sake" do
