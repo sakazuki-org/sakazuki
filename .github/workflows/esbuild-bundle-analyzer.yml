@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
           # This is required to fetch the commit SHA of the forked PR
           ref: "${{ github.event.pull_request.merge_commit_sha }}"
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: "22"
           cache: "yarn"
