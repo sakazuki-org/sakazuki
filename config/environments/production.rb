@@ -1,6 +1,6 @@
 require "active_support/core_ext/integer/time"
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -109,4 +109,3 @@ Rails.application.configure do
   config.x.fast_password_hashing = false
   config.x.dev_tools_enabled = false
 end
-# rubocop:enable Metrics/BlockLength

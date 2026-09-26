@@ -47,7 +47,7 @@ class SakesController < ApplicationController
   end
 
   # PATCH/PUT /sakes/1
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def update
     if @sake.update(sake_params.except(:photos))
 
@@ -64,7 +64,6 @@ class SakesController < ApplicationController
       render(:edit, status: :unprocessable_content)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   # DELETE /sakes/1
   def destroy
