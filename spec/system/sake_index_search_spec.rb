@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Searching" do
   # 変数内を呼び出す前にページにアクセスするため、let!で確実に生成する
   let!(:sealed) { create(:sake, name: "生道井 本醸造", bottle_level: "sealed") }
-  let!(:opened) { create(:sake, name: "ほしいずみ 純米", bottle_level: "empty") }
+  let!(:opened) { create(:sake, name: "ほしいずみ 純米", bottle_level: "opened") }
   let!(:empty) { create(:sake, name: "ほしいずみ 大吟醸", bottle_level: "empty") }
 
   before do
