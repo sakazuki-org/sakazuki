@@ -2,6 +2,5 @@
 <%# パーシャルビューの引数はkaminariに管理される
   # マジックコメントによる動的チェック、ERB LintのStrictLocals、の両方を行わない %>
 <li class="page-item <%= "disabled" if current_page.last? %>">
-  <%# rel="next"はページ番号のリンクにも付くため、次へボタンを指すtestidを持たせる %>
   <%= link_to(tag.i(class: "bi-chevron-right"), url, class: "page-link", rel: "next", data: { turbo_frame: "_self", testid: "pagination_next" }) %>
 </li>
