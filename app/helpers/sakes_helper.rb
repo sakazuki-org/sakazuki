@@ -106,14 +106,14 @@ module SakesHelper
   # @param amount [Integer] 酒の量[ml]
   # @return [String] 尺貫法の体積で表した酒量の文字列
   def to_shakkan(amount)
-    if amount < 180
-      "0合"
-    else
-      # rubocop:disable Style/HashExcept
-      (amount / 180).to_s.reverse.each_char.zip(UNITS).filter { |value, _unit| value != "0" }
-                                                      .reverse.join
-      # rubocop:enable Style/HashExcept
-    end
+    return "0合" if amount < 180
+
+    # rubocop:disable-next Style/HashExcept
+    (amount / 180)
+      .to_s.reverse
+      .each_char.zip(UNITS)
+      .filter { |value, _unit| value != "0" }
+      .reverse.join
   end
 
   # 酒蔵の名前から会社の種類を削除し短くする
