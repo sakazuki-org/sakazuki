@@ -41,7 +41,7 @@ RSpec.describe "Sake Index Total Spec" do
         click_button("submit_search")
       end
 
-      it "shows 7合2勺 as total amount of sake" do
+      it "shows 1升1合 as total amount of sake" do
         # 1800 + 300 = 2100 ml ≒ 1升1合 (切り捨て)
         expect(find(:test_id, "total_sake")).to have_text("1升1合")
       end
