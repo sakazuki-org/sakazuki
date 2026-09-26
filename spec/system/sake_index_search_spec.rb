@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe "With Empty Bottle" do
+RSpec.describe "Searching" do
   # 変数内を呼び出す前にページにアクセスするため、let!で確実に生成する
-  let!(:sealed) { create(:sake, name: "未開封のお酒", bottle_level: "sealed") }
-  let!(:opened) { create(:sake, name: "開封済みのお酒", bottle_level: "opened") }
-  let!(:empty) { create(:sake, name: "空のお酒", bottle_level: "empty") }
+  let!(:sealed) { create(:sake, name: "生道井 本醸造", bottle_level: "sealed") }
+  let!(:opened) { create(:sake, name: "ほしいずみ 純米", bottle_level: "empty") }
+  let!(:empty) { create(:sake, name: "ほしいずみ 大吟醸", bottle_level: "empty") }
 
   before do
     visit sakes_path
@@ -24,7 +24,7 @@ RSpec.describe "With Empty Bottle" do
     end
   end
 
-  describe "all sakes by empty search" do
+  describe "all sakes" do
     before do
       # 空検索は全酒の一覧になる
       fill_in("text_search", with: "")
@@ -33,6 +33,24 @@ RSpec.describe "With Empty Bottle" do
 
     it "includes sealed sake" do
       expect(page).to have_text(sealed.name)
+    end
+
+    it "includes opened sake" do
+      expect(page).to have_text(opened.name)
+    end
+
+    it "includes empty sake" do
+      expect(page).to have_text(empty.name)
+    end
+  end
+
+  describe "searched sakes" do
+    before do
+      search_for("ほしいずみ")
+    end
+
+    it "does not include sealed sake" do
+      expect(page).to have_no_text(sealed.name)
     end
 
     it "includes opened sake" do
