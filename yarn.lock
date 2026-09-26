@@ -111,16 +111,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@es-joy/jsdoccomment@npm:~0.87.0":
-  version: 0.87.0
-  resolution: "@es-joy/jsdoccomment@npm:0.87.0"
+"@es-joy/jsdoccomment@npm:~0.88.0":
+  version: 0.88.0
+  resolution: "@es-joy/jsdoccomment@npm:0.88.0"
   dependencies:
     "@types/estree": "npm:^1.0.9"
     "@typescript-eslint/types": "npm:^8.59.4"
     comment-parser: "npm:1.4.7"
     esquery: "npm:^1.7.0"
     jsdoc-type-pratt-parser: "npm:~7.2.0"
-  checksum: 10/d6fef97da05ed9a52539cc38be4aad4a5f77381c1375de0a204179b043639f9d8cc65a4190ecb888b46117e123b22c2bfe3a13e08efe403bc526b696aa13cb88
+  checksum: 10/d74a765d90f3782f8da3ace6c15094ebc627a167ef30eece6513436f07f08c7eacfb0cad3f41923ba4548e4e4ca1f7788616796c16362fafd7c3fa4e03b5e1d8
   languageName: node
   linkType: hard
 
@@ -1734,11 +1734,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^63.0.10":
-  version: 63.0.10
-  resolution: "eslint-plugin-jsdoc@npm:63.0.10"
+"eslint-plugin-jsdoc@npm:^63.0.13":
+  version: 63.0.13
+  resolution: "eslint-plugin-jsdoc@npm:63.0.13"
   dependencies:
-    "@es-joy/jsdoccomment": "npm:~0.87.0"
+    "@es-joy/jsdoccomment": "npm:~0.88.0"
     "@es-joy/resolve.exports": "npm:1.2.0"
     are-docs-informative: "npm:^0.0.2"
     comment-parser: "npm:1.4.7"
@@ -1749,12 +1749,12 @@ __metadata:
     html-entities: "npm:^2.6.0"
     object-deep-merge: "npm:^2.0.1"
     parse-imports-exports: "npm:^0.2.4"
-    semver: "npm:^7.8.2"
+    semver: "npm:^7.8.5"
     spdx-expression-parse: "npm:^4.0.0"
     to-valid-identifier: "npm:^1.0.0"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
-  checksum: 10/17f8e4dc2a629c38c9f84aa3d286a6c52a43c948d99341bcf4b79fab7123d895b8d2c1c181bd3b412e3ec13dea929c6c6e08a52cfe73136c9d145f63ba9256e3
+  checksum: 10/29f9add0f84ae6fdd2047c83ef53562431b93e3ae37967a287689200f9d8907e7a21142371625ad930b93d4c15593b29836aefa2b48c90a0d5bf924380ef1b0b
   languageName: node
   linkType: hard
 
@@ -3612,7 +3612,7 @@ __metadata:
     esbuild: "npm:^0.28.1"
     eslint: "npm:^10.6.0"
     eslint-config-prettier: "npm:^10.1.8"
-    eslint-plugin-jsdoc: "npm:^63.0.10"
+    eslint-plugin-jsdoc: "npm:^63.0.13"
     globals: "npm:^17.7.0"
     just-zip-it: "npm:^3.2.0"
     markdownlint-cli: "npm:^0.49.0"
@@ -3648,7 +3648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5, semver@npm:^7.7.3, semver@npm:^7.8.2":
+"semver@npm:^7.3.5, semver@npm:^7.7.3, semver@npm:^7.8.5":
   version: 7.8.5
   resolution: "semver@npm:7.8.5"
   bin:

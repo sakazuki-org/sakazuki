@@ -23,7 +23,7 @@
     "@types/bootstrap": "^5.2.11",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsdoc": "^63.0.10",
+    "eslint-plugin-jsdoc": "^63.0.13",
     "globals": "^17.7.0",
     "markdownlint-cli": "^0.49.0",
     "markuplint": "^4.18.3",
