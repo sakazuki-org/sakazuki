@@ -153,23 +153,4 @@ RSpec.describe SakesHelper do
       end
     end
   end
-
-  describe "stock" do
-    before do
-      create(:sake, size: 720, bottle_level: "sealed")
-      create(:sake, size: 1800, bottle_level: "empty")
-    end
-
-    context "without empty bottle" do
-      it "returns 4合" do
-        expect(stock(false)).to eq("4合")
-      end
-    end
-
-    context "with empty bottle" do
-      it "returns 1升4合" do
-        expect(stock(true)).to eq("1升4合")
-      end
-    end
-  end
 end

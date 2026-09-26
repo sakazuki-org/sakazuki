@@ -3,20 +3,19 @@
 <%= turbo_frame_tag("sakes", target: "_top", data: { turbo_action: :advance }) do %>
   <div class="row row-cols-1 g-3">
     <div class="col">
-      <h1 class="mb-0" data-testid="total_sake">
-        <% searched_word = params.dig(:q, :all_text_cont) %>
-        <% if searching? then %>
-          <%# 検索中タイトル %>
-          <% header = t(".header_with_search", search: searched_word) %>
-          <% hit = @sakes.total_count.to_s %>
-          <% h1 = t(".h1_with_search", search: searched_word, hit:) %>
-        <% else %>
-          <%# 通常タイトル %>
-          <% header = t(".header") %>
-          <% h1 = t(".h1_with_stock", stock: stock(include_empty?)) %>
-        <% end %>
-        <%= title(header, h1) %>
-      </h1>
+      <% if !searching? then %>
+        <% header = t(".header") %>
+      <% elsif search_word.present? then %>
+        <% header = t(".header_with_search", search: search_word) %>
+      <% else %>
+        <%# 空検索は今までに買った酒すべての一覧になる %>
+        <% header = t(".header_history") %>
+      <% end %>
+      <div class="d-flex align-items-baseline gap-3">
+        <%# h1とブラウザのタイトルを同じ文言にする %>
+        <h1 class="mb-0"><%= title(header) %></h1>
+        <div class="fs-3" data-testid="total_sake"><%= t(".count", hit: @count) %> - <%= to_shakkan(@amount) %></div>
+      </div>
     </div>
     <div class="col">
       <%= search_form_for(@search, html: { data: { turbo_frame: "sakes" } }) do |f| %>
@@ -32,32 +31,9 @@
             <%= tag.button(
                   tag.i(class: "bi-search"),
                   type: "submit",
-                  name: "commit",
-                  value: "search",
                   class: "btn btn-primary",
                   data: { testid: "submit_search" },
                 ) %>
-          </div>
-          <div class="col-auto">
-            <div class="form-check form-switch">
-              <%# check_box_tag はチェックされていないとパラメータが送信されない。
-                # hidden_field_tag で false を送信する。
-                # 同じ名前の値は、後が優先される。 %>
-              <%= hidden_field_tag("include_empty", "false", id: nil) %>
-              <%# 空き瓶を含めるかは検索中かにも依存する。
-                # Rails の checkbox を使わず check_box_tag を使い、
-                # concerns/sakes_search.rb で空き瓶を含むか制御している %>
-              <%= check_box_tag(
-                    "include_empty",
-                    "true",
-                    include_empty?,
-                    class: "form-check-input",
-                    id: "all_bottle_level",
-                    data: { testid: "check_empty_bottle" },
-                    onchange: "this.form.submit()",
-                  ) %>
-              <%= label_tag("all_bottle_level", t(".all_bottles"), class: "form-check-label") %>
-            </div>
           </div>
           <div class="col-lg-4 d-none d-lg-block"></div>
         </div>
@@ -70,7 +46,7 @@
             <%= render(partial: "sake", collection: @sakes) %>
           </div>
         </div>
-        <% unless default_index? %>
+        <% if searching? then %>
           <div class="col" data-testid="pagination">
             <div class="d-none d-sm-block">
               <%= paginate(@sakes) %>
