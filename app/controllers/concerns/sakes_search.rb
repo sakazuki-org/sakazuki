@@ -16,62 +16,52 @@ module SakesSearch
 
   private
 
-  # index用にRansackオブジェクトと酒一覧・本数・酒量を組み立て、@search/@sakes/@count/@amountへ設定する
+  # index用にRansackオブジェクトと酒一覧・本数・酒量を組み立てる
   #
-  # 検索していないときは在庫（空き瓶以外）を全件1ページに表示する。
-  # 検索時は空き瓶を含む全酒が対象で、ページネーションする。
+  # @search/@sakes/@count@amount が設定される。
   #
   # @return [void]
   def build_index_search
     @search = Sake.ransack(ransack_query).tap { |search| search.sorts = SORTS }
-    listed = listed_sakes
-    paged = searching? ? listed.page(params[:page]) : listed
-    @sakes = paged.includes(:photos).load
-    @count = sake_count
-    @amount = alcohol_amount(listed)
+    searching? ? build_search_result : build_stock_list
   end
 
-  # 一覧に出す酒のスコープ
+  # 検索結果の一覧を組み立てる
   #
-  # 検索していないときは在庫（空き瓶以外）に絞る。検索時は空き瓶も含めた全酒が対象。
+  # 空き瓶を含む全酒が対象で、ページネーションする。
   #
-  # 写真の includes はここでは付けない。
-  # 付けると写真を複数持つ酒が枚数の分だけ重複して集計されてしまう。
-  #
-  # @return [ActiveRecord::Relation] ページネーション前の酒
-  def listed_sakes
-    scope = @search.result
-    searching? ? scope : scope.where.not(bottle_level: :empty)
+  # @return [void]
+  def build_search_result
+    listed = @search.result
+    @sakes = listed.page(params[:page]).includes(:photos).load
+    # @sakes はページネーションされるので、Kaminari の total_count で総数を数える
+    @count = @sakes.total_count
+    # @sakes を使うと複数写真を持つ酒が重複して集計されてしまう
+    @amount = listed.sum(:size)
   end
 
-  # 見出しに出す酒の本数
+  # 在庫一覧を組み立てる
   #
-  # 検索時は @sakes に LIMIT がかかるため、Kaminari の total_count でヒット本数を数える。
-  # 検索していないときは @sakes が全件ロード済みなので配列長を素直に使う。
+  # 空き瓶を除いた在庫を全件1ページに表示する。
   #
-  # @return [Integer] 酒の本数
-  def sake_count
-    searching? ? @sakes.total_count : @sakes.size
+  # @return [void]
+  def build_stock_list
+    @sakes = @search.result.where.not(bottle_level: :empty).includes(:photos).load
+    # Ruby 配列は O(1) で配列長計算できるので SQL を使わなくて良い
+    @count = @sakes.size
+    @amount = Sake.alcohol_stock
   end
 
-  # 見出しに出す酒量
+  # params から検索語を取り出す
   #
-  # 検索時はヒットした酒の総量、検索していないときは在庫量を返す。
-  #
-  # @param listed [ActiveRecord::Relation] 一覧に出す酒
-  # @return [Integer] 酒量[ml]
-  def alcohol_amount(listed)
-    searching? ? listed.sum(:size) : Sake.alcohol_stock
-  end
-
   # @return [String, nil] 検索語（all_text_cont）。空文字列はnilとして扱う
   def search_word
     params.dig(:q, :all_text_cont).presence
   end
 
-  # 検索フォームから来たか
+  # 検索フォームを使って検索中か
   #
-  # 検索語が空でも全酒の一覧として扱う。今までに買った酒を振り返るために使う。
+  # 検索語が空でも true を返し、全酒の一覧モードとして使う。
   #
   # @return [Boolean] 検索中ならtrue
   def searching?
