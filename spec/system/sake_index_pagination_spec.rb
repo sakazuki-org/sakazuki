@@ -33,9 +33,10 @@ RSpec.describe "Sake Index Pagination" do
     visit sakes_path
   end
 
+  # 検索なし
   context "without empty bottles" do
     it "does not exist" do
-      expect(page).to have_no_css('[testid="pagination"]')
+      expect(page).to have_no_css('[data-testid="pagination"]')
     end
 
     describe "listed sakes" do
@@ -49,13 +50,16 @@ RSpec.describe "Sake Index Pagination" do
     end
   end
 
-  context "with empty bottles", :js do
+  # 空検索
+  context "with all sakes" do
     before do
-      find(:test_id, "check_empty_bottle").click
+      # 空検索は全酒の一覧になる
+      fill_in("text_search", with: "")
+      click_button("submit_search")
     end
 
     it "exists" do
-      expect(page).to have_no_css('[testid="pagination"]')
+      expect(page).to have_css('[data-testid="pagination"]')
     end
 
     context "with page 1" do
@@ -70,8 +74,14 @@ RSpec.describe "Sake Index Pagination" do
 
     context "with page 2" do
       before do
+        # ページネーションはPC用 (d-none .d-sm-block) と
+        # スマホ用 (d-sm-none d-block) との2つが描画され、
+        # 表示はCSSで切り替わる。
+        # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
         within(:test_id, "pagination") do
-          click_link("2")
+          within(".d-sm-block") do
+            click_link("2")
+          end
         end
       end
 
@@ -85,7 +95,7 @@ RSpec.describe "Sake Index Pagination" do
     end
   end
 
-  # 検索時もページネーションする（ページネーションしないのはデフォルトindexのみ）
+  # 検索
   context "when searching" do
     before do
       within("#sake_search") do
@@ -110,7 +120,9 @@ RSpec.describe "Sake Index Pagination" do
 
     context "with page 2" do
       before do
-        # ページネーションはPC用(.d-sm-block)とスマホ用の2つが描画され、表示はCSSで切り替わる。
+        # ページネーションはPC用 (d-none .d-sm-block) と
+        # スマホ用 (d-sm-none d-block) との2つが描画され、
+        # 表示はCSSで切り替わる。
         # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
         within(:test_id, "pagination") do
           within(".d-sm-block") do

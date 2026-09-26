@@ -3,9 +3,8 @@ ja:
     index:
       header: 日本酒リスト
       header_with_search: "検索: %{search}"
-      h1_with_stock: "日本酒リスト - %{stock}"
-      h1_with_search: "検索: %{search} - %{hit}件"
-      all_bottles: 空瓶を表示
+      header_history: 日本酒履歴
+      count: "%{hit}本"
     sake:
       edit: 編集
       tokutei_meisho_none: :sakes.show_abstract.tokutei_meisho_none
