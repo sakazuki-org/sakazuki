@@ -15,7 +15,9 @@
     <%= render(partial: "layouts/header") %>
     <div class="container-xxl">
       <%= render(partial: "layouts/flashes") %>
-      <%= yield %>
+      <div class="pt-2">
+        <%= yield %>
+      </div>
     </div>
     <%= render(partial: "layouts/footer") %>
     <% if Rails.application.config.x.dev_tools_enabled %>
