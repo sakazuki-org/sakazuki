@@ -84,7 +84,7 @@ jobs:
         run: ghalint run
 
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@f98e06938123ccabd21905ea5d0069192241f9f1
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
         with:
           # ワンライナー uvx のみを使うので、キャッシュは無効化
           enable-cache: false
