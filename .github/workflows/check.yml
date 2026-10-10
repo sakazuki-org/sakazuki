@@ -75,7 +75,7 @@ jobs:
         run: ./cli-scripts/check_endoffile_with_newline.sh
 
       - name: Run Hadolint
-        run: hadolint $(git ls-files '*Dockerfile*')
+        run: hadolint "$(git ls-files '*Dockerfile*')"
 
       - name: Run Docker Build Checks
         run: docker build --build-arg RUBY_VERSION="$(cat .ruby-version)" --check .
