@@ -1,0 +1,9 @@
+[tools]
+hadolint = "latest"
+jactionlint = "latest"
+ghalint = "latest"
+zizmor = "latest"
+
+[settings]
+lockfile = true
+minimum_release_age = "1d"

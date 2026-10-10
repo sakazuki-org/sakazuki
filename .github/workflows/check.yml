@@ -66,27 +66,25 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          mise-version: "2026.10.5"
+
       - name: End of File with Newline
         run: ./cli-scripts/check_endoffile_with_newline.sh
 
       - name: Run Hadolint
-        uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5
+        run: hadolint $(git ls-files '*Dockerfile*')
 
       - name: Run Docker Build Checks
         run: docker build --build-arg RUBY_VERSION="$(cat .ruby-version)" --check .
 
-      - name: Run Actionlint
-        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7
+      - name: Run jactionlint
+        run: jactionlint
 
-      - name: Install ghalint
-        uses: Lucky3028/install-ghalint@b623e2c9f9238b88ba13dbf30fb3b65320c42ce9
       - name: Run ghalint
         run: ghalint run
 
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@f98e06938123ccabd21905ea5d0069192241f9f1
-        with:
-          # ワンライナー uvx のみを使うので、キャッシュは無効化
-          enable-cache: false
       - name: Run zizmor 🌈
-        run: uvx zizmor --offline --persona auditor --collect default -- .
+        run: zizmor --offline --persona auditor --collect default -- .
