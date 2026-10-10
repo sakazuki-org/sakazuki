@@ -3560,10 +3560,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rater-js@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "rater-js@npm:1.0.1"
-  checksum: 10/1d0f46e2d27aee8f788d02543152f1cc75d24fc827f5c241d722b3066f637aa5cd9bb0ce2905b2cb484fe02ae007ea0d37e45feec7e838341956945c8af31d05
+"rater-js@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "rater-js@npm:2.0.0"
+  checksum: 10/b703f9712668131f2f35dc510ce5dcb2b036e2a37175ef8308d8e929c4fb94dade88a4bfa4a1924580832935e280e4ad532f24c4baf58e02d7a29ceada975e9a
   languageName: node
   linkType: hard
 
@@ -3659,7 +3659,7 @@ __metadata:
     markuplint: "npm:^4.18.3"
     playwright: "npm:^1.63.0"
     prettier: "npm:^3.9.5"
-    rater-js: "npm:^1.0.1"
+    rater-js: "npm:^2.0.0"
     sass: "npm:^1.101.0"
     simplelightbox: "npm:^2.14.3"
     stylelint: "npm:^17.16.0"
