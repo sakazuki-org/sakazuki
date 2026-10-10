@@ -7,3 +7,4 @@ zizmor = "latest"
 [settings]
 lockfile = true
 minimum_release_age = "1d"
+idiomatic_version_file_disable_files = ["node:.node-version"]
