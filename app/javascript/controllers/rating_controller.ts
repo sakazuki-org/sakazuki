@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import rater from "rater-js"
+import type { Rater } from "rater-js"
 
 // Connects to data-controller="rating"
 export default class RatingController extends Controller<HTMLFieldSetElement> {
@@ -24,7 +25,7 @@ export default class RatingController extends Controller<HTMLFieldSetElement> {
         this.sakeRater.setRating(newRating)
         this.scoreTarget.value = newRating.toString()
 
-        if (done != null) done()
+        done()
       },
       rating,
       starSize: 32,
