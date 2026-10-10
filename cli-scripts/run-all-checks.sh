@@ -87,14 +87,8 @@ fi
 # GitHub Actions
 
 message "##### Run Actionlint"
-if type actionlint > /dev/null 2>&1; then
-    actionlint
-elif type docker > /dev/null 2>&1; then
-    docker run --rm \
-           --mount type=bind,src="$(pwd)",dst=/repo,readonly \
-           --workdir /repo \
-           rhysd/actionlint:latest \
-           -color
+if type jactionlint > /dev/null 2>&1; then
+    jactionlint
 else
     warning "[SKIP] Actionlint, actionlint or Docker is required."
 fi
