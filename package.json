@@ -18,7 +18,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@markuplint/erb-parser": "^4.18.3",
+    "@markuplint/erb-parser": "^5.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/bootstrap": "^5.2.11",
     "eslint": "^10.12.0",
@@ -26,7 +26,7 @@
     "eslint-plugin-jsdoc": "^65.0.2",
     "globals": "^17.13.0",
     "markdownlint-cli": "^0.49.1",
-    "markuplint": "^4.18.3",
+    "markuplint": "^5.0.1",
     "playwright": "^1.63.0",
     "prettier": "^3.9.5",
     "stylelint": "^17.16.0",
