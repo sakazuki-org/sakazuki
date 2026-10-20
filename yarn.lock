@@ -3869,12 +3869,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.9.5":
-  version: 3.9.5
-  resolution: "prettier@npm:3.9.5"
+"prettier@npm:^3.9.10":
+  version: 3.9.10
+  resolution: "prettier@npm:3.9.10"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/b6587f1582ba653ce5207ee227aff646500e5098646931088f176d1ab090b1f47d5a333f1facd634e9aa7dcb15c45940e2cec13a5962534cf0200617517b67b6
+  checksum: 10/5d0118add4b44eb9d50c114f5c525451cc92be9da300ad0552787472535a3f23884baed3223d9b577bb7d1152eb58aeccfcc2b4541c0cf2274c0b4d328e36834
   languageName: node
   linkType: hard
 
@@ -4013,7 +4013,7 @@ __metadata:
     markdownlint-cli: "npm:^0.49.1"
     markuplint: "npm:^5.0.1"
     playwright: "npm:^1.63.0"
-    prettier: "npm:^3.9.5"
+    prettier: "npm:^3.9.10"
     rater-js: "npm:^2.0.0"
     sass: "npm:^1.101.0"
     simplelightbox: "npm:^2.14.3"
