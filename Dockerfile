@@ -3,7 +3,7 @@
 
 # ============== base =================
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.7
+ARG RUBY_VERSION=4.0.9
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim-trixie AS base
 
 # hadolint ignore=DL3048
