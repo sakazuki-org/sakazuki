@@ -1,9 +1,9 @@
 ja:
   sakes:
     index:
-      header: 日本酒リスト
+      header: 在庫
       header_with_search: "検索: %{search}"
-      header_history: 日本酒履歴
+      header_history: 履歴
       count: "%{hit}本"
     sake:
       edit: 編集
