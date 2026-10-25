@@ -1,8 +1,8 @@
 <%= render(partial: "float_button", locals: { sake: @sake }) %>
 
 <%= turbo_frame_tag("sakes", target: "_top", data: { turbo_action: :advance }) do %>
-  <div class="row row-cols-1 gx-2 gy-3">
-    <div class="col col-lg-8">
+  <div class="row row-cols-1 g-3">
+    <div class="col">
       <% if !searching? then %>
         <% header = t(".header") %>
       <% elsif search_word.present? then %>
@@ -11,7 +11,7 @@
         <%# 空検索は今までに買った酒すべての一覧になる %>
         <% header = t(".header_history") %>
       <% end %>
-      <div class="row justify-content-between justify-content-lg-start align-items-baseline">
+      <div class="row justify-content-between align-items-baseline">
         <div class="col-auto">
           <%# h1とブラウザのタイトルを同じ文言にする %>
           <h1 class="mb-0"><%= title(header) %></h1>
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <div class="col col-lg-4 align-self-center">
+    <div class="col">
       <%= search_form_for(@search, html: { data: { turbo_frame: "sakes" } }) do |f| %>
         <div class="row mx-0 align-items-center">
           <div class="col px-0 input-group">
