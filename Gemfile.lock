@@ -377,7 +377,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.4.2)
-    ransack (5.0.2)
+    ransack (6.0.0)
       activerecord (>= 7.2)
       activesupport (>= 7.2)
       i18n
@@ -717,7 +717,7 @@ CHECKSUMS
   railties (8.1.4) sha256=b5e7a8e8984e33114d68af62227971960aae1e6c02bd7c9d826ffad97fff583c
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
-  ransack (5.0.2) sha256=6235548e92b82fa96c8488f5faba856627c84557147b7ccae0a87a01880784a0
+  ransack (6.0.0) sha256=08f51b0335bf1ab53e745a310961a6e0039d1c6eb19ddba4c149163973f51f17
   rbs (4.2.0) sha256=51f7b886dcc05bc09e10b901daa6a81829f6adc03101d6ca9ea4aac6103e0674
   rdoc (8.1.0) sha256=befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a
   regexp_parser (2.13.1) sha256=5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b
