@@ -108,4 +108,5 @@ Rails.application.configure do
   config.x.letter_opener_enabled = false
   config.x.fast_password_hashing = false
   config.x.dev_tools_enabled = false
+  config.x.sake_seeds_enabled = false
 end
