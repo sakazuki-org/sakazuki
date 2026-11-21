@@ -4,10 +4,18 @@ on:
   pull_request:
     types: [opened, ready_for_review]
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   add-reviews:
+    name: add-reviews
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - uses: kentaro-m/auto-assign-action@v2.0.0
+      - uses: kentaro-m/auto-assign-action@0a2c53d3721e4c5cfcce6afd4014aecc337979f6
         with:
           configuration-path: ".github/auto_assign_configs.yml"

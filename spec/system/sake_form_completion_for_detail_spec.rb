@@ -4,8 +4,8 @@ RSpec.describe "Sake Form Completion for Detail", :js do
   let(:user) { create(:user) }
 
   before do
-    sign_in user
-    visit new_sake_path
+    login_as(user)
+    visit(new_sake_path)
   end
 
   describe "tokutei_meisho" do
@@ -83,7 +83,7 @@ RSpec.describe "Sake Form Completion for Detail", :js do
   context "with detail accordion" do
     # 以下テストは詳細アコーディオンの中なので、アコーディオンを開いておく
     before do
-      click_on("accordion_detail")
+      click_button("accordion_detail")
     end
 
     describe "moto" do

@@ -4,7 +4,7 @@ inherit_mode:
 
 inherit_from: .rubocop.yml
 
-require:
+plugins:
   - rubocop-erb
 
 AllCops:

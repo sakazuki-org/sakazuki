@@ -19,8 +19,8 @@ export type Dict = readonly Candidate[]
  *
  * String.includesの複数候補版。
  *
- * @param target - 検索対象の文字列
- * @param keywords - 検索する複数キーワード
+ * @param target 検索対象の文字列
+ * @param keywords 検索する複数キーワード
  * @returns 検索対象にいずれかのキーワードが1つでも含まれればtrue
  */
 function includesAny(target: string, keywords: readonly string[]): boolean {
@@ -32,8 +32,8 @@ function includesAny(target: string, keywords: readonly string[]): boolean {
 /**
  * 補完候補を採用するかチェックする
  *
- * @param name - 酒の名前
- * @param cand - 補完候補
+ * @param name 酒の名前
+ * @param cand 補完候補
  * @returns 採用されれば補完候補、採用されなければ空文字列を返す
  */
 function check(name: string, cand: Candidate): string {
@@ -43,8 +43,8 @@ function check(name: string, cand: Candidate): string {
 /**
  * 酒の名前と補完辞書から補完する文字列を探す
  *
- * @param name - 酒の名前
- * @param dict - 補完辞書
+ * @param name 酒の名前
+ * @param dict 補完辞書
  * @returns 補完できるなら補完候補、補完できないなら空文字を返す
  */
 export function lookup(name: string, dict: Dict): string {

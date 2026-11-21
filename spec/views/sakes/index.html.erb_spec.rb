@@ -30,35 +30,56 @@ RSpec.describe "sakes/index", type: :system do
 
   describe "title" do
     context "without search" do
-      it "contains total amount of sake" do
-        h1 = I18n.t("sakes.index.h1_with_stock", stock: "4合")
-        expect(page).to have_text(h1)
+      it "shows list header" do
+        expect(find("h1")).to have_text(I18n.t("sakes.index.header"))
+      end
+
+      it "shows count of stocked sake" do
+        expect(find(:test_id, "total_sake")).to have_text(I18n.t("sakes.index.count", hit: 1))
+      end
+
+      it "shows amount of stocked sake" do
+        expect(find(:test_id, "total_sake")).to have_text("4合")
       end
     end
 
     context "with search" do
-      search = "ヒットしない検索語句"
+      let(:search) { "ヒットしない検索語句" }
 
       before do
         fill_in("text_search", with: search)
-        click_on("submit_search")
+        click_button("submit_search")
       end
 
-      it "contains search word and hit count" do
-        h1 = I18n.t("sakes.index.h1_with_search", search:, hit: "0")
-        expect(page).to have_text(h1)
+      it "shows search word" do
+        expect(find("h1")).to have_text(I18n.t("sakes.index.header_with_search", search:))
+      end
+
+      it "shows hit count" do
+        expect(find(:test_id, "total_sake")).to have_text(I18n.t("sakes.index.count", hit: 0))
+      end
+
+      it "shows amount of hit sake" do
+        expect(find(:test_id, "total_sake")).to have_text("0合")
       end
     end
 
     context "with empty search" do
       before do
         fill_in("text_search", with: "")
-        click_on("submit_search")
+        click_button("submit_search")
       end
 
-      it "contains total amount of sake" do
-        h1 = I18n.t("sakes.index.h1_with_stock", stock: "4合")
-        expect(page).to have_text(h1)
+      it "shows history header" do
+        expect(find("h1")).to have_text(I18n.t("sakes.index.header_history"))
+      end
+
+      it "shows count of all sake" do
+        expect(find(:test_id, "total_sake")).to have_text(I18n.t("sakes.index.count", hit: 1))
+      end
+
+      it "shows amount of all sake" do
+        expect(find(:test_id, "total_sake")).to have_text("4合")
       end
     end
   end
@@ -72,11 +93,11 @@ RSpec.describe "sakes/index", type: :system do
     end
 
     context "with search" do
-      search = "検索中の酒"
+      let(:search) { "検索中の酒" }
 
       before do
         fill_in("text_search", with: search)
-        click_on("submit_search")
+        click_button("submit_search")
       end
 
       it "has title with searching words" do
@@ -88,12 +109,12 @@ RSpec.describe "sakes/index", type: :system do
     context "with empty search" do
       before do
         fill_in("text_search", with: "")
-        click_on("submit_search")
+        click_button("submit_search")
       end
 
-      it "does not have title with searching words separator" do
-        header = "- #{I18n.t('sakes.index.header')} - SAKAZUKI"
-        expect(page).to have_no_title(header)
+      it "has history title" do
+        header = "#{I18n.t('sakes.index.header_history')} - SAKAZUKI"
+        expect(page).to have_title(header)
       end
     end
   end

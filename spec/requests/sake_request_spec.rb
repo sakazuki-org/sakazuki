@@ -65,7 +65,7 @@ RSpec.describe "Sakes" do
   context "with logined user" do
     before do
       user = create(:user)
-      sign_in(user)
+      login_as(user)
     end
 
     describe "GET /sakes/[id]/edit (edit)" do

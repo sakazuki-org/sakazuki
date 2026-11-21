@@ -13,26 +13,27 @@ RSpec.describe "Sake Index Order" do
       visit sakes_path
     end
 
-    context "without checked 'show empty bottles'" do
+    context "without empty bottles" do
       it "shows opened sakes before sealed sakes" do
         regexp = /#{sealed_new.name}.*#{sealed_old.name}.*#{opened_new.name}.*#{opened_old.name}/m
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(regexp)
       end
 
       it "does not include empty sake" do
-        regexp = /#{empty.name}}/
-        expect(page.text).not_to match(regexp)
+        expect(page).to have_no_text(empty.name)
       end
     end
 
-    context "with checked 'show empty bottles'", :js do
+    context "with all sakes" do
       before do
-        check("check_empty_bottle") # show empty bottles
+        # 空検索は全酒の一覧になる
+        fill_in("text_search", with: "")
+        click_button("submit_search")
       end
 
       it "shows sakes sorted by id" do
         regexp = /#{sealed_new.name}.*#{sealed_old.name}.*#{opened_new.name}.*#{opened_old.name}.*#{empty.name}/m
-        expect(page.text).to match(regexp)
+        expect(page).to have_text(regexp)
       end
     end
   end

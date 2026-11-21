@@ -4,7 +4,7 @@ RSpec.describe "Sake Form Size", :js do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
   end
 
   context "when creating new sake" do
@@ -19,7 +19,7 @@ RSpec.describe "Sake Form Size", :js do
           # 1800と区別するため、正規表現を使う
           find("label", text: /^180$/).click
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 180 ml sake" do
@@ -34,7 +34,7 @@ RSpec.describe "Sake Form Size", :js do
         within(:test_id, "sake_size_div") do
           find("label", text: "300").click
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 300 ml sake" do
@@ -49,7 +49,7 @@ RSpec.describe "Sake Form Size", :js do
         within(:test_id, "sake_size_div") do
           find("label", text: "720").click
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 720 ml sake" do
@@ -64,7 +64,7 @@ RSpec.describe "Sake Form Size", :js do
         within(:test_id, "sake_size_div") do
           find("label", text: "1800").click
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 1800 ml sake" do
@@ -82,7 +82,7 @@ RSpec.describe "Sake Form Size", :js do
           find("label", text: label_regexp).click
           fill_in("sake_size_other", with: "500")
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 500 ml sake" do
@@ -101,7 +101,7 @@ RSpec.describe "Sake Form Size", :js do
           fill_in("sake_size_other", with: "500")
           find("label", text: "720").click
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "creates 720 ml sake" do

@@ -1,3 +1,4 @@
+<%# locals: () %>
 <div class="row row-cols-1 g-1">
   <% if controller_name != "sessions" %>
     <div class="col">
@@ -8,18 +9,6 @@
   <% if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations" %>
     <div class="col">
       <%= link_to(t(".forgot_your_password"), new_password_path(resource_name)) %>
-    </div>
-  <% end %>
-
-  <% if devise_mapping.confirmable? && controller_name != "confirmations" %>
-    <div class="col">
-      <%= link_to(t(".didn_t_receive_confirmation_instructions"), new_confirmation_path(resource_name)) %>
-    </div>
-  <% end %>
-
-  <% if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != "unlocks" %>
-    <div class="col">
-      <%= link_to(t(".didn_t_receive_unlock_instructions"), new_unlock_path(resource_name)) %>
     </div>
   <% end %>
 

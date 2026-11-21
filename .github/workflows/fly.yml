@@ -3,18 +3,28 @@ on:
   push:
     branches:
       - main
+
+permissions: {}
+
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
-    concurrency:
-      group: fly-deploy
+    environment: fly-deploy
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - name: Detect ruby version
         id: ruby-version
-        run: echo "::set-output name=RUBY_VERSION::$(cat .ruby-version)"
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --dockerfile fly.Dockerfile --build-arg RUBY_VERSION=${{ steps.ruby-version.outputs.RUBY_VERSION }}
+        run: echo "RUBY_VERSION=$(cat .ruby-version)" >> "$GITHUB_OUTPUT"
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
+      - run: flyctl deploy --build-arg RUBY_VERSION="${RUBY_VERSION}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          RUBY_VERSION: ${{ steps.ruby-version.outputs.RUBY_VERSION }}

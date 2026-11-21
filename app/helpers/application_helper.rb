@@ -45,15 +45,15 @@ module ApplicationHelper
 
   # Google AdSenseのscriptタグを書き出す
   #
-  # Production環境の場合のみscriptタグを書き出す。
-  # 引数のクライアントIDの方が.envファイルのクライアントIDよりも優先される。
+  # Production環境かつ環境変数GOOGLE_ADSENSE_CLIENTが設定されてるときのみscriptタグを書き出す。
+  # 環境変数GOOGLE_ADSENSE_CLIENTには`ca-pub-0000`形式のパプリッシャーIDをセットする。
+  # 設定には.envやSECRETやRails credentialsなどを使う。
   #
-  # @param client [String] "ca-pub-12345"のようなGoogle AdSenseのクライアントID
   # @return [String] Google AdSense用のscriptタグ
-  def adsense_tags(client = nil)
-    return unless Rails.env.production?
+  def adsense_tags
+    return unless Rails.application.config.x.adsense_enabled && ENV["GOOGLE_ADSENSE_CLIENT"].present?
 
-    client ||= ENV.fetch("GOOGLE_ADSENSE_CLIENT", nil)
+    client = ENV.fetch("GOOGLE_ADSENSE_CLIENT", nil)
     src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=#{client}"
     client ? tag.script(async: "async", src:, crossorigin: "anonymous") : ""
   end

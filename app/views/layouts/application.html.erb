@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= csrf_meta_tags %>
+    <%= tag.meta(name: "turbo-cache-control", content: "no-preview") %>
     <%= csp_meta_tag %>
     <%= display_meta_tags(default_meta_tags) %>
     <%= adsense_tags %>
@@ -14,15 +15,17 @@
     <%= render(partial: "layouts/header") %>
     <div class="container-xxl">
       <%= render(partial: "layouts/flashes") %>
-      <%= yield %>
+      <div class="pt-2">
+        <%= yield %>
+      </div>
     </div>
     <%= render(partial: "layouts/footer") %>
-    <% if Rails.env.development? %>
+    <% if Rails.application.config.x.dev_tools_enabled %>
       <div class="py-5 bg-light">
         <%= debug(params) %>
         <div>
           <a href="/letter_opener">
-            letter_opener <%# erblint:disable HardCodedString %>
+            letter_opener <%# erb_lint:disable HardCodedString %>
           </a>
         </div>
       </div>

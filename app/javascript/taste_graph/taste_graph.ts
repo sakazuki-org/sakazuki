@@ -1,4 +1,4 @@
-import merge from "ts-deepmerge"
+import { merge } from "ts-deepmerge"
 import { Chart, ScatterController, PointElement, LinearScale } from "chart.js"
 import type {
   Color,
@@ -55,66 +55,81 @@ export class TasteGraph extends Chart {
   public pointZero: Point = { x: 0, y: 0 }
 
   /**
+   * DOMデータの1座標値をグラフデータに変換する
+   *
+   * @param dom 文字列で表したDOMデータの1座標値
+   * @returns グラフの座標値に変換したデータ
+   */
+  private static domToPoint(dom: string): number | null {
+    const num = parseInt(dom)
+    if (dom === "" || isNaN(num)) return null
+    else return num - TasteGraph.middle
+  }
+
+  /**
    * DOMデータをグラフデータに変換する
    *
    * このときオフセットのズレを補正する。
    * 具体的にはDOMでは0~6のデータだが、グラフでは-3~3となる。
    *
-   * @param v - 文字列で表したDOMデータの組
+   * @param v 文字列で表したDOMデータの組
    * @returns チャートのPoint型に変換したデータ
    */
   static fromDom(v: DomValues): Point {
-    const domToPoint = (dom: string) => {
-      const num = parseInt(dom)
-      return isNaN(num) ? NaN : num - TasteGraph.middle
-    }
-    return { x: domToPoint(v.taste), y: domToPoint(v.aroma) }
+    return { x: this.domToPoint(v.taste), y: this.domToPoint(v.aroma) }
+  }
+
+  /**
+   * グラフデータの1座標値をDOMデータに変換する
+   *
+   * @param num グラフ座標値、ただし空グラフのときにnullを含みうる
+   * @returns 文字列変換されたDOM座標値
+   */
+  private static pointToDom(num: number | null): string {
+    if (num === null || isNaN(num)) return ""
+    else return (num + TasteGraph.middle).toString()
   }
 
   /**
    * グラフデータをDOMデータに変換する
    *
-   * @param p - グラフデータ、ただし空グラフのときにNaNを含みうる
+   * @param p グラフデータ、ただし空グラフのときにnullを含みうる
    * @returns 文字列変換されたDOMデータ
    */
   protected static toDom(p: Point): DomValues {
-    const pointToDom = (num: number) => {
-      const v = num + TasteGraph.middle
-      return isNaN(v) ? "" : v.toString()
-    }
-    return { taste: pointToDom(p.x), aroma: pointToDom(p.y) }
+    return { taste: this.pointToDom(p.x), aroma: this.pointToDom(p.y) }
   }
 
   /**
    * クリックした位置のグラフデータを取得する
    *
-   * @param event - chart.jsのイベント
-   * @param chart - チャート
+   * @param event chart.jsのイベント
+   * @param chart チャート
    * @returns クリックした位置のデータ
    */
-  protected static getClickData(event: ChartEvent, chart: Chart) {
-    // @ts-expect-error chart.jsのhelperの都合のエラーを無視する
+  protected static getClickData(event: ChartEvent, chart: Chart): Point {
     const canvasPosition = getRelativePosition(event, chart)
-    const x = chart.scales.x?.getValueForPixel(canvasPosition.x) ?? NaN
-    const y = chart.scales.y?.getValueForPixel(canvasPosition.y) ?? NaN
-    return { x: Math.round(x), y: Math.round(y) }
+    const x = chart.scales.x?.getValueForPixel(canvasPosition.x) ?? null
+    const y = chart.scales.y?.getValueForPixel(canvasPosition.y) ?? null
+    if (x === null || y === null) return { x: null, y: null }
+    else return { x: Math.round(x), y: Math.round(y) }
   }
 
   /**
    * グラフにデータを挿入する
    *
-   * @param chart - チャート
-   * @param data - チャートデータ
+   * @param chart チャート
+   * @param data チャートデータ
    */
   protected static pushData(chart: Chart, data: Point) {
     chart.data.datasets[0]?.data.push(data)
   }
 
   /**
-   * chart.jsのpopが返すunion型を、Point型だけにガードする
+   * chart.jsのpopが返すunion型を、有効値を含むPoint型だけにガードする
    *
-   * @param arg - chart.jsのpushが返す値
-   * @returns 対象がPoint型のときのみTrue
+   * @param arg chart.jsのpushが返す値
+   * @returns 対象が有効なPoint型のときのみTrue
    */
   protected static isPoint(
     arg: number | [number, number] | Point | BubbleDataPoint | undefined | null,
@@ -125,33 +140,52 @@ export class TasteGraph extends Chart {
   /**
    * グラフにデータを削除・取得する
    *
-   * @param chart - チャート
+   * 有効じゃないデータがpopされるとデフォルト値null/nullを返す。
+   *
+   * @param chart チャート
    * @returns チャートデータ
    */
   protected static popData(chart: Chart): Point {
     const data = chart.data.datasets[0]?.data.pop()
-    return TasteGraph.isPoint(data) ? data : { x: NaN, y: NaN }
+    return TasteGraph.isPoint(data) ? data : { x: null, y: null }
+  }
+
+  /**
+   * グラフデータが有効かどうかの判定
+   *
+   * @param p チャートデータ
+   * @returns 引数のデータが null または NaN を含むときはFalse
+   */
+  private static isValidPoint(p: Point): boolean {
+    return !(p.x === null || p.y === null || isNaN(p.x) || isNaN(p.y))
   }
 
   /**
    * グラフデータの同値比較
    *
-   * @param p1 - チャートデータ
-   * @param p2 - チャートデータ
+   * 比較点が無効値の場合ははFalseを返す
+   *
+   * @param p1 チャートデータ
+   * @param p2 チャートデータ
    * @returns 引数2つのデータが等しいときのみTrue
    */
   protected static eqPoint(p1: Point, p2: Point) {
-    return p1.x === p2.x && p1.y === p2.y
+    return (
+      this.isValidPoint(p1) &&
+      this.isValidPoint(p2) &&
+      p1.x === p2.x &&
+      p1.y === p2.y
+    )
   }
 
   /**
    * コンストラクタ
    *
-   * @param canvas - グラフ描画先
-   * @param dom - 描画するグラフの初期値
-   * @param opts - options - グラフのカスタマイズ値
+   * @param canvas グラフ描画先
+   * @param dom 描画するグラフの初期値
+   * @param opts options - グラフのカスタマイズ値
    */
-  //eslint-enable tsdoc/syntax
+  // eslint-enable tsdoc/syntax
   constructor(
     canvas: HTMLCanvasElement,
     dom: DomValues,
@@ -292,7 +326,7 @@ export class TasteGraph extends Chart {
     const domCallback = opts.domCallback
     const onClick = (() => {
       if (typeof domCallback === "undefined")
-        (_e: ChartEvent, _el: ActiveElement[], _c: Chart): void => {
+        return (_e: ChartEvent, _el: ActiveElement[], _c: Chart): void => {
           // dummy empty lambda
         }
       else {
@@ -303,7 +337,8 @@ export class TasteGraph extends Chart {
         return (event: ChartEvent, _element: ActiveElement[], chart: Chart) => {
           const oldData = TasteGraph.popData(chart)
           let newData = TasteGraph.getClickData(event, chart)
-          if (TasteGraph.eqPoint(oldData, newData)) newData = { x: NaN, y: NaN }
+          if (TasteGraph.eqPoint(oldData, newData))
+            newData = { x: null, y: null }
           else TasteGraph.pushData(chart, newData)
           syncDom(newData)
           chart.update()

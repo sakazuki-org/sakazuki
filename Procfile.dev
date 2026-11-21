@@ -1,15 +1,10 @@
-web: bin/rails server -p 3000 -b 0.0.0.0
+web: bin/rails server --port 3000 --binding 0.0.0.0
 js: yarn build --watch
 css: yarn build:css --watch
 
-# Reccomend development runner with Docker
+# Recommend development runner with Docker
 #
 # You need PostgreSQL configurations.
 # See also dotenv.example file.
 #
-# db: docker run --rm --name db --network sakazuki_net --env-file .env --publish 5432:5432 --mount type=volume,src=sakazuki_db,dst=/var/lib/postgresql/data postgres:13-alpine
-#
-# You need remote dirver configurations.
-# See also dotenv.example file.
-#
-# selenium: docker run --rm --name selenium --network host --env-file .env --publish 4444:4444 selenium/standalone-firefox:latest
+# db: docker run --rm --name db --network sakazuki_net --env-file .env --publish 5432:5432 --mount type=volume,src=sakazuki_db,dst=/var/lib/postgresql/data postgres:18-alpine

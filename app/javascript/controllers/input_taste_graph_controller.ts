@@ -9,9 +9,14 @@ import type {
 // Connects to data-controller="input-taste-graph"
 export default class InputTasteGraphController extends Controller<HTMLDivElement> {
   static targets = ["canvas", "taste", "aroma"]
+
   declare readonly canvasTarget: HTMLCanvasElement
+
   declare readonly tasteTarget: HTMLInputElement
+
   declare readonly aromaTarget: HTMLInputElement
+
+  private tasteGraph: TasteGraph | null = null
 
   connect() {
     const dom: DomValues = {
@@ -26,6 +31,13 @@ export default class InputTasteGraphController extends Controller<HTMLDivElement
       this.aromaTarget.value = aroma
     }
     const opts: TasteGraphOptions = { domCallback }
-    new TasteGraph(this.canvasTarget, dom, opts)
+    this.tasteGraph = new TasteGraph(this.canvasTarget, dom, opts)
+  }
+
+  disconnect() {
+    if (this.tasteGraph !== null) {
+      this.tasteGraph.destroy()
+      this.tasteGraph = null
+    }
   }
 }

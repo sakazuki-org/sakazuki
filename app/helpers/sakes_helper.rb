@@ -45,7 +45,9 @@ module SakesHelper
 
   # BYの候補を作成する
   #
-  # @return [Array<String, String>] BYセレクタで使う、表示用文字列と日付データ
+  # フォーマットは 「2025 / 令和7年」
+  #
+  # @return [Array<[String, String]>] BYセレクタで使う、表示用文字列と日付データ
   def by_collection
     collection = by_range.map { |d| [with_japanese_era(d), d.to_s] }
     collection.push([I18n.t("sakes.form_abstract.unknown"), ""])
@@ -70,14 +72,17 @@ module SakesHelper
   # 製造年月の候補を作成する
   #
   # 現在の日付から30年分を生成する
+  # フォーマットは 「2025 / 令和7年 7月」
   #
-  # @return [Array<String, String>] 製造年月セレクタで使う、表示用文字列と日付データ
+  # @return [Array<[String, String]>] 製造年月セレクタで使う、表示用文字列と日付データ
   def bindume_collection
-    month_range.map { |d|
-      year = with_japanese_era(d)
-      month = I18n.l(d, format: "%B")
-      ["#{year} #{month}", d.to_s]
-    }
+    collection =
+      month_range.map { |d|
+        year = with_japanese_era(d)
+        month = I18n.l(d, format: "%B")
+        ["#{year} #{month}", d.to_s]
+      }
+    collection.push([I18n.t("sakes.form_abstract.unknown"), ""])
   end
 
   # @type [Array<String>]
@@ -101,14 +106,14 @@ module SakesHelper
   # @param amount [Integer] 酒の量[ml]
   # @return [String] 尺貫法の体積で表した酒量の文字列
   def to_shakkan(amount)
-    if amount < 180
-      "0合"
-    else
-      # rubocop:disable Style/HashExcept
-      (amount / 180).to_s.reverse.each_char.zip(UNITS).filter { |value, _unit| value != "0" }
-                    .reverse.join
-      # rubocop:enable Style/HashExcept
-    end
+    return "0合" if amount < 180
+
+    # rubocop:disable-next Style/HashExcept
+    (amount / 180)
+      .to_s.reverse
+      .each_char.zip(UNITS)
+      .filter { |value, _unit| value != "0" }
+      .reverse.join
   end
 
   # 酒蔵の名前から会社の種類を削除し短くする
@@ -170,12 +175,14 @@ module SakesHelper
     value.blank? || value == "unknown" ? "lowlight-value" : "highlight-value"
   end
 
-  # 酒index用に酒の総量を尺貫法を使って返す
+  # 酒の最終更新日を現在日時との差に応じて適切な日付フォーマットで返す
   #
-  # @param include_empty [Boolean] trueなら空き瓶込みでカウントする
-  # @return [String] 尺貫法による酒の在庫量
-  def stock(include_empty)
-    ml = Sake.alcohol_stock(include_empty:)
-    to_shakkan(ml)
+  # Railsのデフォルトi18nキーによる標準形式で表示する。
+  #
+  # @param sake [Sake] 酒オブジェクト
+  # @return [String] フォーマットされた日付文字列
+  def absolute_date(sake)
+    date = latest_at(sake).to_date
+    I18n.l(date)
   end
 end

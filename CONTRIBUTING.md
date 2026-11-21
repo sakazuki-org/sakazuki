@@ -13,5 +13,6 @@
 
 - この Pull Request によって解決される Issue への参照を含めてください。
 - テストと Lint に合格していることを確認してください。GitHub Actions により自動化されています。
-  - 手動でチェックを実行する場合は `cli-scripts/run-all-checks.sh` を使用してください。
+  - 手動でチェックを実行する場合は `yarn lint` を使用してください。
+  - 他の手動チェックコマンドについては package.json の scripts を参照してください。
 - Pull Request のマージにはレビュワー一人以上の承認が必要です。

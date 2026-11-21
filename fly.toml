@@ -1,52 +1,47 @@
-# fly.toml file generated for sakazuki on 2022-11-10T22:48:21+09:00
+# fly.toml app configuration file generated for sakazuki on 2025-03-30T19:16:47+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "sakazuki"
-kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
+primary_region = "nrt"
+console_command = "/app/bin/rails console"
 swap_size_mb = 512
 
 [build]
-  [build.args]
-    BUILD_COMMAND = "bin/rails fly:build"
-    SERVER_COMMAND = "bin/rails fly:server"
+  build-target = "production"
 
 [deploy]
-  release_command = "bin/rails fly:release"
+  release_command = "./bin/rails db:prepare"
 
 [env]
-  PORT = "8080"
+RAILS_ENV="production"
+LANG="ja_JP.UTF-8"
+TZ="Asia/Tokyo"
+RAILS_LOG_TO_STDOUT = "true"
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
-
-[[services]]
-  http_checks = []
-  internal_port = 8080
+[http_service]
   processes = ["app"]
-  protocol = "tcp"
-  script_checks = []
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 0
 
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  timeout = "5s"
+  method = "GET"
+  path = "/up"
+  protocol = "http"
 
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
+[http_service.checks.headers]
+  X-Forwarded-Proto = "https"
 
 [[statics]]
-  guest_path = "/app/public"
+  guest_path = "/rails/public"
   url_prefix = "/"
+
+[[vm]]
+  size = "shared-cpu-1x"

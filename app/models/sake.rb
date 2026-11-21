@@ -42,6 +42,8 @@
 #
 
 class Sake < ApplicationRecord
+  include BottleStateTimestampable
+
   has_many :photos, dependent: :destroy
   enum :bottle_level, { sealed: 0, opened: 1, empty: 2 }
   enum :hiire, { unknown: 0, namanama: 1, mae_hiire: 2, ato_hiire: 3, nido_hiire: 4, ikkai_hiire: 5 }, prefix: true
@@ -95,12 +97,10 @@ class Sake < ApplicationRecord
   after_initialize do |sake|
     sake.opened_at ||= Time.current
     sake.emptied_at ||= Time.current
-    sake.bindume_on ||= Time.current.to_date.beginning_of_month
   end
 
-  # rubocop:disable Layout/LineLength
+  # rubocop:disable-next Layout/LineLength
   ransack_alias :all_text, :aroma_impression_or_awa_or_color_or_genryomai_or_kakemai_or_kobo_or_kura_or_name_or_nigori_or_note_or_roka_or_season_or_shibori_or_taste_impression_or_todofuken
-  # rubocop:enable Layout/LineLength
 
   # Ransackでの検索許可リスト
   def self.ransackable_attributes(_auth_object = nil)
@@ -114,25 +114,19 @@ class Sake < ApplicationRecord
   end
 
   # 酒が未開封か
-  # @return [Boolean] 酒が未開封ならture、さもなくばfalse
+  # @return [Boolean] 酒が未開封ならtrue、さもなくばfalse
   def sealed?
     bottle_level == "sealed"
   end
 
   # 酒が開封されてまだ残っているか
-  # @return [Boolean] 酒が開封済みで中身が残っていたらture、未開封や空ならfalse
+  # @return [Boolean] 酒が開封済みで中身が残っていたらtrue、未開封や空ならfalse
   def opened?
     bottle_level == "opened"
   end
 
-  # どの瓶状態（bottle_level）にもマッチしない値
-  #
-  # 酒indexにおいて全ての酒を表示するために使われる。
-  BOTTOM_BOTTLE = -1
-  public_constant :BOTTOM_BOTTLE
-
   # 酒が空か
-  # @return [Boolean] 酒が空ならture、未開封や開封済みならfalse
+  # @return [Boolean] 酒が空ならtrue、未開封や開封済みならfalse
   def empty?
     bottle_level == "empty"
   end
@@ -140,17 +134,12 @@ class Sake < ApplicationRecord
   # 残っている酒の総量をmlで返す
   #
   # 開封済みのお酒は瓶の半量が残っているとして概算する。
-  # @param include_empty [Boolean] trueなら飲んだ分も含めた総量を計算する
   # @return [Integer] 酒の総量[ml]
-  def self.alcohol_stock(include_empty: false)
-    if include_empty
-      sum(:size)
-    else
-      where(bottle_level: "sealed").sum(:size) + (where(bottle_level: "opened").sum(:size) / 2)
-    end
+  def self.alcohol_stock
+    where(bottle_level: "sealed").sum(:size) + (where(bottle_level: "opened").sum(:size) / 2)
   end
 
-  # 酒が新着ならture、さもなくばfalse
+  # 酒が新着ならtrue、さもなくばfalse
   #
   # 下記のいずれかに当てはまる場合は新着と判定する
   # - 未開封かつ4週間以内に購入した

@@ -4,7 +4,7 @@ RSpec.describe "Sake Form Photos" do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
     visit new_sake_path
     fill_in("sake_name", with: "生道井")
   end
@@ -14,7 +14,7 @@ RSpec.describe "Sake Form Photos" do
       before do
         photo1 = Rails.root.join("spec/system/files/sake_photo1.jpg")
         attach_file("sake_photos", photo1)
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "makes a sake having one photo" do
@@ -28,7 +28,7 @@ RSpec.describe "Sake Form Photos" do
         photo1 = Rails.root.join("spec/system/files/sake_photo1.jpg")
         photo2 = Rails.root.join("spec/system/files/sake_photo2.jpg")
         attach_file("sake_photos", [photo1, photo2])
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "makes a sake having two photos" do
@@ -39,7 +39,7 @@ RSpec.describe "Sake Form Photos" do
 
     context "without photos" do
       before do
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "makes a sake not having any photos" do

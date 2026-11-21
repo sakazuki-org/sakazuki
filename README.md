@@ -25,16 +25,17 @@
 
 - Ruby = (See .ruby-version file)
 - Bundler
-- Yarn🐈 >= 1.22.4
-- Node.js >= 12.20.1
-- PostgreSQL >= 12.0
-- ImageMagick >= 6.9
+- Node.js >= 22
+- Yarn 🐈 = 1.22.22
+- PostgreSQL >= 18
+- libvips (development only)
 
 ## Setup
 
 - 依存関係のインストール
   - `bundle install`
   - `yarn install`
+  - `yarn run playwright install chromium`（Test を走らせる場合）
 - .env ファイルの作成
   - PostgreSQL の設定
   - Google AdSense のクライアント ID の設定（Google AdSense を使う場合）
@@ -62,8 +63,7 @@ User.create!(
 ```
 
 - DB の作成
-  - `bundle exec rails db:create`
-  - `bundle exec rails db:migrate`
+  - `bundle exec rails db:prepare`
   - `bundle exec rake parallel:setup`、並列テストを使う場合
 - 管理者ユーザの作成
   - `bundle exec rails db:seed`
@@ -86,7 +86,7 @@ See the [deployment](https://github.com/momocus/sakazuki/wiki/Deployment).
 - Docker イメージのビルド
 
 ```console
-$ docker compose build
+$ docker compose build --build-arg RUBY_VERSION=$(cat .ruby-version)
 ...
 ```
 
@@ -95,16 +95,13 @@ $ docker compose build
 <!-- markdownlint-disable MD013 -->
 
 ```console
-$ docker compose run --rm web bundle exec rails db:create
+$ docker compose run --rm web bundle exec rails db:prepare
 Creating volume "sakazuki_db_storage" with local driver
 Creating sakazuki_db_1 ... done
 Creating sakazuki_web_run ... done
 Created database 'sakazuki_development'
 Created database 'sakazuki_test'
 $ docker compose run --rm web bundle exec rake parallel:setup
-...
-$ docker compose run --rm web bundle exec rails db:migrate
-Creating sakazuki_web_run ... done
 ...
 Model files unchanged.
 $ docker compose run --rm web bundle exec rails db:seed

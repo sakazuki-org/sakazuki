@@ -1,39 +1,27 @@
+require "capybara-playwright-driver"
 require "capybara/rails"
 require "capybara/rspec"
-require "selenium-webdriver"
 
 Capybara.configure do |config|
-  # driver設定: https://www.rubydoc.info/gems/capybara/Capybara#configure-class_method
-  config.default_driver = :rack_test
-  if ENV["REMOTE_DRIVER_HOST"]
-    config.app_host = ENV.fetch("CAPYBARA_APP_HOST", nil)
-    config.server_host = ENV.fetch("CAPYBARA_SERVER_HOST", nil)
-    Capybara.register_driver(:remote_firefox_headless) do |app|
-      host = ENV["REMOTE_DRIVER_HOST"]
-      port = ENV.fetch("REMOTE_DRIVER_PORT", 4444)
-      url = "http://#{host}:#{port}/wd/hub"
-      options = Selenium::WebDriver::Firefox::Options.new
-      options.add_argument("-headless")
-      Capybara::Selenium::Driver.new(app, browser: :remote, options:, url:)
-    end
-    config.javascript_driver = :remote_firefox_headless
-  else
-    config.javascript_driver = :selenium_headless
-  end
-
   # "data-testid"をCapybaraのclick_linkなどで使えるように、Optional attributeに登録する
   config.test_id = "data-testid"
 
   # Capybaraのアサーションが失敗したときに自動再試行する時間
   # JS処理が間に合わないなどフレーキーなテストへの対応するため少し長くする
   config.default_max_wait_time = 5
+
+  # テスト失敗時にテストリトライを行うまでの時間
+  config.default_retry_interval = 0.25
 end
 
 RSpec.configure do |config|
   config.before(:each, type: :system) do |example|
-    # context/describe/itの`js: true`でdriverを切り替える
-    driver = example.metadata[:js] ? Capybara.javascript_driver : Capybara.default_driver
-    driven_by(driver)
+    if example.metadata[:js]
+      # Rails標準のPlaywrightサポートを使う
+      driven_by(:playwright, options: { browser_type: :chromium, headless: true })
+    else
+      driven_by(:rack_test)
+    end
   end
 end
 
@@ -46,7 +34,7 @@ end
 
 # ページ遷移を待つ
 #
-# Capybaraでselenium driverなどを使うと、テスト処理にページ遷移が追いつかずテストが落ちることがある。
+# JS実行driverを使うと、テスト処理にページ遷移が追いつかずテストが落ちることがある。
 # このメソッドでページ遷移を待つことができる。
 # 対象ページにはdata-testidに自身のパスを持つことを想定している。
 #

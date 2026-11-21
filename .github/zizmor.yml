@@ -1,0 +1,21 @@
+rules:
+  dangerous-triggers:
+    ignore:
+      # ignore line 3 in esbuild-bundle-analyzer.yml
+      # bundleサイズをコメントするためトリガーを変えられないので無視
+      - esbuild-bundle-analyzer.yml:3
+  unpinned-uses:
+    ignore:
+      # バージョンのピン付けはghalintで検出している
+      # ghalintのほうがGitHub管理だけ許可などできるので、こちらは全ファイルで無視する。
+      - auto-assign.yml
+      - check.yml
+      - codeql.yml
+      - esbuild-bundle-analyzer.yml
+      - fly.yml
+      - test.yml
+  secrets-outside-env:
+    config:
+      allow:
+        # codecov は deploy に関係ないので GitHub deploy environment 外を許可
+        - CODECOV_TOKEN

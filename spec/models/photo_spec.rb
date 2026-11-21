@@ -11,8 +11,8 @@
 require "rails_helper"
 
 RSpec.describe Photo do
-  describe "chackbox_name" do
-    subject { photo.chackbox_name }
+  describe "checkbox_name" do
+    subject { photo.checkbox_name }
 
     let(:photo) { create(:photo) }
 

@@ -5,10 +5,6 @@
 @import "https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap";
 @import "simplelightbox/src/simple-lightbox";
 
-h1 {
-  @extend .mt-2;
-}
-
 // ------ header ------
 
 .sakazuki-header-logo {
@@ -85,6 +81,12 @@ h1 {
   border-top: none;
 }
 
+// 絶対日時のtooltip
+.custom-datetime-tooltip {
+  --bs-tooltip-color: var(--bs-dark);
+  --bs-tooltip-bg: var(--bs-light);
+}
+
 // ------ form ------
 
 .select-delete-photos input[type="checkbox"] {
@@ -100,7 +102,8 @@ h1 {
   @extend .text-danger;
   @extend .fs-1;
 
-  content: "✖";
+  content: "✕";
+  font-weight: bold;
   display: block;
   margin-top: -3ex;
   margin-left: 1ex;
@@ -180,6 +183,13 @@ $accent: #b7282e;
 
 .menu-font {
   font-family: "Yuji Syuku", serif;
+}
+
+.menu-img {
+  @extend .w-25;
+  @extend .img-fluid;
+
+  min-width: 140px;
 }
 
 .accent-text {

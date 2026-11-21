@@ -1,3 +1,6 @@
+<%# erb_lint:disable StrictLocals %>
+<%# パーシャルビューの引数はkaminariに管理される
+  # マジックコメントによる動的チェック、ERB LintのStrictLocals、の両方を行わない %>
 <%= paginator.render do %>
   <nav>
     <ul class="pagination justify-content-center mb-0">

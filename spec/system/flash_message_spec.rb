@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Flash Message" do
   let(:user) { create(:user) }
-  let(:sake) { create(:sake) }
+  let(:sake) { sake_with_photos }
 
   context "without login" do
     # sake
@@ -40,7 +40,7 @@ RSpec.describe "Flash Message" do
 
   context "with login" do
     before do
-      sign_in(user)
+      login_as(user)
     end
 
     # sake
@@ -48,7 +48,7 @@ RSpec.describe "Flash Message" do
       it "has flash message" do
         visit new_sake_path
         fill_in("sake_name", with: "生道井")
-        click_on("form_submit")
+        click_button("form_submit")
         expect(page).to have_selector(:test_id, "flash_message")
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe "Flash Message" do
       it "has flash message" do
         visit edit_sake_path(sake.id)
         fill_in("sake_name", with: "ほしいずみ")
-        click_on("form_submit")
+        click_button("form_submit")
         expect(page).to have_selector(:test_id, "flash_message")
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe "Flash Message" do
       it "has flash message" do
         visit sake_path(sake.id)
         accept_confirm do
-          click_on("delete_sake")
+          click_link("delete_sake")
         end
         expect(page).to have_selector(:test_id, "flash_message")
       end
@@ -75,7 +75,29 @@ RSpec.describe "Flash Message" do
     describe "copy sake" do
       it "has flash message" do
         visit sake_path(sake.id)
-        click_on("copy_sake")
+        click_link("copy_sake")
+        expect(page).to have_selector(:test_id, "flash_message")
+      end
+    end
+
+    # photo
+    describe "add photo to sake", :js do
+      it "has flash message" do
+        visit edit_sake_path(sake.id)
+        # ファイルアップロードフィールドに画像を添付
+        attach_file("sake_photos", Rails.root.join("spec/system/files/sake_photo1.avif"))
+        click_button("form_submit")
+        expect(page).to have_selector(:test_id, "flash_message")
+      end
+    end
+
+    describe "delete photo from sake", :js do
+      it "has flash message" do
+        visit edit_sake_path(sake.id)
+        # チェックボックスにチェックを入れて削除
+        photo = sake.photos.first
+        find(:test_id, photo.checkbox_name).click
+        click_button("form_submit")
         expect(page).to have_selector(:test_id, "flash_message")
       end
     end
@@ -84,7 +106,7 @@ RSpec.describe "Flash Message" do
     describe "logout" do
       it "has flash message" do
         visit sakes_path
-        click_on("sign_out")
+        click_link("sign_out")
         expect(page).to have_selector(:test_id, "flash_message")
       end
     end

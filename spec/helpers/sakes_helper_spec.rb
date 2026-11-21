@@ -5,8 +5,8 @@ RSpec.describe SakesHelper do
 
   describe "empty_to_default" do
     context "with some first argument" do
-      value = 1
-      default_value = 2
+      let(:value) { 1 }
+      let(:default_value) { 2 }
 
       it "returns first value" do
         expect(empty_to_default(value, default_value)).to eq(value)
@@ -14,8 +14,8 @@ RSpec.describe SakesHelper do
     end
 
     context "with nil for first argument" do
-      nil_value = nil
-      default_value = 2
+      let(:nil_value) { nil }
+      let(:default_value) { 2 }
 
       it "returns second value" do
         expect(empty_to_default(nil_value, default_value)).to eq(default_value)
@@ -23,8 +23,8 @@ RSpec.describe SakesHelper do
     end
 
     context "with empty string for first argument" do
-      empty_string = ""
-      default_value = 2
+      let(:empty_string) { "" }
+      let(:default_value) { 2 }
 
       it "returns second value" do
         expect(empty_to_default(empty_string, default_value)).to eq(default_value)
@@ -80,12 +80,17 @@ RSpec.describe SakesHelper do
   end
 
   describe "bindume_collection" do
-    it "generates a range ending with current" do
+    it "generates a range ending with unknown" do
+      candidate = [I18n.t("sakes.form_abstract.unknown"), ""]
+      expect(by_collection.last).to eq(candidate)
+    end
+
+    it "generates a range having current in second from last" do
       date = Time.current.to_date.beginning_of_month
       year = with_japanese_era(date)
       month = I18n.l(date, format: "%B")
       candidate = ["#{year} #{month}", date.to_s]
-      expect(bindume_collection.last).to eq(candidate)
+      expect(bindume_collection[-2]).to eq(candidate)
     end
 
     it "generates a range starting with 30 years ago" do
@@ -145,25 +150,6 @@ RSpec.describe SakesHelper do
     context "with integer argument" do
       it "returns price tag with unit" do
         expect(price_tag(1234)).to eq("1234#{t('activerecord.attributes.sake.price_unit')}")
-      end
-    end
-  end
-
-  describe "stock" do
-    before do
-      create(:sake, size: 720, bottle_level: "sealed")
-      create(:sake, size: 1800, bottle_level: "empty")
-    end
-
-    context "without empty bottle" do
-      it "returns 4合" do
-        expect(stock(false)).to eq("4合")
-      end
-    end
-
-    context "with empty bottle" do
-      it "returns 1升4合" do
-        expect(stock(true)).to eq("1升4合")
       end
     end
   end

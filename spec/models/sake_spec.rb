@@ -104,18 +104,9 @@ RSpec.describe Sake do
   end
 
   describe "Sake.alcohol_stock" do
-    context "without argument" do
-      it "returns 1620" do
-        # 720 + 1800/2
-        expect(described_class.alcohol_stock).to eq(1620)
-      end
-    end
-
-    context "with include_empty: true" do
-      it "returns 2820 including empty bottle" do
-        # 720 + 1800 + 300
-        expect(described_class.alcohol_stock(include_empty: true)).to eq(2820)
-      end
+    it "returns 1620" do
+      # 720 + 1800/2
+      expect(described_class.alcohol_stock).to eq(1620)
     end
   end
 
@@ -124,7 +115,7 @@ RSpec.describe Sake do
       travel_to(Time.zone.parse("2022-01-30 20:30:00"))
     end
 
-    context "when sake is seald and created within 4 weeks" do
+    context "when sake is sealed and created within 4 weeks" do
       let(:sake) { create(:sake, bottle_level: "sealed", created_at: Time.zone.parse("2022-01-02 10:30:00")) }
 
       it "returns true" do
@@ -132,7 +123,7 @@ RSpec.describe Sake do
       end
     end
 
-    context "when sake is seald and created more than 4 weeks ago" do
+    context "when sake is sealed and created more than 4 weeks ago" do
       let(:sake) { create(:sake, bottle_level: "sealed", created_at: Time.zone.parse("2022-01-01 10:30:00")) }
 
       it "returns false" do
@@ -140,7 +131,7 @@ RSpec.describe Sake do
       end
     end
 
-    context "when sake is opened and created within 2 week" do
+    context "when sake is opened and created within 2 weeks" do
       let(:sake) { create(:sake, bottle_level: "opened", created_at: Time.zone.parse("2022-01-16 10:30:00")) }
 
       it "returns true" do

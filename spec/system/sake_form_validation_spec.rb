@@ -4,7 +4,7 @@ RSpec.describe "Sake Form Validation" do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
     visit new_sake_path
     fill_in("sake_name", with: "生道井")
   end
@@ -13,7 +13,7 @@ RSpec.describe "Sake Form Validation" do
     context "with invalid value" do
       before do
         fill_in("sake_alcohol", with: "-10")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has flash message" do
@@ -35,7 +35,7 @@ RSpec.describe "Sake Form Validation" do
     context "with empty string" do
       before do
         fill_in("sake_name", with: "")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "does not move page" do
@@ -52,7 +52,7 @@ RSpec.describe "Sake Form Validation" do
     context "with negative value" do
       before do
         fill_in("sake_alcohol", with: "-1")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -67,7 +67,7 @@ RSpec.describe "Sake Form Validation" do
     context "with value over 100" do
       before do
         fill_in("sake_alcohol", with: "101")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -84,7 +84,7 @@ RSpec.describe "Sake Form Validation" do
     context "with negative value" do
       before do
         fill_in("sake_seimai_buai", with: "-1")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -99,7 +99,7 @@ RSpec.describe "Sake Form Validation" do
     context "with value over 100" do
       before do
         fill_in("sake_seimai_buai", with: "101")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -121,7 +121,7 @@ RSpec.describe "Sake Form Validation" do
           find("label", text: label_regexp).click
           fill_in("sake_size_other", with: "-1")
         end
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "does not move page" do
@@ -138,7 +138,7 @@ RSpec.describe "Sake Form Validation" do
     context "with negative value" do
       before do
         fill_in("sake_price", with: "-1")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -155,7 +155,7 @@ RSpec.describe "Sake Form Validation" do
     context "with negative value" do
       before do
         fill_in("sake_sando", with: "-1.0")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do
@@ -172,7 +172,7 @@ RSpec.describe "Sake Form Validation" do
     context "with negative value" do
       before do
         fill_in("sake_aminosando", with: "-1.0")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has style for invalid" do

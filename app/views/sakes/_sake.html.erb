@@ -1,5 +1,6 @@
+<%# locals: (sake:) %>
 <div class="col">
-  <div class="card h-100">
+  <div class="card h-100" data-testid="sake_card_<%= sake.id %>">
     <div class="card-body py-2">
       <div class="row g-2">
         <div class="col-12">
@@ -54,7 +55,13 @@
             <div class="col-12">
               <%= sake.bottle_level_i18n %>
               <span class="text-muted">
-                ‒ <%= t(".time_ago", count: time_ago_in_words(latest_at(sake))) %>
+                ‒ <span data-controller="tooltip"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-custom-class="custom-datetime-tooltip"
+                    data-bs-title="<%= absolute_date(sake) %>">
+                  <%= t(".time_ago", count: time_ago_in_words(latest_at(sake))) %>
+                </span>
               </span>
             </div>
             <div class="col-12">
@@ -62,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div class="col-6 pe-4 align-self-center photo-gallery" data-testid="sake_photo_<%= sake.id %>">
+        <div class="col-6 pe-4 align-self-center photo-gallery">
           <% if sake.photos.any? %>
             <% photo = sake.photos.first %>
             <% thumb_tag = cl_image_tag(photo.image.thumb.url, class: "img-thumbnail") %>

@@ -37,7 +37,9 @@ RSpec.describe "Simple Lightboxes", :js do
 
     before do
       visit sakes_path
-      find(:test_id, "sake_photo_#{sakes.first.id}").click
+      within(:test_id, "sake_card_#{sakes.first.id}") do
+        find(".photo-gallery").click
+      end
     end
 
     it "does not change current path" do

@@ -7,7 +7,7 @@ RSpec.describe "Sake Form Brew Year" do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
   end
 
   describe "brewery_year" do
@@ -43,7 +43,7 @@ RSpec.describe "Sake Form Brew Year" do
         fill_in("sake_name", with: "生道井")
         by = with_japanese_era(to_by(Time.current))
         select(by, from: "sake_brewery_year")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has this BY" do
@@ -53,14 +53,14 @@ RSpec.describe "Sake Form Brew Year" do
     end
 
     context "when creating sake whoes BY is past year" do
-      ago = Time.current.ago(10.years)
+      let(:ago) { Time.current.ago(10.years) }
 
       before do
         visit new_sake_path
         fill_in("sake_name", with: "生道井")
         by = with_japanese_era(to_by(ago))
         select(by, from: "sake_brewery_year")
-        click_on("form_submit")
+        click_button("form_submit")
       end
 
       it "has past BY" do

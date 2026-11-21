@@ -25,7 +25,7 @@ RSpec.describe "Copy Sakes" do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
     visit sake_path(sake.id)
   end
 
@@ -38,7 +38,7 @@ RSpec.describe "Copy Sakes" do
 
   context "when click copy link" do
     before do
-      click_on("copy_sake")
+      click_link("copy_sake")
     end
 
     describe "linked page" do
@@ -61,7 +61,7 @@ RSpec.describe "Copy Sakes" do
 
   describe "copied values" do
     before do
-      click_on("copy_sake")
+      click_link("copy_sake")
     end
 
     # nomarl case
@@ -117,7 +117,7 @@ RSpec.describe "Copy Sakes" do
 
   describe "not copied values" do
     before do
-      click_on("copy_sake")
+      click_link("copy_sake")
     end
 
     # normal case

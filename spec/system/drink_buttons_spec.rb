@@ -4,16 +4,15 @@ RSpec.describe "Drink Buttons" do
   let!(:sealed_sake) { create(:sake, bottle_level: "sealed") }
   let!(:opened_sake) { create(:sake, bottle_level: "opened") }
   let!(:empty_sake) { create(:sake, bottle_level: "empty", taste_value: 1, aroma_value: 2) }
-  let(:user) { create(:user) }
 
   before do
     visit sakes_path
   end
 
-  open_text = I18n.t("sakes.drink_button.open")
-  empty_text = I18n.t("sakes.drink_button.empty")
-
   describe "link text" do
+    let(:open_text) { I18n.t("sakes.drink_button.open") }
+    let(:empty_text) { I18n.t("sakes.drink_button.empty") }
+
     context "with sealed bottle" do
       it "has open button with i18n text" do
         id = "sake_buttons_#{sealed_sake.id}"
@@ -38,9 +37,11 @@ RSpec.describe "Drink Buttons" do
       end
     end
 
-    context "with empty bottle", :js do
+    context "with empty bottle" do
       before do
-        check("check_empty_bottle")
+        # 空検索は全酒の一覧になる
+        fill_in("text_search", with: "")
+        click_button("submit_search")
       end
 
       it "does not have open button with i18n text" do
@@ -56,15 +57,17 @@ RSpec.describe "Drink Buttons" do
   end
 
   context "without login" do
+    let(:user) { create(:user) }
+
     before do
       sign_out(user)
     end
 
     describe "clicking open button of sealed bottle", :js do
       before do
-        click_on("dropdown_toggle_#{sealed_sake.id}")
+        click_button("dropdown_toggle_#{sealed_sake.id}")
         accept_confirm do
-          click_on("open_button_#{sealed_sake.id}")
+          click_link("open_button_#{sealed_sake.id}")
         end
         wait_for_page new_user_session_path
       end
@@ -86,9 +89,9 @@ RSpec.describe "Drink Buttons" do
 
     describe "clicking empty button of opend bottle", :js do
       before do
-        click_on("dropdown_toggle_#{opened_sake.id}")
+        click_button("dropdown_toggle_#{opened_sake.id}")
         accept_confirm do
-          click_on("empty_button_#{opened_sake.id}")
+          click_link("empty_button_#{opened_sake.id}")
         end
         wait_for_page new_user_session_path
       end
@@ -110,15 +113,17 @@ RSpec.describe "Drink Buttons" do
   end
 
   context "with login" do
+    let(:user) { create(:user) }
+
     before do
-      sign_in(user)
+      login_as(user)
     end
 
     describe "clicking open button of sealed bottle", :js do
       before do
-        click_on("dropdown_toggle_#{sealed_sake.id}")
+        click_button("dropdown_toggle_#{sealed_sake.id}")
         accept_confirm do
-          click_on("open_button_#{sealed_sake.id}")
+          click_link("open_button_#{sealed_sake.id}")
         end
         wait_for_alert
       end
@@ -150,7 +155,7 @@ RSpec.describe "Drink Buttons" do
       end
 
       it "opens review accordion after clicking review link", :js do
-        click_on(I18n.t("helper.flash.review"))
+        click_link(I18n.t("helper.flash.review"))
         text = I18n.t("activerecord.attributes.sake.color") # レビューの中にある酒の項目の1つ
         expect(page).to have_text(text)
       end
@@ -158,9 +163,9 @@ RSpec.describe "Drink Buttons" do
 
     describe "clicking empty button of opened bottle", :js do
       before do
-        click_on("dropdown_toggle_#{opened_sake.id}")
+        click_button("dropdown_toggle_#{opened_sake.id}")
         accept_confirm do
-          click_on("empty_button_#{opened_sake.id}")
+          click_link("empty_button_#{opened_sake.id}")
         end
         wait_for_alert
       end

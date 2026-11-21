@@ -1,12 +1,15 @@
 class ImageUploader < CarrierWave::Uploader::Base
-  if Rails.env.production?
+  if Rails.application.config.x.cloudinary_enabled
     include Cloudinary::CarrierWave
   else
-    include CarrierWave::MiniMagick
+    include CarrierWave::Vips
+
     storage :file
   end
 
-  process(resize_to_limit: [4032, 4032], convert: "avif", quality: "auto", ocr: "adv_ocr:ja") if Rails.env.production?
+  if Rails.application.config.x.cloudinary_enabled
+    process(resize_to_limit: [4032, 4032], convert: "avif", quality: "auto", ocr: "adv_ocr:ja")
+  end
 
   version :thumb do
     # HACK: 1:1でスマホで２つ並んでも潰れないサイズ
@@ -14,7 +17,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   version :large_twitter_card do
-    if Rails.env.production?
+    if Rails.application.config.x.cloudinary_enabled
       cloudinary_transformation(
         format: "webp", crop: :thumb, width: 600, height: 300, sign_url: true,
         gravity: :ocr_text
@@ -23,7 +26,10 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    # テストでは画像アップロードパスを変更する
+    # carrierwave.rb によりテスト実行後に削除される
+    root_dir = Rails.application.config.x.uploads_dir.to_s
+    "#{root_dir}/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
   def extension_allowlist

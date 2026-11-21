@@ -1,8 +1,10 @@
-// Type definitions for SimpleLightbox 2.12.1
-// Project: https://github.com/andreknieriem/simplelightbox https://simplelightbox.com/
-// Definitions by: SAITOU Keita <https://github.com/yonta>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version 4.9.5
+/*
+ * Type definitions for SimpleLightbox 2.12.1
+ * Project: https://github.com/andreknieriem/simplelightbox https://simplelightbox.com/
+ * Definitions by: SAITOU Keita <https://github.com/yonta>
+ * Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+ * TypeScript Version 4.9.5
+ */
 
 declare module "simplelightbox" {
   type SimpleLightboxOptions = {
@@ -85,12 +87,19 @@ declare module "simplelightbox" {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback: (event: any) => any,
     ): SimpleLightbox
+
     open(elem: Element): void
+
     close(): void
+
     next(): void
+
     prev(): void
+
     destroy(): void
+
     refresh(): void
+
     getLighboxData(): SimpleLightboxData // typo?
   }
 

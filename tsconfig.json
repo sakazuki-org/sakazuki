@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["*"],
     "esModuleInterop": true,
     "moduleResolution": "bundler",
     "module": "esnext",

@@ -1,0 +1,46 @@
+volumes:
+  db_storage:
+    driver: local
+  builds:
+    driver: local
+  uploads:
+    driver: local
+services:
+  db:
+    image: postgres@sha256:41fc5342eefba6cc2ccda736aaf034bbbb7c3df0fdb81516eba1ba33f360162c
+    volumes:
+      - db_storage:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    hostname: db
+  web: &web
+    image: sakazuki
+    volumes:
+      - ./app:/rails/app:cached
+      - ./config:/rails/config:cached
+      - ./bin:/rails/bin:cached
+      - ./config.ru:/rails/config.ru:cached
+      - ./Rakefile:/rails/Rakefile:cached
+      - ./lib:/rails/lib:cached
+      - ./db:/rails/db:cached
+      - ./spec:/rails/spec:cached
+      - ./public:/rails/public:cached
+      - uploads:/rails/app/public/uploads:consistent
+      - builds:/rails/app/assets/builds:consistent
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOSTNAME: db
+    build:
+      context: .
+      target: development
+      args:
+        - RUBY_VERSION
+    tty: true
+    command: bash -c "rm -f tmp/pids/server.pid && bin/dev"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db

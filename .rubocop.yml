@@ -1,10 +1,10 @@
-require:
-  - rubocop-capybara
+plugins:
   - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
+  - rubocop-capybara
 
 AllCops:
   # すべてのCopsを有効にする

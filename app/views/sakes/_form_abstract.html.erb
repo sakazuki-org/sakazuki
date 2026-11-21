@@ -1,3 +1,4 @@
+<%# locals: (sake:, form:) %>
 <div class="accordion-item">
   <h2 class="accordion-header" id="headingAbstract">
     <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -6,7 +7,6 @@
     </button>
   </h2>
   <div id="collapseAbstract" class="accordion-collapse collapse show"
-    aria-labelledby="headingAbstract" role="row"
     data-bs-parent="#accordionAbstract">
     <div class="accordion-body">
       <div class="row row-cols-1 g-4">
@@ -32,8 +32,9 @@
                   <% sake.photos.each do |photo| %>
                     <div class="col-6 col-lg-2">
                       <div class="form-check form-check-inline m-0 p-0 select-delete-photos">
-                        <%= check_box_tag(photo.chackbox_name, "delete", nil, class: "form-check-input") %>
-                        <label class="form-check-label" for="<%= photo.chackbox_name %>">
+                        <%= checkbox_tag(photo.checkbox_name, "delete", nil, class: "form-check-input") %>
+                        <label class="form-check-label" for="<%= photo.checkbox_name %>"
+                          data-testid="<%= photo.checkbox_name %>">
                           <%= cl_image_tag(photo.image.thumb.url, class: "img-thumbnail") %>
                         </label>
                       </div>
@@ -188,7 +189,7 @@
                       data-sake-size-target="radio" data-sake-size="180"
                       data-action="sake-size#updateOtherSizeEnablement sake-size#writeHiddenByRadio">
                     <label class="form-check-label" for="sake_size_radio_180">
-                      180 <%# erblint:disable HardCodedString %>
+                      180 <%# erb_lint:disable HardCodedString %>
                     </label>
                   </div>
                 </div>
@@ -198,7 +199,7 @@
                       data-sake-size-target="radio" data-sake-size="300"
                       data-action="sake-size#updateOtherSizeEnablement sake-size#writeHiddenByRadio">
                     <label class="form-check-label" for="sake_size_radio_300">
-                      300 <%# erblint:disable HardCodedString %>
+                      300 <%# erb_lint:disable HardCodedString %>
                     </label>
                   </div>
                 </div>
@@ -208,7 +209,7 @@
                       data-sake-size-target="radio" data-sake-size="720"
                       data-action="sake-size#updateOtherSizeEnablement sake-size#writeHiddenByRadio">
                     <label class="form-check-label" for="sake_size_radio_720">
-                      720 <%# erblint:disable HardCodedString %>
+                      720 <%# erb_lint:disable HardCodedString %>
                     </label>
                   </div>
                 </div>
@@ -218,7 +219,7 @@
                       data-sake-size-target="radio" data-sake-size="1800"
                       data-action="sake-size#updateOtherSizeEnablement sake-size#writeHiddenByRadio">
                     <label class="form-check-label" for="sake_size_radio_1800">
-                      1800 <%# erblint:disable HardCodedString %>
+                      1800 <%# erb_lint:disable HardCodedString %>
                     </label>
                   </div>
                 </div>

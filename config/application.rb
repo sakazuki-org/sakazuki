@@ -23,7 +23,7 @@ Bundler.require(*Rails.groups)
 module Sakazuki
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults(7.2)
+    config.load_defaults(8.1)
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -54,7 +54,7 @@ module Sakazuki
       }
 
     # For Japanese
-    config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.ja.{rb,yml}")]
+    config.i18n.load_path += Rails.root.glob("config/locales/**/*.ja.{rb,yml}")
     config.i18n.available_locales = %i[en ja]
     config.i18n.default_locale = :ja
 

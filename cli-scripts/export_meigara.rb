@@ -58,9 +58,8 @@ end
 def remove_duplication(jsons)
   uniqed = jsons.uniq { |json| json[:meigara] }
   duplications = jsons.difference(uniqed)
-  # rubocop:disable Rails/Pluck
+  # rubocop:disable-next Rails/Pluck
   duplications = duplications.map { |json| json[:meigara] }
-  # rubocop:enable Rails/Pluck
   jsons.reject { |json| include_meigara?(json, duplications) }
 end
 

@@ -1,3 +1,6 @@
+<%# erb_lint:disable StrictLocals %>
+<%# パーシャルビューの引数はkaminariに管理される
+  # マジックコメントによる動的チェック、ERB LintのStrictLocals、の両方を行わない %>
 <li class="page-item <%= "disabled" if current_page.first? %>">
   <%= link_to(tag.i(class: "bi-chevron-left"), url, class: "page-link", rel: "prev", data: { turbo_frame: "_self" }) %>
 </li>

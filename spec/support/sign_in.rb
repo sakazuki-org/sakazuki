@@ -3,7 +3,7 @@ module SignIn
   # @param user [Object] ファクトリーボットで作ったuserオブジェクト
   def sign_in_via_header_button(user)
     within(:test_id, "navigation_list") do
-      click_on(I18n.t("layouts.header.sign_in"))
+      click_link(I18n.t("layouts.header.sign_in"))
     end
     signin_process_on_signin_page(user)
   end
@@ -16,6 +16,6 @@ module SignIn
 
     fill_in("user_email", with: user.email)
     fill_in("user_password", with: user.password)
-    click_on("commit")
+    click_button("commit")
   end
 end

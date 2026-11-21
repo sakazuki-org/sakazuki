@@ -1,3 +1,4 @@
+<%# locals: (sake:, form:) %>
 <div class="accordion-item">
   <h2 class="accordion-header" id="headingNote">
     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -6,14 +7,13 @@
     </button>
   </h2>
   <div id="collapseNote" class="accordion-collapse collapse"
-    aria-labelledby="headingNote" role="row"
     data-bs-parent="#accordionNote">
     <div class="accordion-body">
       <div class="row g-4">
         <fieldset class="col-12">
           <div class="row gx-3">
             <div class="col-12">
-              <%= form.text_area(:note, class: "form-control", data: { testid: "sake_note" }) %>
+              <%= form.textarea(:note, class: "form-control", data: { testid: "sake_note" }) %>
             </div>
           </div>
         </fieldset>

@@ -1,3 +1,4 @@
+<%# locals: (sake:, form:) %>
 <% collapsed, show, expanded = params["review"].present? ? ["", "show", "true"] : ["collapsed", "", "false"] %>
 <div class="accordion-item">
   <h2 class="accordion-header" id="headingReview">
@@ -7,7 +8,6 @@
     </button>
   </h2>
   <div id="collapseReview" class="accordion-collapse collapse <%= show %>"
-    aria-labelledby="headingReview" role="row"
     data-bs-parent="#accordionReview">
     <div class="accordion-body">
       <div class="row g-4">
@@ -29,7 +29,7 @@
               <div class="row g-2">
                 <div class="col-12">
                   <%= form.label(:aroma_impression, class: "form-label") %>
-                  <%= form.text_area(
+                  <%= form.textarea(
                         :aroma_impression,
                         class: "form-control",
                         data: { testid: "sake_aroma_impression" },
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-12">
                   <%= form.label(:taste_impression, class: "form-label") %>
-                  <%= form.text_area(
+                  <%= form.textarea(
                         :taste_impression,
                         class: "form-control",
                         data: { testid: "sake_taste_impression" },

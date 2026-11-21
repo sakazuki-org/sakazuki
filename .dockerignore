@@ -1,7 +1,8 @@
+# Ignore all
 *
 
+# Add application
 !app
-app/assets/builds/*
 !config
 !bin
 !config.ru
@@ -11,21 +12,38 @@ app/assets/builds/*
 !public/*.html
 !public/robots.txt
 
-# required to yarn install
+# Ignore credential key
+/config/credentials/production.key
+
+# Ignore all logfiles and tempfiles, but keep the directories.
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+!/tmp/pids/.keep
+
+# Ignore storage (uploaded files in development and any SQLite databases), but keep the directory.
+!/storage/.keep
+!/tmp/storage/.keep
+
+# Ignore assets, but keep the directory.
+app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Add yarn files.
 !package.json
 !yarn.lock
 !.yarnrc.yml
 !.yarn/releases
-!.yarn/plugins
 
-# required to bundle install
+# Add bundler files.
 !Gemfile
 !Gemfile.lock
 !.ruby-version
 
-# used only in development
-!entrypoint.sh
+# Add development docker files.
+!Procfile.dev
 
-# used only in production
-!fly.Dockerfile
+# Add production build files.
+!Dockerfile
 !fly.toml

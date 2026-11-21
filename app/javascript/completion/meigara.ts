@@ -15,8 +15,8 @@ export type Dict = Record<string, string>
  * そのため、現状は「kamosu mori」のような空白が入っている銘柄に対応できない。
  * アルゴリズムの再考と複雑化が見込まれるため、対応していない。
  *
- * @param name - 酒の名前
- * @param dict - 補完辞書
+ * @param name 酒の名前
+ * @param dict 補完辞書
  * @returns 補完する蔵名、補完できないなら空文字を返す
  */
 export function lookup(name: string, dict: Dict): string {

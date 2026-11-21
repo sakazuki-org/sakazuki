@@ -1,14 +1,50 @@
 name: Test
 
-on: [pull_request]
+on:
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  changes:
+    name: changes
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read # Needed to read changes to skip test or not
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+    steps:
+      # v4.0.1
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d
+        id: filter
+        with:
+          filters: |
+            src:
+              - "app/**"
+              - "spec/**"
+              - "config/**"
+              - "db/**"
+              - "Gemfile"
+              - "Gemfile.lock"
+              - "package.json"
+              - "yarn.lock"
+              - ".ruby-version"
+              - ".github/workflows/test.yml"
 
+  test:
+    name: test
+    needs: changes
+    if: needs.changes.outputs.src == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     services:
       postgres:
-        image: postgres:13
+        image: postgres@sha256:41fc5342eefba6cc2ccda736aaf034bbbb7c3df0fdb81516eba1ba33f360162c
         env:
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: password
@@ -21,21 +57,25 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Install ImageMagick
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install libvips
         run: |
           sudo apt-get update
-          sudo apt-get install --yes imagemagick
-      - uses: actions/setup-node@v4
+          sudo apt-get install --yes libvips
+      - uses: actions/setup-node@v7.1.0
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "yarn"
       - name: Install Yarn Dependencies
-        run: yarn workspaces focus --all --production
+        run: yarn install --immutable
+      - name: Install Playwright browsers
+        run: yarn run playwright install chromium
       - name: Set up Ruby
         env:
           BUNDLE_WITHOUT: development
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f
         with:
           bundler-cache: true
       - name: Setup Database
@@ -44,9 +84,8 @@ jobs:
           RAILS_ENV: test
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: password
-        run: |
-          bundle exec rails db:create
-          bundle exec rails db:migrate
+        # seed 流し込みを実行しない prepare
+        run: bundle exec rails db:test:prepare
       - name: Assets precompile
         env:
           BUNDLE_WITHOUT: development
@@ -60,12 +99,14 @@ jobs:
         run: bundle exec rspec
 
       - name: Upload code coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
+          path: ${{ github.workspace }}/tmp/capybara
           if-no-files-found: ignore

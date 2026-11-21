@@ -4,7 +4,7 @@ RSpec.describe "Sake Form Kura Completion" do
   let(:user) { create(:user) }
 
   before do
-    sign_in(user)
+    login_as(user)
   end
 
   describe "autocompletion of kura form in new sake page", :js do

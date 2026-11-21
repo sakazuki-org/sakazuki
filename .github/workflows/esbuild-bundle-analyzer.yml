@@ -5,11 +5,18 @@ on:
     branches: [main]
   pull_request_target:
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # PLEASE AVOID ADDING OTHER JOBS IN THIS FILE
   # BECAUSE THIS ACTION USE `pull_request_target` EVENT that grants write
   # permissions to GitHub Actions running on PRs from forks.
   analyze:
+    name: analyze
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -17,13 +24,14 @@ jobs:
       actions: read # for fetching base branch bundle stats
       pull-requests: write # for comments
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           # This is required to fetch the commit SHA of the forked PR
           ref: "${{ github.event.pull_request.merge_commit_sha }}"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.1.0
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "yarn"
       - name: Install Dependencies
         run: yarn workspaces focus --all --production
@@ -33,6 +41,6 @@ jobs:
       # Call this action after the build
       - name: Analyze esbuild bundle size
         # uses: exoego/esbuild-bundle-analyzer@main # If you prefer nightly!
-        uses: exoego/esbuild-bundle-analyzer@v1
+        uses: exoego/esbuild-bundle-analyzer@7a1880abea0c4034922134617078f75cf1bf1a28
         with:
           metafiles: "meta.json"

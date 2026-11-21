@@ -1,21 +1,23 @@
-<div class="col d-flex">
-  <div class="row flex-grow-1">
-    <div class="col-12 fs-2 align-self-start">
-      <%= link_to(sake.name, sake_path(sake.id), class: "text-decoration-none text-dark") %>
-    </div>
-    <div class="col-12 align-self-end">
-      <div class="row justify-content-end fs-4">
-        <div class="col-3 price-tag-border">
-          <% if sake.new_arrival? %>
-            <span class="accent-text">
-              <%= t(".new_arrival") %>
-            </span>
-          <% end %>
-        </div>
-        <div class="col-4 text-end price-tag-border">
-          <%= price_tag(sake.selling_price) %>
-        </div>
-      </div>
+<%# locals: (sake:) %>
+<div class="col d-flex flex-column justify-content-between">
+  <div>
+    <% if sake.new_arrival? %>
+      <span class="accent-text fs-5">
+        <%= t(".new_arrival") %>
+      </span>
+    <% end %>
+    <%= link_to(sake.name, sake_path(sake.id), class: "text-break text-decoration-none text-dark fs-2") %>
+  </div>
+  <div class="d-flex align-items-end justify-content-between">
+    <% if sake.photos.any? %>
+      <% photo = sake.photos.first %>
+      <%= cl_image_tag(photo.image.thumb.url, class: "menu-img rounded") %>
+
+    <% else %>
+      <%= cl_image_tag(image_url("sake-no-photo.avif"), class: "menu-img img-thumbnail") %>
+    <% end %>
+    <div class="flex-grow-1 ms-5 text-end price-tag-border fs-4">
+      <%= price_tag(sake.selling_price) %>
     </div>
   </div>
 </div>

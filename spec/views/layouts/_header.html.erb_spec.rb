@@ -3,7 +3,7 @@ require "rails_helper"
 # Capybaraを使うためにsystem specを指定する
 RSpec.describe "layouts/_header", type: :system do
   # 常に表示するリンクのテストをshared_examplesで共通化
-  RSpec.shared_examples "links allways exist" do
+  RSpec.shared_examples "links always exist" do
     it "has sake menu link" do
       expect(find(:test_id, "navigation_list")).to have_link(I18n.t("layouts.header.sake_menu"), href: menu_sakes_path)
     end
@@ -14,11 +14,11 @@ RSpec.describe "layouts/_header", type: :system do
       let(:user) { create(:user, admin: true) }
 
       before do
-        sign_in(user)
+        login_as(user)
         visit root_path
       end
 
-      include_examples "links allways exist"
+      it_behaves_like "links always exist"
 
       it "does not have sign in link" do
         expect { find(:test_id, "sign_in") }.to raise_error(Capybara::ElementNotFound)
@@ -46,11 +46,11 @@ RSpec.describe "layouts/_header", type: :system do
       let(:user) { create(:user, admin: false) }
 
       before do
-        sign_in(user)
+        login_as(user)
         visit root_path
       end
 
-      include_examples "links allways exist"
+      it_behaves_like "links always exist"
 
       it "does not have sign in link" do
         expect { find(:test_id, "sign_in") }.to raise_error(Capybara::ElementNotFound)
@@ -76,7 +76,7 @@ RSpec.describe "layouts/_header", type: :system do
         visit root_path
       end
 
-      include_examples "links allways exist"
+      it_behaves_like "links always exist"
 
       it "has sign in link" do
         expect(find(:test_id, "navigation_list")).to have_link(

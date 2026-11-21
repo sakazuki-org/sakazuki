@@ -7,7 +7,7 @@ RSpec.describe "Sake Form Bindume Date" do
   let(:user) { create(:user) }
 
   before do
-    sign_in user
+    login_as(user)
   end
 
   context "when visiting new sake page" do
@@ -27,7 +27,7 @@ RSpec.describe "Sake Form Bindume Date" do
       fill_in("sake_name", with: "生道井")
       bindume = "#{with_japanese_era(Time.current)} #{I18n.l(Time.current, format: '%B')}"
       select(bindume, from: "sake_bindume_on")
-      click_on("form_submit")
+      click_button("form_submit")
     end
 
     it "has this year and month" do

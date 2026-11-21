@@ -1,3 +1,4 @@
+<%# locals: (sake:) %>
 <div class="row gy-3">
   <div class="col-12">
     <div class="row align-items-baseline">
@@ -92,7 +93,7 @@
   </div>
 
   <div class="col-12 fs-5" data-testid="sake_size_div">
-    <%= sake.size %> ml <%# erblint:disable HardCodedString %>
+    <%= sake.size %> ml <%# erb_lint:disable HardCodedString %>
     <%= "‒ #{sake.price.to_fs(:delimited)} #{t('activerecord.attributes.sake.price_unit')}" if sake.price.present? %>
   </div>
 

@@ -4,8 +4,8 @@ RSpec.describe "Sake Form Completion for Kura and Todofuken" do
   let(:user) { create(:user) }
 
   before do
-    sign_in user
-    visit new_sake_path
+    login_as(user)
+    visit(new_sake_path)
   end
 
   describe "kura_todofuken", :js do

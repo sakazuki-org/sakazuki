@@ -31,14 +31,23 @@ export default class SakeNameController extends Controller<HTMLDivElement> {
     "hiire",
     "warimizu",
   ]
+
   declare readonly nameTarget: HTMLInputElement
+
   declare readonly kuraTarget: HTMLInputElement
+
   declare readonly tokuteiMeishoTarget: HTMLSelectElement
+
   declare readonly seasonTarget: HTMLInputElement
+
   declare readonly motoTarget: HTMLSelectElement
+
   declare readonly shiboriTarget: HTMLSelectElement
+
   declare readonly rokaTarget: HTMLInputElement
+
   declare readonly hiireTarget: HTMLSelectElement
+
   declare readonly warimizuTarget: HTMLSelectElement
 
   /**
@@ -47,9 +56,9 @@ export default class SakeNameController extends Controller<HTMLDivElement> {
    * 補完対象が空のときのみ補完を行う。
    * 未入力状態かは補完対象の`target.element`の値が`target.empty`と同じかで判定する。
    *
-   * @param name - 酒の名前
-   * @param completion - 補完機構
-   * @param target - 補完対象
+   * @param name 酒の名前
+   * @param completion 補完機構
+   * @param target 補完対象
    */
   private complete(name: string, completion: Completion, target: Target) {
     console.log("target:", target)
@@ -63,44 +72,53 @@ export default class SakeNameController extends Controller<HTMLDivElement> {
     }
   }
 
-  connect() {
-    this.nameTarget.addEventListener("change", (_event) => {
-      const name = this.nameTarget.value
+  /**
+   * 酒名を入力されたときに各種酒情報の補完を行う
+   */
+  private readonly handleNameChange = () => {
+    const name = this.nameTarget.value
 
-      // 蔵名の補完
-      const kuraCompletions = [
-        (name: string) => meigara.lookup(name, meigaraDict.dict),
-      ]
-      const kuraTargets: Target[] = [{ element: this.kuraTarget, empty: "" }]
+    // 蔵名の補完
+    const kuraCompletions = [
+      (name: string) => meigara.lookup(name, meigaraDict.dict),
+    ]
+    const kuraTargets: Target[] = [{ element: this.kuraTarget, empty: "" }]
 
-      // 酒情報の補完
-      const dicts = [
-        detailDict.tokuteiMeisho,
-        detailDict.season,
-        detailDict.moto,
-        detailDict.shibori,
-        detailDict.roka,
-        detailDict.hiire,
-        detailDict.warimizu,
-      ]
-      const detailCompletions = dicts.map(
-        (dict) => (name: string) => detail.lookup(name, dict),
-      )
-      const detailTargets: Target[] = [
-        { element: this.tokuteiMeishoTarget, empty: "none" },
-        { element: this.seasonTarget, empty: "" },
-        { element: this.motoTarget, empty: "unknown" },
-        { element: this.shiboriTarget, empty: "" },
-        { element: this.rokaTarget, empty: "" },
-        { element: this.hiireTarget, empty: "unknown" },
-        { element: this.warimizuTarget, empty: "unknown" },
-      ]
+    // 酒情報の補完
+    const dicts = [
+      detailDict.tokuteiMeisho,
+      detailDict.season,
+      detailDict.moto,
+      detailDict.shibori,
+      detailDict.roka,
+      detailDict.hiire,
+      detailDict.warimizu,
+    ]
+    const detailCompletions = dicts.map(
+      (dict) => (name: string) => detail.lookup(name, dict),
+    )
+    const detailTargets: Target[] = [
+      { element: this.tokuteiMeishoTarget, empty: "none" },
+      { element: this.seasonTarget, empty: "" },
+      { element: this.motoTarget, empty: "unknown" },
+      { element: this.shiboriTarget, empty: "" },
+      { element: this.rokaTarget, empty: "" },
+      { element: this.hiireTarget, empty: "unknown" },
+      { element: this.warimizuTarget, empty: "unknown" },
+    ]
 
-      const completions = kuraCompletions.concat(detailCompletions)
-      const targets = kuraTargets.concat(detailTargets)
-      zip(completions, targets).forEach(([completion, target]) => {
-        this.complete(name, completion, target)
-      })
+    const completions = kuraCompletions.concat(detailCompletions)
+    const targets = kuraTargets.concat(detailTargets)
+    zip(completions, targets).forEach(([completion, target]) => {
+      this.complete(name, completion, target)
     })
+  }
+
+  connect() {
+    this.nameTarget.addEventListener("change", this.handleNameChange)
+  }
+
+  disconnect() {
+    this.nameTarget.removeEventListener("change", this.handleNameChange)
   }
 }

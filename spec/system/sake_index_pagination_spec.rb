@@ -1,0 +1,141 @@
+require "rails_helper"
+
+# rubocop:disable RSpec/MultipleMemoizedHelpers
+# letでの準備はデフォルト5つまで、どうしても12本以上の酒がいるのでdisabledする
+RSpec.describe "Sake Index Pagination" do
+  # rubocop:disable RSpec/LetSetup
+  # 変数内を呼び出す前にページにアクセスするため、let!で確実に生成する
+
+  # rubocop:disable RSpec/IndexedLet
+  # ページネーションに必要な12本以上の酒を連番で用意する
+
+  # 酒indexページで酒はIDの降順ソートで表示される。
+  # そのためlet!での定義と逆順で表示される。
+  # 例えば以下の酒は、indexページで「1,2,..,12,13,empty」の順になる
+  let!(:empty) { create(:sake, name: "空のお酒", bottle_level: "empty") }
+  let!(:sealed13) { create(:sake, name: "未開封のお酒13", bottle_level: "sealed") }
+  let!(:sealed12) { create(:sake, name: "未開封のお酒12", bottle_level: "sealed") }
+  let!(:sealed11) { create(:sake, name: "未開封のお酒11", bottle_level: "sealed") }
+  let!(:sealed10) { create(:sake, name: "未開封のお酒10", bottle_level: "sealed") }
+  let!(:sealed9) { create(:sake, name: "未開封のお酒09", bottle_level: "sealed") }
+  let!(:sealed8) { create(:sake, name: "未開封のお酒08", bottle_level: "sealed") }
+  let!(:sealed7) { create(:sake, name: "未開封のお酒07", bottle_level: "sealed") }
+  let!(:sealed6) { create(:sake, name: "未開封のお酒06", bottle_level: "sealed") }
+  let!(:sealed5) { create(:sake, name: "未開封のお酒05", bottle_level: "sealed") }
+  let!(:sealed4) { create(:sake, name: "未開封のお酒04", bottle_level: "sealed") }
+  let!(:sealed3) { create(:sake, name: "未開封のお酒03", bottle_level: "sealed") }
+  let!(:sealed2) { create(:sake, name: "未開封のお酒02", bottle_level: "sealed") }
+  let!(:sealed1) { create(:sake, name: "未開封のお酒01", bottle_level: "sealed") }
+  # rubocop:enable RSpec/IndexedLet
+  # rubocop:enable RSpec/LetSetup
+
+  before do
+    visit sakes_path
+  end
+
+  # 検索なし
+  context "without empty bottles" do
+    it "does not exist" do
+      expect(page).to have_no_css('[data-testid="pagination"]')
+    end
+
+    describe "listed sakes" do
+      it "includes 12th sake" do
+        expect(page).to have_text(sealed12.name)
+      end
+
+      it "includes 13th sake" do
+        expect(page).to have_text(sealed13.name)
+      end
+    end
+  end
+
+  # 空検索
+  context "with all sakes" do
+    before do
+      # 空検索は全酒の一覧になる
+      fill_in("text_search", with: "")
+      click_button("submit_search")
+    end
+
+    it "exists" do
+      expect(page).to have_css('[data-testid="pagination"]')
+    end
+
+    context "with page 1" do
+      it "includes 12th sake" do
+        expect(page).to have_text(sealed12.name)
+      end
+
+      it "does not include 13th sake" do
+        expect(page).to have_no_text(sealed13.name)
+      end
+    end
+
+    context "with page 2" do
+      before do
+        # ページネーションはPC用 (d-none .d-sm-block) と
+        # スマホ用 (d-sm-none d-block) との2つが描画され、
+        # 表示はCSSで切り替わる。
+        # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
+        within(:test_id, "pagination") do
+          within(".d-sm-block") do
+            click_link("2")
+          end
+        end
+      end
+
+      it "does not include 12th sake" do
+        expect(page).to have_no_text(sealed12.name)
+      end
+
+      it "includes 13th sake" do
+        expect(page).to have_text(sealed13.name)
+      end
+    end
+  end
+
+  # 検索
+  context "when searching" do
+    before do
+      within("#sake_search") do
+        fill_in("text_search", with: "未開封")
+        click_button("submit_search")
+      end
+    end
+
+    it "paginates" do
+      expect(page).to have_css('[data-testid="pagination"]')
+    end
+
+    it "includes 12th sake on page 1" do
+      regexp = /#{sealed12.name}/
+      expect(page.text).to match(regexp)
+    end
+
+    it "does not include 13th sake on page 1" do
+      regexp = /#{sealed13.name}/
+      expect(page.text).not_to match(regexp)
+    end
+
+    context "with page 2" do
+      before do
+        # ページネーションはPC用 (d-none .d-sm-block) と
+        # スマホ用 (d-sm-none d-block) との2つが描画され、
+        # 表示はCSSで切り替わる。
+        # rack_testはCSSの表示切替を解さず両方がヒットしてしまうため、PC用に限定する。
+        within(:test_id, "pagination") do
+          within(".d-sm-block") do
+            click_link("2")
+          end
+        end
+      end
+
+      it "includes 13th sake" do
+        regexp = /#{sealed13.name}/
+        expect(page.text).to match(regexp)
+      end
+    end
+  end
+end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

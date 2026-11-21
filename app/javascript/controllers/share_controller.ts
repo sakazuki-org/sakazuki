@@ -6,19 +6,34 @@ export default class ShareController extends Controller<HTMLDivElement> {
     title: String,
     url: String,
   }
+
   declare readonly titleValue: string
+
   declare readonly urlValue: string
 
   static targets = ["text", "link"]
+
   declare readonly textTarget: HTMLTextAreaElement
+
   declare readonly linkTarget: HTMLAnchorElement
 
-  connect() {
+  /**
+   * シェアボタンを押したときの処理
+   */
+  private readonly handleShareClick = () => {
     const data: ShareData = {
       title: this.titleValue,
       text: this.textTarget.value,
       url: this.urlValue,
     }
-    this.linkTarget.addEventListener("click", () => void navigator.share(data))
+    void navigator.share(data)
+  }
+
+  connect() {
+    this.linkTarget.addEventListener("click", this.handleShareClick)
+  }
+
+  disconnect() {
+    this.linkTarget.removeEventListener("click", this.handleShareClick)
   }
 }

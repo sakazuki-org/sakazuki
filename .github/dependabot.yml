@@ -10,9 +10,42 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      rubocop:
+        patterns:
+          - "rubocop*"
+      rpsec:
+        patterns:
+          - "rspec*"
 
   # Maintain dependencies for Yarn
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "@stylistic/*"
+          - "typescript-eslint"
+      stylelint:
+        patterns:
+          - "stylelint*"
+      markuplint:
+        patterns:
+          - "markuplint"
+          - "@markuplint/*"
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7

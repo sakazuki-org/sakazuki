@@ -1,3 +1,6 @@
+<%# erb_lint:disable StrictLocals %>
+<%# パーシャルビューの引数はkaminariに管理される
+  # マジックコメントによる動的チェック、ERB LintのStrictLocals、の両方を行わない %>
 <% if page.current? %>
   <li class="page-item active">
     <span class="page-link">

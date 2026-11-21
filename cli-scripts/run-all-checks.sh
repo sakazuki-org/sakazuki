@@ -1,6 +1,9 @@
-#!/bin/bash
+#!/bin/bash -eu
 
-cd $(cd $(dirname $0); pwd)/../ # cd to project root
+# https://qiita.com/youcune/items/fcfb4ad3d7c1edf9dc96
+# -euでエラーか未定義変数でストップする
+
+cd "$(cd "$(dirname "$0")"; pwd)/../" # cd to project root
 
 NORMAL=$(tput sgr0)
 YELLOW=$(tput setaf 3)
@@ -47,11 +50,11 @@ bundle exec rubocop
 message "##### Run Rubocop ERB"
 bundle exec rubocop --config .rubocop-erb.yml
 
-message "##### Run ERBLint"
-bundle exec erblint --lint-all
+message "##### Run ERB Lint"
+bundle exec erb_lint --lint-all
 
 message "##### Run Brakeman"
-bundle exec brakeman --run-all-checks
+bundle exec brakeman --no-pager --run-all-checks
 
 # docker
 
@@ -79,4 +82,35 @@ if type docker > /dev/null 2>&1; then
     done
 else
     warning "[SKIP] Docker Build Checks, Docker is required."
+fi
+
+# GitHub Actions
+
+message "##### Run Actionlint"
+if type jactionlint > /dev/null 2>&1; then
+    jactionlint
+else
+    warning "[SKIP] Actionlint, actionlint or Docker is required."
+fi
+
+message "##### Run ghalint"
+if type ghalint > /dev/null 2>&1; then
+    ghalint run
+else
+    warning "[SKIP] ghalint, ghalint is required."
+fi
+
+message "##### Run zizmor"
+if type zizmor > /dev/null 2>&1; then
+    zizmor --offline --persona auditor --collect default -- .
+elif type uvx > /dev/null 2>&1; then
+    uvx zizmor --offline --persona auditor --collect default -- .
+elif type docker > /dev/null 2>&1; then
+    docker run --rm --tty \
+           --mount type=bind,src="$(pwd)",dst=/repo,readonly \
+           --workdir /repo \
+           ghcr.io/woodruffw/zizmor:latest \
+           --offline --persona auditor --collect default -- .
+else
+    warning "[SKIP] zizmor, zizmor or Docker is required."
 fi

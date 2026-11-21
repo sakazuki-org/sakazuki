@@ -20,13 +20,13 @@ RSpec.describe "User Invitation" do
 
     context "when sign in as user" do
       it "redirects to index page" do
-        sign_in(user)
+        login_as(user)
         visit new_user_invitation_path
         expect(page).to have_current_path root_path
       end
 
       it "has error message" do
-        sign_in(user)
+        login_as(user)
         visit new_user_invitation_path
         expect(page).to have_css(".alert-danger")
       end

@@ -6,6 +6,10 @@ linters:
     enabled: true
   ErbSafety:
     enabled: true
+  HardCodedString:
+    enabled: true
+  PartialInstanceVariable:
+    enabled: true
   Rubocop:
     enabled: true
     rubocop_config:
@@ -29,10 +33,7 @@ linters:
         Enabled: false
       Rails/OutputSafety:
         Enabled: false
-      # rubocop-erbの都合でオフにしたのをオンにする
-      Layout/RedundantLineBreak:
-        Enabled: true
   RequireScriptNonce:
     enabled: true
-  HardCodedString:
+  StrictLocals:
     enabled: true

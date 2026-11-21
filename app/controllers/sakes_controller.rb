@@ -1,30 +1,15 @@
-# rubocop:disable Metrics/ClassLength
 class SakesController < ApplicationController
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
   include SakesHelper
+  include SakesPhotos
+  include SakesSearch
 
   # GET /sakes
-  # rubocop:disable Metrics/AbcSize
   def index
-    query = params[:q] ? params[:q].deep_dup : {} # avoid nil
-
-    # default, not empty bottle
-    query[:bottle_level_not_eq] = Sake.bottle_levels["empty"] unless include_empty?(query)
-
-    # multiple words search
-    to_multi_search!(query) if query[:all_text_cont]
-
-    # Ransack search and sort
-    @search = Sake.ransack(query)
-    @search.sorts = ["bottle_level", "id desc"]
-    @sakes = @search.result.includes(:photos)
-
-    # Kaminari pager
-    @sakes = @sakes.page(params[:page]) if include_empty?(query)
+    build_index_search
   end
-  # rubocop:enable Metrics/AbcSize
 
   # GET /sakes/1
   def show; end
@@ -50,35 +35,35 @@ class SakesController < ApplicationController
 
   # POST /sakes
   def create
-    @sake = Sake.new(sake_params)
+    @sake = Sake.new(sake_params.except(:photos))
 
     if @sake.save
-      create_datetime
-      store_photos
+      @sake.initialize_bottle_state_timestamps
+      store_photos(@sake, sake_params)
       redirect_to(@sake, status: :see_other, flash: { create_sake: { name: @sake.name, id: @sake.id } })
     else
-      render(:new, status: :unprocessable_entity)
+      render(:new, status: :unprocessable_content)
     end
   end
 
   # PATCH/PUT /sakes/1
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def update
-    if @sake.update(sake_params)
-      delete_photos
-      store_photos
+    if @sake.update(sake_params.except(:photos))
 
-      if @sake.saved_changes?
-        update_datetime
+      delete_photos(@sake, params)
+      store_photos(@sake, sake_params)
+
+      if @sake.saved_changes? || delete_photos?(@sake, params) || store_photos?(sake_params)
+        @sake.update_bottle_state_timestamps
         flash_after_update
       end
 
       redirect_after_update
     else
-      render(:edit, status: :unprocessable_entity)
+      render(:edit, status: :unprocessable_content)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   # DELETE /sakes/1
   def destroy
@@ -87,19 +72,10 @@ class SakesController < ApplicationController
     redirect_to(sakes_url, status: :see_other, flash: { delete_sake: name })
   end
 
-  # Viewで使える用に宣言する
-  helper_method :include_empty?
-  # 空き瓶を表示するかどうかを調べる
-  #
-  # @param query [Hash{Symbol => String}] params[:q]に格納されたRansackのクエリ
-  # @return [Boolean] 空き瓶も込みで表示するならtrueを返す
-  def include_empty?(query)
-    !query.nil? and query[:bottle_level_not_eq] == Sake::BOTTOM_BOTTLE.to_s
-  end
-
   # GET /sakes
   def menu
-    @sakes = Sake.ransack(bottle_level_not_eq: Sake.bottle_levels["empty"], s: "id desc").result
+    query = { bottle_level_not_eq: Sake.bottle_levels["empty"], s: "id desc" }
+    @sakes = Sake.includes(:photos).ransack(query).result
   end
 
   # GET /sakes/random
@@ -111,17 +87,6 @@ class SakesController < ApplicationController
   end
 
   private
-
-  def to_multi_search!(query)
-    words = query.delete(:all_text_cont)
-    query[:groupings] = separate_words(words)
-  end
-
-  def separate_words(words)
-    # 全角空白または半角空白で区切ることを許可
-    # { :name_cont => "" }があり得るがransackがSQL変換で削除するのでOK
-    words.split(/[ 　]/).map { |word| { all_text_cont: word } }
-  end
 
   # コピー機能の対象キーかどうか
   #
@@ -149,57 +114,26 @@ class SakesController < ApplicationController
   # @return [Hash{Symbol => Integer, Date}] デフォルト酒情報のハッシュ
   def default_attributes
     {
-      brewery_year: to_by(Time.current),
+      brewery_year: to_by(Date.current),
+      bindume_on: Date.current.beginning_of_month,
     }
   end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_sake
-    @sake = Sake.includes(:photos).find(params[:id])
-  end
-
-  # 酒瓶状態の変更に応じて、酒が持つ日時データを更新する
-  def update_datetime
-    case @sake.saved_change_to_attribute(:bottle_level)
-    in [old, new]
-      @sake.assign_attributes(opened_at: @sake.updated_at) if old == "sealed"
-      @sake.assign_attributes(emptied_at: @sake.updated_at) if new == "empty"
-    in nil
-      nil
-    end
-    @sake.save!
-  end
-
-  # 作成された酒の瓶状態に応じて、酒が持つ日時データを更新する
-  def create_datetime
-    @sake.assign_attributes(opened_at: @sake.created_at) unless @sake.sealed?
-    @sake.assign_attributes(emptied_at: @sake.created_at) if @sake.empty?
-    @sake.save!
+    @sake = Sake.includes(:photos).find(params.expect(:id))
   end
 
   # Only allow a list of trusted parameters through.
   def sake_params
-    params.require(:sake)
-          .permit(:name, :kura, :bindume_on, :brewery_year,
-                  :todofuken, :taste_value, :aroma_value,
-                  :nihonshudo, :sando, :aroma_impression,
-                  :color, :taste_impression, :nigori, :awa,
-                  :tokutei_meisho, :genryomai, :kakemai,
-                  :kobo, :alcohol, :aminosando, :season,
-                  :warimizu, :moto, :seimai_buai, :roka,
-                  :shibori, :note, :bottle_level, :hiire,
-                  :size, :price, :rating)
-  end
-
-  def store_photos
-    photos = params[:sake][:photos]
-    photos&.each { |photo| @sake.photos.create(image: photo) }
-  end
-
-  def delete_photos
-    @sake.photos.each do |photo|
-      photo.destroy! if params[photo.chackbox_name] == "delete"
-    end
+    params.expect(
+      sake: [
+        :name, :kura, :bindume_on, :brewery_year, :todofuken, :taste_value, :aroma_value, :nihonshudo,
+        :sando, :aroma_impression, :color, :taste_impression, :nigori, :awa, :tokutei_meisho, :genryomai,
+        :kakemai, :kobo, :alcohol, :aminosando, :season, :warimizu, :moto, :seimai_buai, :roka, :shibori,
+        :note, :bottle_level, :hiire, :size, :price, :rating, { photos: [] }
+      ],
+    )
   end
 
   # update後のリダイレクト処理
@@ -211,7 +145,7 @@ class SakesController < ApplicationController
     if update_from_edit?
       redirect_to(@sake, status: :see_other)
     else
-      redirect_back(fallback_location: @sake)
+      redirect_back_or_to(@sake)
     end
   end
 
@@ -228,4 +162,3 @@ class SakesController < ApplicationController
     flash[key] = { name: @sake.name, id: @sake.id } # rubocop:disable Rails/ActionControllerFlashBeforeRender
   end
 end
-# rubocop:enable Metrics/ClassLength
