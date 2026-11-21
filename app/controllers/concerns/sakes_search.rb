@@ -52,6 +52,35 @@ module SakesSearch
     @amount = Sake.alcohol_stock
   end
 
+  # JSON API用の酒一覧とページ情報を返す
+  #
+  # HTMLと違い、検索の有無にかかわらず空き瓶を含む全酒をページネーションする。
+  #
+  # @return [Hash] sakesとmetaを持つハッシュ
+  def json_list
+    sakes = json_sakes
+    meta = {
+      page: sakes.current_page,
+      per: sakes.limit_value,
+      total_pages: sakes.total_pages,
+      total_count: sakes.total_count,
+    }
+    { sakes: sakes.map { |sake| sake_json(sake) }, meta: }
+  end
+
+  # @return [ActiveRecord::Relation] ページネーションしたJSON API用の酒
+  def json_sakes
+    search = Sake.ransack(ransack_query.merge(json_filters)).tap { |s| s.sorts = SORTS }
+    search.result.page(params[:page]).per(params[:per]).includes(:photos)
+  end
+
+  # Ransackに任意の条件を渡すと未知の述語で500になるため、瓶の状態の絞り込みだけを受け付ける
+  #
+  # @return [Hash] 瓶の状態のRansack条件
+  def json_filters
+    params.fetch(:q, {}).permit(:bottle_level_eq, :bottle_level_not_eq).to_h
+  end
+
   # params から検索語を取り出す
   #
   # @return [String, nil] 検索語（all_text_cont）。空文字列はnilとして扱う

@@ -1,4 +1,4 @@
-class SakesController < ApplicationController
+class SakesController < ApplicationController # rubocop:disable Metrics/ClassLength
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
@@ -8,11 +8,19 @@ class SakesController < ApplicationController
 
   # GET /sakes
   def index
-    build_index_search
+    respond_to do |format|
+      format.html { build_index_search }
+      format.json { render(json: json_list) }
+    end
   end
 
   # GET /sakes/1
-  def show; end
+  def show
+    respond_to do |format|
+      format.html
+      format.json { render(json: sake_json(@sake)) }
+    end
+  end
 
   # GET /sakes/new
   def new

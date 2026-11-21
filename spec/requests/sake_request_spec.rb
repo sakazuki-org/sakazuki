@@ -62,6 +62,96 @@ RSpec.describe "Sakes" do
     end
   end
 
+  describe "JSON API" do
+    let(:json) { response.parsed_body }
+    let(:listed_ids) { json[:sakes].pluck("id") }
+
+    describe "GET /sakes.json (index)" do
+      it "returns 200 without login" do
+        get sakes_path(format: :json)
+        expect(response).to have_http_status :ok
+      end
+
+      it "returns sakes and meta" do
+        get sakes_path(format: :json)
+        expect(json.keys).to match_array %w[sakes meta]
+      end
+
+      it "includes empty bottles unlike the HTML stock list" do
+        sakes.first.update!(bottle_level: :empty)
+        get sakes_path(format: :json)
+        expect(listed_ids).to include(sakes.first.id)
+      end
+
+      it "excludes empty bottles with q[bottle_level_not_eq]=2" do
+        sakes.first.update!(bottle_level: :empty)
+        get sakes_path(format: :json, q: { bottle_level_not_eq: 2 })
+        expect(listed_ids).to contain_exactly(sakes.second.id, sakes.third.id)
+      end
+
+      it "ANDs q[all_text_cont] and q[bottle_level_eq]" do
+        target = create(:sake, name: "後の月", bottle_level: :opened)
+        create(:sake, name: "後の月", bottle_level: :sealed)
+        create(:sake, name: "別の酒", bottle_level: :opened)
+        get sakes_path(format: :json, q: { all_text_cont: "後の 月", bottle_level_eq: 1 })
+        expect(listed_ids).to contain_exactly(target.id)
+      end
+
+      it "changes the page size with per" do
+        get sakes_path(format: :json, per: 2)
+        expect(json[:sakes].size).to eq 2
+      end
+
+      it "caps per at 100" do
+        get sakes_path(format: :json, per: 1000)
+        expect(json[:meta][:per]).to eq 100
+      end
+
+      it "returns the rest of sakes on the second page" do
+        get sakes_path(format: :json, per: 2, page: 2)
+        expect(listed_ids).to contain_exactly(sakes.first.id)
+      end
+
+      it "returns meta matching the page" do
+        get sakes_path(format: :json, per: 2, page: 2)
+        expect(json[:meta]).to eq({ page: 2, per: 2, total_pages: 2, total_count: 3 }.stringify_keys)
+      end
+    end
+
+    describe "GET /sakes/[id].json (show)" do
+      let(:sake) { sake_with_photos(sake_options: { bottle_level: :opened }) }
+
+      before { get sake_path(sake, format: :json) }
+
+      it "returns all columns and photos" do
+        expect(json.keys).to match_array(Sake.column_names + ["photos"])
+      end
+
+      it "returns enums as string keys" do
+        expect(json[:bottle_level]).to eq "opened"
+      end
+
+      it "returns photo URLs" do
+        image = sake.photos.first.image
+        expect(json[:photos]).to contain_exactly(
+          include(id: sake.photos.first.id, url: image.url, thumb_url: image.thumb.url),
+        )
+      end
+    end
+
+    it "returns 404 for an unknown sake id" do
+      get sake_path(Sake.maximum(:id) + 1, format: :json)
+      expect(response).to have_http_status :not_found
+    end
+
+    it "does not return to a .json path after login" do
+      user = create(:user)
+      get sakes_path(format: :json)
+      post user_session_path, params: { user: { email: user.email, password: user.password } }
+      expect(response.location).not_to end_with ".json"
+    end
+  end
+
   context "with logined user" do
     before do
       user = create(:user)
