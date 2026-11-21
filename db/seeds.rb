@@ -16,3 +16,5 @@ User.create!(
   # HACK: confirmed_atカラムに値が入っていれば、deviseが認証済みと判断する
   confirmed_at: Time.current,
 )
+
+load(Rails.root.join("db/seeds/development.rb")) if Rails.application.config.x.sake_seeds_enabled
