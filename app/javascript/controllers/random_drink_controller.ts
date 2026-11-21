@@ -4,7 +4,9 @@ export default class RandomDrinkController extends Controller<HTMLElement> {
   static targets = ["modal", "result", "status"]
 
   declare readonly modalTarget: HTMLElement
+
   declare readonly resultTarget: HTMLElement
+
   declare readonly statusTarget: HTMLElement
 
   pick(): void {
@@ -38,7 +40,9 @@ export default class RandomDrinkController extends Controller<HTMLElement> {
       }
 
       if (!response.ok) {
-        throw new Error(`Random sake request failed: ${response.status}`)
+        throw new Error(
+          `Random sake request failed: ${String(response.status)}`,
+        )
       }
 
       const data: unknown = await response.json()
