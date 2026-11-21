@@ -3,14 +3,17 @@
 <%= turbo_frame_tag("sakes", target: "_top", data: { turbo_action: :advance }) do %>
   <div class="row row-cols-1 g-3">
     <div class="col">
-      <% if !searching? then %>
-        <% header = t(".header") %>
-      <% elsif search_word.present? then %>
-        <% header = t(".header_with_search", search: search_word) %>
-      <% else %>
-        <%# 空検索は今までに買った酒すべての一覧になる %>
-        <% header = t(".header_history") %>
-      <% end %>
+      <%
+        header =
+          if !searching?
+            t(".header")
+          elsif search_word.present?
+            t(".header_with_search", search: search_word)
+          else
+            # 空検索は今までに買った酒すべての一覧になる
+            t(".header_history")
+          end
+      %>
       <div class="row justify-content-between align-items-baseline">
         <div class="col-auto">
           <%# h1とブラウザのタイトルを同じ文言にする %>
@@ -49,7 +52,7 @@
             <%= render(partial: "sake", collection: @sakes) %>
           </div>
         </div>
-        <% if searching? then %>
+        <% if searching? %>
           <div class="col" data-testid="pagination">
             <div class="d-none d-sm-block">
               <%= paginate(@sakes) %>
