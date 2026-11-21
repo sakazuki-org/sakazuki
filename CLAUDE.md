@@ -8,14 +8,14 @@ SAKAZUKI is a Japanese sake (日本酒) inventory management application built w
 
 ## Technology Stack
 
-- **Backend**: Rails 8.0.2.1 with Ruby 3.4.5
-- **Database**: PostgreSQL >= 12.0
-- **Frontend**: Hotwire (Turbo + Stimulus), Bootstrap 5, esbuild for JavaScript bundling, Sass for CSS
+- **Backend**: Rails 8.1 with Ruby 4.0 (exact versions in `Gemfile.lock` and `.ruby-version`)
+- **Database**: PostgreSQL >= 18
+- **Frontend**: Hotwire (Turbo + Stimulus), Bootstrap 5, TypeScript bundled by esbuild (jsbundling-rails), Sass (cssbundling-rails), served by Propshaft from `app/assets/builds/`
 - **Authentication**: Devise (with invitable, confirmable, lockable, trackable)
 - **Image Upload**: CarrierWave + Cloudinary (AVIF compression)
 - **Search**: Ransack for full-text search
 - **Pagination**: Kaminari
-- **Testing**: RSpec with FactoryBot, Capybara, Selenium WebDriver
+- **Testing**: RSpec with FactoryBot, Capybara, Playwright (capybara-playwright-driver)
 - **Code Quality**: RuboCop, ERB Lint, Brakeman, ESLint, Prettier, Stylelint, Markuplint
 
 ## Development Commands
@@ -26,6 +26,7 @@ SAKAZUKI is a Japanese sake (日本酒) inventory management application built w
 # Install dependencies
 bundle install
 corepack enable && yarn install
+yarn run playwright install chromium  # For system specs tagged js: true
 
 # Setup .env file
 cp dotenv.example .env
@@ -38,8 +39,9 @@ bundle exec rake parallel:setup  # For parallel testing
 # Create admin user (optional: edit db/seed.rb first)
 bundle exec rails db:seed
 
-# Start server
-bundle exec rails server
+# Start server with JS/CSS watchers (Procfile.dev)
+bin/dev
+# Or server only (assets are not rebuilt): bundle exec rails server
 # Access at http://localhost:3000/
 # Default login: example@example.com / rootroot
 ```
@@ -125,7 +127,7 @@ docker compose exec web bundle exec rspec
 
 **Sake** (`app/models/sake.rb`): Central model representing a Japanese sake bottle. Contains extensive sake-specific attributes:
 
-- Bottle state tracking: `bottle_level` enum (sealed/opened/empty) with automatic timestamp management via `BottleStateTimestampable` concern
+- Bottle state tracking: `bottle_level` enum (sealed/opened/empty); `opened_at`/`emptied_at` are set by the `BottleStateTimestampable` concern (not automatic, see Concerns below)
 - Sake specifications: `tokutei_meisho` (special designation), `nihonshudo` (sake meter value), `sando` (acidity), `seimai_buai` (rice polishing ratio), `alcohol`, etc.
 - Production details: `kura` (brewery), `todofuken` (prefecture), `genryomai`/`kakemai` (rice varieties), `kobo` (yeast), `moto` (starter method), `hiire` (pasteurization)
 - Tasting notes: `aroma_value`, `taste_value`, `rating`, `aroma_impression`, `taste_impression`
@@ -135,23 +137,23 @@ docker compose exec web bundle exec rspec
 
 **User** (`app/models/user.rb`): Authentication via Devise with full features enabled (confirmable, lockable, timeoutable, trackable, invitable). Admin flag for administrative users.
 
-**Photo** (`app/models/photo.rb`): CarrierWave uploader for sake images, uploads to Cloudinary with AVIF compression.
+**Photo** (`app/models/photo.rb`): Mounts `ImageUploader` (`app/uploaders/`). Cloudinary (AVIF conversion) is used only when `config.x.cloudinary_enabled` is true (production); development and test store files locally. Views pass `Photo#cl_reference` to `cl_image_path` so the same code works in both modes.
 
 ### Controllers
 
-**SakesController** (`app/controllers/sakes_controller.rb`): Main CRUD controller with Ransack search integration. Custom `menu` collection route for additional UI.
+**SakesController** (`app/controllers/sakes_controller.rb`): Main CRUD controller. Index search lives in the `SakesSearch` concern and photo add/delete in `SakesPhotos` (`app/controllers/concerns/`). Photos are saved separately after the Sake record (`sake_params.except(:photos)`). Custom `menu` collection route for additional UI.
 
-**Authentication**: Devise controllers customized in `app/controllers/users/` for registrations and invitations.
+**Authentication**: Devise controllers customized in `app/controllers/users/` for registrations, invitations, and confirmations. The resend routes for confirmation and unlock emails are deliberately disabled in `config/routes.rb`.
 
 ### Frontend Architecture
 
-**JavaScript**: Uses Hotwire (Turbo Rails + Stimulus) for SPA-like experience without heavy JavaScript frameworks. Entry point at `app/javascript/application.js`, bundled with esbuild.
+**JavaScript**: Uses Hotwire (Turbo Rails + Stimulus) for SPA-like experience without heavy JavaScript frameworks. `yarn run build` bundles each file directly under `app/javascript/` as a separate entry (main one: `application.js`). Controllers and modules are TypeScript, type-checked by `yarn run lint:tsc`.
 
 **Stimulus Controllers**: Located in `app/javascript/controllers/` for interactive components.
 
 **Custom JavaScript Modules**:
 
-- `taste_graph/`: Taste profile visualization (likely Chart.js)
+- `taste_graph/`: Taste profile visualization (Chart.js)
 - `completion/`: Auto-completion functionality
 - `simple_lightbox/`: Image lightbox gallery
 
@@ -167,7 +169,8 @@ Application is primarily Japanese (`config.i18n.default_locale = :ja`) with time
 
 - Devise integration helpers for request/system specs
 - FactoryBot for test data (factories in `spec/factories/`)
-- Capybara + Selenium for system tests
+- Capybara for system tests: `rack_test` by default, headless Chromium via Playwright when tagged `js: true`
+- `spec/support/capybara.rb` adds `find(:test_id, ...)` for `data-testid`, `wait_for_page`, and `wait_for_alert` to avoid flaky JS tests
 - SimpleCov for coverage (outputs to `coverage/`, Cobertura format for CI)
 - Custom `SignIn` helper included for system specs
 - ActiveSupport::Testing::TimeHelpers for time-dependent tests
@@ -182,7 +185,7 @@ In development, emails viewable at `http://localhost:3000/letter_opener` via `le
 
 Model concerns in `app/models/concerns/`:
 
-- `BottleStateTimestampable`: Automatically manages `opened_at` and `emptied_at` based on `bottle_level` changes
+- `BottleStateTimestampable`: Sets `opened_at` and `emptied_at` from `bottle_level` changes. It has no callbacks: `initialize_bottle_state_timestamps` (after create) and `update_bottle_state_timestamps` (after update) must be called explicitly, as `SakesController` does, and each runs `save!` again
 
 ### Ransack Security
 
@@ -194,17 +197,18 @@ Custom `field_error_proc` in `config/application.rb` adds Bootstrap's `is-invali
 
 ### Enums with Prefix
 
-All model enums use `:prefix` option to avoid method name conflicts (e.g., `hiire_namanama` instead of just `namanama`).
+Model enums use `:prefix` option to avoid method name conflicts (e.g., `hiire_namanama` instead of just `namanama`). The exception is `bottle_level`, whose predicates are unprefixed (`sealed?`, `opened?`, `empty?`).
 
 ## Development Notes
 
 - Node.js version tracked in `.node-version` (>= 22 required)
-- Ruby version in `.ruby-version` (3.4.5)
+- Ruby version in `.ruby-version`
 - Uses Yarn 4.7.0 (configured in `packageManager` field, enable with `corepack enable`)
 - libvips required for development (image processing)
 - Parallel test databases setup via `parallel:setup` task
 - Extensive validation on Sake model - be careful when modifying attributes
 - Google AdSense integration available (configure in .env)
+- Commit messages: `Type: summary` or `Type(scope): summary`, with types such as `Add`, `Update`, `Fix`, and `Build(deps)`
 
 ## Deployment
 
