@@ -33,11 +33,11 @@
             </div>
             <div class="col">
               <%= f.label(:password, t(".password"), class: "form-label") %>
-              <% message = t(".leave_blank_if_you_don_t_want_to_change_it") %>
+              <% password_placeholder = t(".leave_blank_if_you_don_t_want_to_change_it") %>
               <% if @minimum_password_length %>
-                <% message = "#{message}, #{minimum_password_message(@minimum_password_length)}" %>
+                <% password_placeholder = "#{password_placeholder}, #{minimum_password_message(@minimum_password_length)}" %>
               <% end %>
-              <%= f.password_field(:password, class: "form-control", autocomplete: "new-password", placeholder: message) %>
+              <%= f.password_field(:password, class: "form-control", autocomplete: "new-password", placeholder: password_placeholder) %>
               <% resource.errors.full_messages_for(:password).each do |message| %>
                 <div id="devisePasswordValidationFeedback" class="invalid-feedback">
                   <%= message %>
