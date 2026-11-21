@@ -85,7 +85,7 @@ RSpec.describe "Flash Message" do
       it "has flash message" do
         visit edit_sake_path(sake.id)
         # ファイルアップロードフィールドに画像を添付
-        attach_file("sake_photos", Rails.root.join("spec/system/files/sake_photo1.avif"))
+        attach_file("sake_photos", Rails.root.join("spec/fixtures/files/sake_photo1.avif"))
         click_button("form_submit")
         expect(page).to have_selector(:test_id, "flash_message")
       end

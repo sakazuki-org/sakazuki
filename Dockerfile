@@ -3,7 +3,7 @@
 
 # ============== base =================
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.9
+ARG RUBY_VERSION=4.0.10
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim-trixie AS base
 
 # hadolint ignore=DL3048
@@ -120,9 +120,10 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn/releases/ ./.yarn/releases/
 RUN yarn install && yarn cache clean
 
-# Install Playwright browsers for system tests
+# Install Playwright browsers and their system dependencies for system tests
 # hadolint ignore=DL3060 # not yarn install
-RUN yarn run playwright install chromium
+RUN yarn run playwright install --with-deps chromium && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy application code
 COPY . .
