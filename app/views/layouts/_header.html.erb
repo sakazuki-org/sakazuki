@@ -23,7 +23,7 @@
           </li>
           <%# 日本酒ガチャ %>
           <li class="nav-item">
-            <%= link_to(t(".gacha"), gacha_sakes_path, class: "nav-link", data: { testid: "gacha" }) %>
+            <%= link_to(t(".gacha"), gacha_sakes_path, class: "nav-link", data: { testid: "gacha", turbo_prefetch: false }) %>
           </li>
           <% if user_signed_in? %>
             <%# ユーザーリンク %>
