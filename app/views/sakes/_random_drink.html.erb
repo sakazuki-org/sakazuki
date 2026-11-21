@@ -12,7 +12,7 @@
     data-action="click-&gt;random-drink#pick"
     data-testid="random_drink_button"
     aria-controls="randomDrinkModal">
-    <i class="bi bi-shuffle" aria-hidden="true"></i>
+    <i class="bi bi-shuffle"></i>
     <span class="visually-hidden">
       <%= t(".title") %>
     </span>
@@ -23,7 +23,6 @@
     id="randomDrinkModal"
     tabindex="-1"
     aria-labelledby="randomDrinkModalLabel"
-    aria-hidden="true"
     role="dialog"
     data-random-drink-target="modal"
     data-action="turbo:before-cache@document-&gt;random-drink#hideForCache">
