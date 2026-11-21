@@ -3,11 +3,6 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   before_action :signed_in_user, only: %i[new edit update destroy]
   # update と destroy は JSON の応答を持たないので、トークンでは通さない
   before_action :signed_in_user_or_api_token, only: %i[create]
-  # ブラウザはAuthorizationヘッダーを自動で付けないので、トークン認証のリクエストはCSRFの対象にならない。
-  # 「JSONなら外す」にすると、ログイン中のブラウザに罠ページからJSONをPOSTさせる攻撃が通る。
-  # トークンで通すcreateだけに絞り、ログイン中のブラウザがトークンも送ったときにDeviseなどの検証まで外さない。
-  # only:とif:を併用すると「createか、トークンがあるか」のORで外れるため、1つの条件にまとめる。
-  skip_forgery_protection if: -> { action_name == "create" && api_token_authenticated? }
 
   include SakesHelper
   include SakesPhotos
@@ -96,6 +91,13 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   end
 
   private
+
+  # ブラウザはAuthorizationヘッダーを自動で付けないので、トークン認証のリクエストはCSRFの対象にならない。
+  # 「JSONなら通す」にすると、ログイン中のブラウザに罠ページからJSONをPOSTさせる攻撃が通る。
+  # トークンで通すcreateだけに絞り、ログイン中のブラウザがトークンも送ったときにupdateやdestroyまで通さない。
+  def verified_request?
+    super || (action_name == "create" && api_token_authenticated?)
+  end
 
   # コピー機能の対象キーかどうか
   #
