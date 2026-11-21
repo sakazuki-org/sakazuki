@@ -10,10 +10,7 @@ module SakesSearch
   private_constant :SORTS
 
   # pageに上限がないと、OFFSETがbigintを超えてActiveRecord::RangeErrorの500になる
-  JSON_PAGE_PARAMS = {
-    page: [1..1_000_000, "は1から1000000までの整数で指定してください"],
-    per: [1..100, "は1から100までの整数で指定してください"],
-  }.freeze
+  JSON_PAGE_PARAMS = { page: 1..1_000_000, per: 1..100 }.freeze
   private_constant :JSON_PAGE_PARAMS
 
   included do
@@ -74,11 +71,15 @@ module SakesSearch
   #
   # @return [Hash{Symbol => Array<String>}] 不正なページ指定のエラー
   def json_page_errors
-    JSON_PAGE_PARAMS.filter_map { |key, (range, message)|
+    JSON_PAGE_PARAMS.filter_map { |key, range|
       value = params[key]
-      next if value.nil? || (value.to_s.match?(/\A\d+\z/) && range.cover?(value.to_i))
+      next if value.nil?
 
-      [key, [message]]
+      if !value.to_s.match?(/\A-?\d+\z/)
+        [key, [t("errors.messages.not_an_integer")]]
+      elsif !range.cover?(value.to_i)
+        [key, [t("errors.messages.in", count: range)]]
+      end
     }.to_h
   end
 

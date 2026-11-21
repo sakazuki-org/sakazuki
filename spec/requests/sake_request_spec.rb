@@ -126,6 +126,31 @@ RSpec.describe "Sakes" do
         expect(json[:errors].keys).to contain_exactly("page", "per")
       end
 
+      it "returns errors in Japanese by default" do
+        get sakes_path(format: :json, per: 0)
+        expect(json[:errors][:per]).to eq ["は1..100の範囲に含めてください"]
+      end
+
+      it "returns errors in English with Accept-Language: en" do
+        get sakes_path(format: :json, per: 0), headers: { "Accept-Language": "en" }
+        expect(json[:errors][:per]).to eq ["must be in 1..100"]
+      end
+
+      it "returns a non-integer error" do
+        get sakes_path(format: :json, per: "abc"), headers: { "Accept-Language": "en" }
+        expect(json[:errors][:per]).to eq ["must be an integer"]
+      end
+
+      it "uses the first supported language in Accept-Language" do
+        get sakes_path(format: :json, per: 0), headers: { "Accept-Language": "fr, en;q=0.8" }
+        expect(json[:errors][:per]).to eq ["must be in 1..100"]
+      end
+
+      it "falls back to Japanese for an unsupported language" do
+        get sakes_path(format: :json, per: 0), headers: { "Accept-Language": "fr" }
+        expect(json[:errors][:per]).to eq ["は1..100の範囲に含めてください"]
+      end
+
       it "returns the rest of sakes on the second page" do
         get sakes_path(format: :json, per: 2, page: 2)
         expect(listed_ids).to contain_exactly(sakes.first.id)
