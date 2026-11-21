@@ -12,7 +12,7 @@ RSpec.describe "Sake Form Photos" do
   describe "file_field for photos" do
     context "with one photo" do
       before do
-        photo1 = Rails.root.join("spec/system/files/sake_photo1.jpg")
+        photo1 = Rails.root.join("spec/fixtures/files/sake_photo1.jpg")
         attach_file("sake_photos", photo1)
         click_button("form_submit")
       end
@@ -25,8 +25,8 @@ RSpec.describe "Sake Form Photos" do
 
     context "with multiple photos" do
       before do
-        photo1 = Rails.root.join("spec/system/files/sake_photo1.jpg")
-        photo2 = Rails.root.join("spec/system/files/sake_photo2.jpg")
+        photo1 = Rails.root.join("spec/fixtures/files/sake_photo1.jpg")
+        photo2 = Rails.root.join("spec/fixtures/files/sake_photo2.jpg")
         attach_file("sake_photos", [photo1, photo2])
         click_button("form_submit")
       end
