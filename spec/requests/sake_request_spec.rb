@@ -102,14 +102,28 @@ RSpec.describe "Sakes" do
         expect(json[:sakes].size).to eq 2
       end
 
-      it "falls back to the default page size with per=0" do
-        get sakes_path(format: :json, per: 0)
-        expect(json[:meta][:per]).to eq 12
+      it "accepts per=100" do
+        get sakes_path(format: :json, per: 100)
+        expect(response).to have_http_status :ok
       end
 
-      it "caps per at 100" do
-        get sakes_path(format: :json, per: 1000)
-        expect(json[:meta][:per]).to eq 100
+      %w[0 -1 abc 101].each do |per|
+        it "returns 400 with per=#{per}" do
+          get sakes_path(format: :json, per:)
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
+      %w[0 -1 abc 1000001].each do |page|
+        it "returns 400 with page=#{page}" do
+          get sakes_path(format: :json, page:)
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
+      it "returns the invalid parameters in errors" do
+        get sakes_path(format: :json, page: 0, per: 0)
+        expect(json[:errors].keys).to contain_exactly("page", "per")
       end
 
       it "returns the rest of sakes on the second page" do

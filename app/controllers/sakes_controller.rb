@@ -10,7 +10,7 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   def index
     respond_to do |format|
       format.html { build_index_search }
-      format.json { render(json: json_list) }
+      format.json { render_json_list }
     end
   end
 

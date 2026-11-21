@@ -9,6 +9,13 @@ module SakesSearch
   SORTS = ["bottle_level", "id desc"].freeze
   private_constant :SORTS
 
+  # pageに上限がないと、OFFSETがbigintを超えてActiveRecord::RangeErrorの500になる
+  JSON_PAGE_PARAMS = {
+    page: [1..1_000_000, "は1から1000000までの整数で指定してください"],
+    per: [1..100, "は1から100までの整数で指定してください"],
+  }.freeze
+  private_constant :JSON_PAGE_PARAMS
+
   included do
     # Viewでも検索状態を参照できるようにする
     helper_method :searching?, :search_word
@@ -52,6 +59,29 @@ module SakesSearch
     @amount = Sake.alcohol_stock
   end
 
+  # JSON API用の酒一覧を返す。ページ指定が不正なら400とエラーを返す
+  #
+  # @return [void]
+  def render_json_list
+    errors = json_page_errors
+    return render(json: { errors: }, status: :bad_request) if errors.any?
+
+    render(json: json_list)
+  end
+
+  # Kaminariは不正なpageとperを黙って既定値に直すが、per=0だけは500になる。
+  # 直さずに400で返し、クライアントが誤りに気付けるようにする。
+  #
+  # @return [Hash{Symbol => Array<String>}] 不正なページ指定のエラー
+  def json_page_errors
+    JSON_PAGE_PARAMS.filter_map { |key, (range, message)|
+      value = params[key]
+      next if value.nil? || (value.to_s.match?(/\A\d+\z/) && range.cover?(value.to_i))
+
+      [key, [message]]
+    }.to_h
+  end
+
   # JSON API用の酒一覧とページ情報を返す
   #
   # HTMLと違い、検索の有無にかかわらず空き瓶を含む全酒をページネーションする。
@@ -71,8 +101,7 @@ module SakesSearch
   # @return [ActiveRecord::Relation] ページネーションしたJSON API用の酒
   def json_sakes
     search = Sake.ransack(ransack_query.merge(json_filters)).tap { |s| s.sorts = SORTS }
-    # per(0)はKaminariがページ数を計算できず500になるため、既定の件数に戻す
-    search.result.page(params[:page]).per(params[:per].to_i.nonzero?).includes(:photos)
+    search.result.page(params[:page]).per(params[:per]).includes(:photos)
   end
 
   # Ransackに任意の条件を渡すと未知の述語で500になるため、瓶の状態の絞り込みだけを受け付ける
