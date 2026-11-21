@@ -136,40 +136,6 @@ url = "https://github.com/jdx/jactionlint/releases/download/v1.8.2/jactionlint_1
 url_api = "https://api.github.com/repos/jdx/jactionlint/releases/assets/611338616"
 provenance = "github-attestations"
 
-[[tools.node]]
-version = "22.14.0"
-backend = "core:node"
-specifiers = ["22.14.0"]
-
-[tools.node."platforms.linux-arm64"]
-checksum = "sha256:8cf30ff7250f9463b53c18f89c6c606dfda70378215b2c905d0a9a8b08bd45e0"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-arm64.tar.gz"
-
-[tools.node."platforms.linux-arm64-musl"]
-checksum = "sha256:6c4e31ed5702dc45cfd8c435af56a36a474427e1bd7afe74c346136060beba8a"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0.tar.gz"
-install = "source"
-
-[tools.node."platforms.linux-x64"]
-checksum = "sha256:9d942932535988091034dc94cc5f42b6dc8784d6366df3a36c4c9ccb3996f0c2"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.gz"
-
-[tools.node."platforms.linux-x64-musl"]
-checksum = "sha256:6b50f327fd5053b5e4ba67de4bf93aa23653d8a9de39bd6f905f839069c7933d"
-url = "https://unofficial-builds.nodejs.org/download/release/v22.14.0/node-v22.14.0-linux-x64-musl.tar.gz"
-
-[tools.node."platforms.macos-arm64"]
-checksum = "sha256:e9404633bc02a5162c5c573b1e2490f5fb44648345d64a958b17e325729a5e42"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0-darwin-arm64.tar.gz"
-
-[tools.node."platforms.macos-x64"]
-checksum = "sha256:6698587713ab565a94a360e091df9f6d91c8fadda6d00f0cf6526e9b40bed250"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0-darwin-x64.tar.gz"
-
-[tools.node."platforms.windows-x64"]
-checksum = "sha256:55b639295920b219bb2acbcfa00f90393a2789095b7323f79475c9f34795f217"
-url = "https://nodejs.org/dist/v22.14.0/node-v22.14.0-win-x64.zip"
-
 [[tools.zizmor]]
 version = "1.30.1"
 backend = "aqua:zizmorcore/zizmor"
