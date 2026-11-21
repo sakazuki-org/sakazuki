@@ -20,3 +20,7 @@ Style/MethodCallWithArgsParentheses:
 # rubocop-erbが誤検知するのでオフ
 Layout/RedundantLineBreak:
   Enabled: false
+
+# rubocop-erb 0.8からタグをまたいだブロックを解析するが、数えるのはHTMLの行数なのでオフ
+Metrics/BlockLength:
+  Enabled: false
