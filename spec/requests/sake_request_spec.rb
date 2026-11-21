@@ -102,6 +102,11 @@ RSpec.describe "Sakes" do
         expect(json[:sakes].size).to eq 2
       end
 
+      it "falls back to the default page size with per=0" do
+        get sakes_path(format: :json, per: 0)
+        expect(json[:meta][:per]).to eq 12
+      end
+
       it "caps per at 100" do
         get sakes_path(format: :json, per: 1000)
         expect(json[:meta][:per]).to eq 100

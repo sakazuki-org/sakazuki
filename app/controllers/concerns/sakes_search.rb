@@ -71,7 +71,8 @@ module SakesSearch
   # @return [ActiveRecord::Relation] ページネーションしたJSON API用の酒
   def json_sakes
     search = Sake.ransack(ransack_query.merge(json_filters)).tap { |s| s.sorts = SORTS }
-    search.result.page(params[:page]).per(params[:per]).includes(:photos)
+    # per(0)はKaminariがページ数を計算できず500になるため、既定の件数に戻す
+    search.result.page(params[:page]).per(params[:per].to_i.nonzero?).includes(:photos)
   end
 
   # Ransackに任意の条件を渡すと未知の述語で500になるため、瓶の状態の絞り込みだけを受け付ける
