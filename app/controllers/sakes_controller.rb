@@ -105,7 +105,9 @@ class SakesController < ApplicationController
   # GET /sakes/random
   def random
     @sake = Sake.where(bottle_level: %w[sealed opened]).order("RANDOM()").first
-    render(json: @sake)
+    return head(:not_found) if @sake.nil?
+
+    render(json: { html: render_to_string(partial: "sake", locals: { sake: @sake }) })
   end
 
   private

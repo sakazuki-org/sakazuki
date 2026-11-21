@@ -119,9 +119,29 @@ RSpec.describe "Sakes" do
     end
 
     describe "GET /sakes/random request (random)" do
-      it "returns 200 response" do
+      it "returns a random in-stock sake card" do
+        empty_sake = create(:sake, name: "空瓶", bottle_level: "empty")
+
         get random_sakes_path
+
         expect(response).to have_http_status :ok
+        expect(response.media_type).to eq("application/json")
+
+        html = Nokogiri::HTML.fragment(JSON.parse(response.body).fetch("html"))
+        link = html.at_css("a.name-link")
+
+        expect(sakes.map { |sake| sake_path(sake) }).to include(link["href"])
+        expect(html.css(".img-thumbnail")).not_to be_empty
+        expect(html.text).to include(I18n.t("sakes.drink_button.open"))
+        expect(html.text).not_to include(empty_sake.name)
+      end
+
+      it "returns not found when there are no in-stock sakes" do
+        sakes.each { |sake| sake.update!(bottle_level: "empty") }
+
+        get random_sakes_path
+
+        expect(response).to have_http_status :not_found
       end
     end
   end

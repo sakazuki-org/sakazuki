@@ -79,6 +79,10 @@ ja:
       price_is_per_go: 一合当たりのお値段となり〼
     menu_one_drink:
       new_arrival: 新着
-    shuffle:
+    random_drink:
       title: 日本酒ガチャ
       retry_gacha: もう一度引く
+      loading: 日本酒を選んでいます
+      result: 日本酒が選ばれました
+      empty: 在庫のある日本酒がありません
+      error: 日本酒の選択に失敗しました。もう一度お試しください

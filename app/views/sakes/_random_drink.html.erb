@@ -1,0 +1,49 @@
+<div
+  data-controller="random-drink"
+  data-random-drink-loading-message="<%= t(".loading") %>"
+  data-random-drink-result-message="<%= t(".result") %>"
+  data-random-drink-empty-message="<%= t(".empty") %>"
+  data-random-drink-error-message="<%= t(".error") %>">
+  <button
+    type="button"
+    class="btn btn-link fs-3 p-0"
+    data-bs-toggle="modal"
+    data-bs-target="#randomDrinkModal"
+    data-action="click-&gt;random-drink#pick"
+    data-testid="random_drink_button"
+    aria-controls="randomDrinkModal">
+    <i class="bi bi-shuffle" aria-hidden="true"></i>
+    <span class="visually-hidden">
+      <%= t(".title") %>
+    </span>
+  </button>
+
+  <div
+    class="modal fade"
+    id="randomDrinkModal"
+    tabindex="-1"
+    aria-labelledby="randomDrinkModalLabel"
+    aria-hidden="true"
+    role="dialog"
+    data-random-drink-target="modal"
+    data-action="turbo:before-cache@document-&gt;random-drink#hideForCache">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="randomDrinkModalLabel"><%= t(".title") %></h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div data-random-drink-target="status" role="status" aria-live="polite"></div>
+          <div class="row row-cols-1 g-3" data-random-drink-target="result" data-testid="random_drink_result"></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-action="click-&gt;random-drink#pick"><%= t(".retry_gacha") %></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
