@@ -78,3 +78,7 @@ ja:
       price_is_per_go: 一合当たりのお値段となり〼
     menu_one_drink:
       new_arrival: 新着
+  sake_gachas:
+    show:
+      title: 日本酒ガチャ
+      empty: 在庫のある日本酒がありません
