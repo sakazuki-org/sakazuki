@@ -91,7 +91,7 @@ provenance = "github-attestations"
 
 [[tools.jactionlint]]
 version = "1.8.2"
-backend = "github:jdx/jactionlint"
+backend = "aqua:jdx/jactionlint"
 specifiers = ["latest"]
 
 [tools.jactionlint."platforms.linux-arm64"]
