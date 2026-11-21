@@ -122,7 +122,7 @@ RSpec.describe "Sakes" do
       it "returns a random in-stock sake card" do
         empty_sake = create(:sake, name: "空瓶", bottle_level: "empty")
 
-        get random_sakes_path
+        get random_sakes_path, headers: { "Accept" => "application/json" }
 
         expect(response).to have_http_status :ok
         expect(response.media_type).to eq("application/json")
