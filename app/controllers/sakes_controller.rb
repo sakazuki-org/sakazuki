@@ -2,7 +2,8 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new edit update destroy]
   # update と destroy は JSON の応答を持たないので、トークンでは通さない
-  before_action :signed_in_user_or_api_token, only: %i[create]
+  # prependを外すとCSRF検証が先に走り、トークンなしのJSONのPOSTが401でなく422になる
+  prepend_before_action :signed_in_user_or_api_token, only: %i[create]
 
   include SakesHelper
   include SakesPhotos

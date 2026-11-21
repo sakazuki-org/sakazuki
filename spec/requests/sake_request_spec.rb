@@ -322,6 +322,11 @@ RSpec.describe "Sakes" do
         expect { post_sake }.to change(Sake, :count).by 1
       end
 
+      it "returns 401 with an empty body without the token" do
+        post sakes_path(format: :json), params: { sake: sake_body }, as: :json
+        expect([response.status, response.body]).to eq [401, ""]
+      end
+
       it "rejects a JSON POST authenticated only by the session cookie" do
         login_as(create(:user))
         expect { post sakes_path(format: :json), params: { sake: sake_body }, as: :json }.not_to change(Sake, :count)
