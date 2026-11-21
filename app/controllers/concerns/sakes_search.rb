@@ -9,6 +9,10 @@ module SakesSearch
   SORTS = ["bottle_level", "id desc"].freeze
   private_constant :SORTS
 
+  # pageに上限がないと、OFFSETがbigintを超えてActiveRecord::RangeErrorの500になる
+  JSON_PAGE_PARAMS = { page: 1..1_000_000, per: 1..100 }.freeze
+  private_constant :JSON_PAGE_PARAMS
+
   included do
     # Viewでも検索状態を参照できるようにする
     helper_method :searching?, :search_word
@@ -50,6 +54,62 @@ module SakesSearch
     # Ruby 配列は O(1) で配列長計算できるので SQL を使わなくて良い
     @count = @sakes.size
     @amount = Sake.alcohol_stock
+  end
+
+  # JSON API用の酒一覧を返す。ページ指定が不正なら400とエラーを返す
+  #
+  # @return [void]
+  def render_json_list
+    errors = json_page_errors
+    return render(json: { errors: }, status: :bad_request) if errors.any?
+
+    render(json: json_list)
+  end
+
+  # Kaminariは不正なpageとperを黙って既定値に直すが、per=0だけは500になる。
+  # 直さずに400で返し、クライアントが誤りに気付けるようにする。
+  #
+  # @return [Hash{Symbol => Array<String>}] 不正なページ指定のエラー
+  def json_page_errors
+    JSON_PAGE_PARAMS.filter_map { |key, range|
+      value = params[key]
+      next if value.nil?
+
+      if !value.to_s.match?(/\A-?\d+\z/)
+        [key, [t("errors.messages.not_an_integer")]]
+      elsif !range.cover?(value.to_i)
+        [key, [t("errors.messages.in", count: range)]]
+      end
+    }.to_h
+  end
+
+  # JSON API用の酒一覧とページ情報を返す
+  #
+  # HTMLと違い、検索の有無にかかわらず空き瓶を含む全酒をページネーションする。
+  #
+  # @return [Hash] sakesとmetaを持つハッシュ
+  def json_list
+    sakes = json_sakes
+    meta = {
+      page: sakes.current_page,
+      per: sakes.limit_value,
+      total_pages: sakes.total_pages,
+      total_count: sakes.total_count,
+    }
+    { sakes: sakes.map { |sake| sake_json(sake) }, meta: }
+  end
+
+  # @return [ActiveRecord::Relation] ページネーションしたJSON API用の酒
+  def json_sakes
+    search = Sake.ransack(ransack_query.merge(json_filters)).tap { |s| s.sorts = SORTS }
+    search.result.page(params[:page]).per(params[:per]).includes(:photos)
+  end
+
+  # Ransackに任意の条件を渡すと未知の述語で500になるため、瓶の状態の絞り込みだけを受け付ける
+  #
+  # @return [Hash] 瓶の状態のRansack条件
+  def json_filters
+    params.fetch(:q, {}).permit(:bottle_level_eq, :bottle_level_not_eq).to_h
   end
 
   # params から検索語を取り出す

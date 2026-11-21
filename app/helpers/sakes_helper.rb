@@ -185,4 +185,13 @@ module SakesHelper
     date = latest_at(sake).to_date
     I18n.l(date)
   end
+
+  # JSON APIで返す酒オブジェクトを作る
+  #
+  # @param sake [Sake] 酒オブジェクト
+  # @return [Hash] sakesの全カラムと写真のURL
+  def sake_json(sake)
+    photos = sake.photos.map { |photo| { id: photo.id, url: photo.image.url, thumb_url: photo.image.thumb.url } }
+    sake.as_json.merge(photos:)
+  end
 end
