@@ -2,10 +2,6 @@ class ApplicationController < ActionController::Base
   after_action :store_location
   around_action :switch_api_locale, if: -> { request.format.json? }
 
-  # ブラウザはAuthorizationヘッダーを自動で付けないので、トークン認証のリクエストはCSRFの対象にならない。
-  # 「JSONなら外す」にすると、ログイン中のブラウザに罠ページからJSONをPOSTさせる攻撃が通る。
-  skip_forgery_protection if: :api_token_authenticated?
-
   def signed_in_user
     return if user_signed_in?
     return head(:unauthorized) if request.format.json?

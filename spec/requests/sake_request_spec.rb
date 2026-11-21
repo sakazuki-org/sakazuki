@@ -326,6 +326,13 @@ RSpec.describe "Sakes" do
         login_as(create(:user))
         expect { post sakes_path(format: :json), params: { sake: sake_body }, as: :json }.not_to change(Sake, :count)
       end
+
+      it "rejects an update by the session cookie even with the token" do
+        sake = create(:sake, name: "後の月")
+        login_as(create(:user))
+        patch sake_path(sake), params: { sake: { name: "changed" } }, headers: { Authorization: "Bearer #{token}" }
+        expect(sake.reload.name).to eq "後の月"
+      end
     end
   end
 
