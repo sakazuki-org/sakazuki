@@ -196,6 +196,151 @@ RSpec.describe "Sakes" do
     end
   end
 
+  describe "JSON API with token" do
+    let(:token) { "secret-token" }
+    let(:sake_body) do
+      string_columns = %w[
+        kura todofuken color nigori awa genryomai kakemai kobo season roka shibori aroma_impression
+        taste_impression note
+      ]
+      { name: "後の月", size: 720, **string_columns.index_with("") }
+    end
+    let(:json) { response.parsed_body }
+
+    def post_sake(body: sake_body, auth: "Bearer #{token}", headers: {})
+      post sakes_path(format: :json), params: { sake: body }, headers: { Authorization: auth, **headers }, as: :json
+    end
+
+    def stub_api_token(value)
+      env = ENV.to_h
+      env["API_TOKEN"] = value
+      stub_const("ENV", env)
+    end
+
+    before { stub_api_token(token) }
+
+    describe "authentication" do
+      it "returns 401 without a token" do
+        post sakes_path(format: :json), params: { sake: sake_body }, as: :json
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "returns 401 with a wrong token" do
+        post_sake(auth: "Bearer wrong")
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "returns 401 with an empty token when API_TOKEN is not set" do
+        stub_api_token(nil)
+        post_sake(auth: "Bearer ")
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "returns 401 with any token when API_TOKEN is not set" do
+        stub_api_token(nil)
+        post_sake
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "returns 401 to update with a token" do
+        patch sake_path(sakes.first, format: :json), params: { sake: { name: "後の月" } },
+                                                     headers: { Authorization: "Bearer #{token}" }, as: :json
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "does not update with a token" do
+        expect {
+          patch sake_path(sakes.first, format: :json), params: { sake: { name: "後の月" } },
+                                                       headers: { Authorization: "Bearer #{token}" }, as: :json
+        }.not_to(change { sakes.first.reload.name })
+      end
+
+      it "does not destroy with a token" do
+        expect {
+          delete sake_path(sakes.first, format: :json), headers: { Authorization: "Bearer #{token}" }
+        }.not_to change(Sake, :count)
+      end
+
+      it "returns 401 with an empty token when API_TOKEN is empty" do
+        stub_api_token("")
+        post_sake(auth: "Bearer ")
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+
+    describe "POST /sakes.json (create)" do
+      it "returns 201" do
+        post_sake
+        expect(response).to have_http_status :created
+      end
+
+      it "returns the created sake" do
+        post_sake
+        expect(json).to include(id: Sake.last.id, name: "後の月")
+      end
+
+      it "returns the location of the created sake" do
+        post_sake
+        expect(response.location).to eq sake_url(Sake.last)
+      end
+
+      it "sets opened_at from the bottle level" do
+        post_sake(body: sake_body.merge(bottle_level: "opened"))
+        expect(Sake.last.opened_at).to eq Sake.last.created_at
+      end
+
+      it "returns 422 listing omitted string columns" do
+        post_sake(body: { name: "後の月" })
+        expect(json[:errors].keys).to match_array(sake_body.keys.map(&:to_s) - %w[name size])
+      end
+
+      it "returns 422 for a validation error" do
+        post_sake(body: sake_body.merge(name: ""))
+        expect(json[:errors].keys).to contain_exactly("name")
+      end
+
+      it "returns validation errors in English with Accept-Language: en" do
+        post_sake(body: sake_body.merge(name: ""), headers: { "Accept-Language": "en" })
+        expect(json[:errors][:name]).to eq ["can't be blank"]
+      end
+
+      it "returns 422 for an unknown enum value" do
+        post_sake(body: sake_body.merge(bottle_level: "foo"))
+        expect(json[:errors].keys).to contain_exactly("bottle_level")
+      end
+    end
+
+    describe "CSRF protection" do
+      around do |example|
+        ActionController::Base.allow_forgery_protection = true
+        example.run
+      ensure
+        ActionController::Base.allow_forgery_protection = false
+      end
+
+      it "accepts a POST authenticated by the token" do
+        expect { post_sake }.to change(Sake, :count).by 1
+      end
+
+      it "returns 401 with an empty body without the token" do
+        post sakes_path(format: :json), params: { sake: sake_body }, as: :json
+        expect([response.status, response.body]).to eq [401, ""]
+      end
+
+      it "rejects a JSON POST authenticated only by the session cookie" do
+        login_as(create(:user))
+        expect { post sakes_path(format: :json), params: { sake: sake_body }, as: :json }.not_to change(Sake, :count)
+      end
+
+      it "rejects an update by the session cookie even with the token" do
+        sake = create(:sake, name: "後の月")
+        login_as(create(:user))
+        patch sake_path(sake), params: { sake: { name: "changed" } }, headers: { Authorization: "Bearer #{token}" }
+        expect(sake.reload.name).to eq "後の月"
+      end
+    end
+  end
+
   context "with logined user" do
     before do
       user = create(:user)

@@ -1,6 +1,9 @@
 class SakesController < ApplicationController # rubocop:disable Metrics/ClassLength
   before_action :set_sake, only: %i[show edit update destroy]
-  before_action :signed_in_user, only: %i[new create edit update destroy]
+  before_action :signed_in_user, only: %i[new edit update destroy]
+  # update と destroy は JSON の応答を持たないので、トークンでは通さない
+  # prependを外すとCSRF検証が先に走り、トークンなしのJSONのPOSTが401でなく422になる
+  prepend_before_action :signed_in_user_or_api_token, only: %i[create]
 
   include SakesHelper
   include SakesPhotos
@@ -44,13 +47,15 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   # POST /sakes
   def create
     @sake = Sake.new(sake_params.except(:photos))
+    return render_invalid(:new) unless @sake.save
 
-    if @sake.save
-      @sake.initialize_bottle_state_timestamps
-      store_photos(@sake, sake_params)
-      redirect_to(@sake, status: :see_other, flash: { create_sake: { name: @sake.name, id: @sake.id } })
-    else
-      render(:new, status: :unprocessable_content)
+    @sake.initialize_bottle_state_timestamps
+    respond_to do |format|
+      format.html do
+        store_photos(@sake, sake_params)
+        redirect_to(@sake, status: :see_other, flash: { create_sake: { name: @sake.name, id: @sake.id } })
+      end
+      format.json { render(json: sake_json(@sake), status: :created, location: @sake) }
     end
   end
 
@@ -87,6 +92,13 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   end
 
   private
+
+  # ブラウザはAuthorizationヘッダーを自動で付けないので、トークン認証のリクエストはCSRFの対象にならない。
+  # 「JSONなら通す」にすると、ログイン中のブラウザに罠ページからJSONをPOSTさせる攻撃が通る。
+  # トークンで通すcreateだけに絞り、ログイン中のブラウザがトークンも送ったときにupdateやdestroyまで通さない。
+  def verified_request?
+    super || (action_name == "create" && api_token_authenticated?)
+  end
 
   # コピー機能の対象キーかどうか
   #
@@ -134,6 +146,16 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
         :note, :bottle_level, :hiire, :size, :price, :rating, { photos: [] }
       ],
     )
+  end
+
+  # 保存に失敗した酒の検証エラーを返す
+  #
+  # @param template [Symbol] HTMLで再表示するテンプレート
+  def render_invalid(template)
+    respond_to do |format|
+      format.html { render(template, status: :unprocessable_content) }
+      format.json { render(json: { errors: @sake.errors }, status: :unprocessable_content) }
+    end
   end
 
   # update後のリダイレクト処理
