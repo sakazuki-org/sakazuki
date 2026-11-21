@@ -139,6 +139,18 @@ class Sake < ApplicationRecord
     where(bottle_level: "sealed").sum(:size) + (where(bottle_level: "opened").sum(:size) / 2)
   end
 
+  # 日付をBYに変換する
+  # @example
+  #   Sake.to_by(Date(2021, 6, 30)) #=> Date(2020, 7, 1)
+  #   Sake.to_by(Date(2021, 7, 2)) #=> Date(2021, 7, 1)
+  # @param date [Date] 日付
+  # @return [Date] 入力された日付に対応するBY、月日はBYの始まりである7/1となる
+  def self.to_by(date)
+    by_year = date.year - (date.month >= 7 ? 0 : 1)
+    # BYは年のみ、使わない月日はBY始まりの7/1とする
+    Date.new(by_year, 7)
+  end
+
   # 酒が新着ならtrue、さもなくばfalse
   #
   # 下記のいずれかに当てはまる場合は新着と判定する

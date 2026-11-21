@@ -32,34 +32,6 @@ RSpec.describe SakesHelper do
     end
   end
 
-  describe "to_by" do
-    let(:date) { Date.current }
-
-    it "always returns July" do
-      expect(to_by(date).month).to eq(7)
-    end
-
-    it "always returns day 1" do
-      expect(to_by(date).day).to eq(1)
-    end
-
-    context "with date after 7/1" do
-      let(:date) { Date.new(2021, 7, 1) }
-
-      it "returns same year" do
-        expect(to_by(date).year).to eq(date.year)
-      end
-    end
-
-    context "with date before 6/30" do
-      let(:date) { Date.new(2021, 6, 30) }
-
-      it "returns yeara ago" do
-        expect(to_by(date).year).to eq(date.year - 1)
-      end
-    end
-  end
-
   describe "by_collection" do
     it "generates a range ending with unknown" do
       candidate = [I18n.t("sakes.form_abstract.unknown"), ""]
@@ -67,13 +39,13 @@ RSpec.describe SakesHelper do
     end
 
     it "generates a range having current year in second from last" do
-      by = to_by(Time.current)
+      by = Sake.to_by(Time.current)
       candidate = [with_japanese_era(by), by.to_s]
       expect(by_collection[-2]).to eq(candidate)
     end
 
     it "generates a range starting with 30 years ago" do
-      by = to_by(30.years.ago)
+      by = Sake.to_by(30.years.ago)
       candidate = [with_japanese_era(by), by.to_s]
       expect(by_collection.first).to eq(candidate)
     end

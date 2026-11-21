@@ -114,7 +114,7 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   # @return [Hash{Symbol => Integer, Date}] デフォルト酒情報のハッシュ
   def default_attributes
     {
-      brewery_year: to_by(Date.current),
+      brewery_year: Sake.to_by(Date.current),
       bindume_on: Date.current.beginning_of_month,
     }
   end
