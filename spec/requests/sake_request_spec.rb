@@ -207,8 +207,8 @@ RSpec.describe "Sakes" do
     end
     let(:json) { response.parsed_body }
 
-    def post_sake(body: sake_body, auth: "Bearer #{token}")
-      post sakes_path(format: :json), params: { sake: body }, headers: { Authorization: auth }, as: :json
+    def post_sake(body: sake_body, auth: "Bearer #{token}", headers: {})
+      post sakes_path(format: :json), params: { sake: body }, headers: { Authorization: auth, **headers }, as: :json
     end
 
     def stub_api_token(value)
@@ -278,6 +278,11 @@ RSpec.describe "Sakes" do
       it "returns 422 for a validation error" do
         post_sake(body: sake_body.merge(name: ""))
         expect(json[:errors].keys).to contain_exactly("name")
+      end
+
+      it "returns validation errors in English with Accept-Language: en" do
+        post_sake(body: sake_body.merge(name: ""), headers: { "Accept-Language": "en" })
+        expect(json[:errors][:name]).to eq ["can't be blank"]
       end
 
       it "returns 422 for an unknown enum value" do
