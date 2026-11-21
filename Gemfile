@@ -65,6 +65,7 @@ gem "seed_dump"
 gem "carrierwave"
 gem "carrierwave-i18n"
 gem "cloudinary"
+gem "ruby-vips"
 
 # For twitter card
 gem "meta-tags"
