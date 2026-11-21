@@ -7,6 +7,14 @@ RSpec.describe "layouts/_header", type: :system do
     it "has sake menu link" do
       expect(find(:test_id, "navigation_list")).to have_link(I18n.t("layouts.header.sake_menu"), href: menu_sakes_path)
     end
+
+    it "has gacha link" do
+      expect(find(:test_id, "navigation_list")).to have_link(I18n.t("layouts.header.gacha"), href: gacha_sakes_path)
+    end
+
+    it "does not prefetch gacha link on hover" do
+      expect(find(:test_id, "gacha")["data-turbo-prefetch"]).to eq "false"
+    end
   end
 
   describe "header links" do
