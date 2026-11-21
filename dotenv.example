@@ -11,6 +11,13 @@
 POSTGRES_USERNAME=
 POSTGRES_PASSWORD=
 
+### JSON API
+
+# Bearer token for creating sakes via the JSON API.
+# Generate with `openssl rand -hex 32`. Leave empty to reject all token requests.
+#
+# API_TOKEN=
+
 ### Google AdSense
 
 # Client ID
