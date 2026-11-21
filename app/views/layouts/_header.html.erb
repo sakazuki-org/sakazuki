@@ -21,6 +21,10 @@
           <li class="nav-item">
             <%= link_to(t(".sake_menu"), menu_sakes_path, class: "nav-link", data: { testid: "sake-menu" }) %>
           </li>
+          <%# 日本酒ガチャ %>
+          <li class="nav-item">
+            <%= link_to(t(".gacha"), gacha_sakes_path, class: "nav-link", data: { testid: "gacha", turbo_prefetch: false }) %>
+          </li>
           <% if user_signed_in? %>
             <%# ユーザーリンク %>
             <li class="nav-item" data-testid="user-edit">

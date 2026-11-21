@@ -7,6 +7,7 @@ ja:
       sign_out: ログアウト
       sign_in: ログイン
       sake_menu: :sakes.menu.title
+      gacha: :sake_gacha.show.title
     footer:
       credit: |-
         SAKAZUKI上の情報や感想は
