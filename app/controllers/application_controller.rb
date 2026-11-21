@@ -7,12 +7,17 @@ class ApplicationController < ActionController::Base
   skip_forgery_protection if: :api_token_authenticated?
 
   def signed_in_user
-    return if user_signed_in? || api_token_authenticated?
+    return if user_signed_in?
     return head(:unauthorized) if request.format.json?
 
     # 未ログインユーザーが酒作成・編集しようとしたときにパスを保存する
     store_location
     redirect_to(new_user_session_path, status: :see_other, alert: t("devise.failure.unauthenticated"))
+  end
+
+  # JSON APIのトークンでも通すsigned_in_user
+  def signed_in_user_or_api_token
+    signed_in_user unless api_token_authenticated?
   end
 
   # サインイン時にユーザーが元いたパスへ戻れるようにするため、

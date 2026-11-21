@@ -242,6 +242,25 @@ RSpec.describe "Sakes" do
         expect(response).to have_http_status :unauthorized
       end
 
+      it "returns 401 to update with a token" do
+        patch sake_path(sakes.first, format: :json), params: { sake: { name: "後の月" } },
+                                                     headers: { Authorization: "Bearer #{token}" }, as: :json
+        expect(response).to have_http_status :unauthorized
+      end
+
+      it "does not update with a token" do
+        expect {
+          patch sake_path(sakes.first, format: :json), params: { sake: { name: "後の月" } },
+                                                       headers: { Authorization: "Bearer #{token}" }, as: :json
+        }.not_to(change { sakes.first.reload.name })
+      end
+
+      it "does not destroy with a token" do
+        expect {
+          delete sake_path(sakes.first, format: :json), headers: { Authorization: "Bearer #{token}" }
+        }.not_to change(Sake, :count)
+      end
+
       it "returns 401 with an empty token when API_TOKEN is empty" do
         stub_api_token("")
         post_sake(auth: "Bearer ")
