@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "SakeGachas" do
+RSpec.describe "SakeGacha" do
   describe "GET /sakes/gacha request (show)" do
     context "with in-stock sakes" do
       let!(:sealed) { create(:sake, bottle_level: "sealed") }
@@ -25,7 +25,7 @@ RSpec.describe "SakeGachas" do
       end
 
       it "has alert message" do
-        expect(flash[:alert]).to eq I18n.t("sake_gachas.show.empty")
+        expect(flash[:alert]).to eq I18n.t("sake_gacha.show.empty")
       end
     end
   end

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   root "sakes#index"
   resources :sakes do
     get :menu, on: :collection
-    get :gacha, on: :collection, to: "sake_gachas#show"
+    get :gacha, on: :collection, to: "sake_gacha#show"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

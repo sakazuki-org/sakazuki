@@ -1,4 +1,4 @@
-class SakeGachasController < ApplicationController
+class SakeGachaController < ApplicationController
   # GET /sakes/gacha
   def show
     sake = Sake.where.not(bottle_level: :empty).order("RANDOM()").first
