@@ -19,7 +19,7 @@ RSpec.describe "Sake Form Brew Year" do
       end
 
       it "selects this BY, not same with this year" do
-        by = with_japanese_era(to_by(Time.current))
+        by = with_japanese_era(Sake.to_by(Time.current))
         expect(page).to have_select("sake_brewery_year", selected: by)
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe "Sake Form Brew Year" do
       end
 
       it "selects this BY, same with this year" do
-        by = with_japanese_era(to_by(Time.current))
+        by = with_japanese_era(Sake.to_by(Time.current))
         expect(page).to have_select("sake_brewery_year", selected: by)
       end
     end
@@ -41,14 +41,14 @@ RSpec.describe "Sake Form Brew Year" do
       before do
         visit new_sake_path
         fill_in("sake_name", with: "生道井")
-        by = with_japanese_era(to_by(Time.current))
+        by = with_japanese_era(Sake.to_by(Time.current))
         select(by, from: "sake_brewery_year")
         click_button("form_submit")
       end
 
       it "has this BY" do
         sake = sake_from_show_path(page.current_path)
-        expect(sake.brewery_year).to eq(to_by(Time.current))
+        expect(sake.brewery_year).to eq(Sake.to_by(Time.current))
       end
     end
 
@@ -58,14 +58,14 @@ RSpec.describe "Sake Form Brew Year" do
       before do
         visit new_sake_path
         fill_in("sake_name", with: "生道井")
-        by = with_japanese_era(to_by(ago))
+        by = with_japanese_era(Sake.to_by(ago))
         select(by, from: "sake_brewery_year")
         click_button("form_submit")
       end
 
       it "has past BY" do
         sake = sake_from_show_path(page.current_path)
-        expect(sake.brewery_year).to eq(to_by(ago))
+        expect(sake.brewery_year).to eq(Sake.to_by(ago))
       end
     end
 

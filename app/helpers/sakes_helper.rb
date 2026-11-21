@@ -9,18 +9,6 @@ module SakesHelper
     value.presence || default
   end
 
-  # 日付をBYに変換する
-  # @example
-  #   to_by(Date(2021, 6, 30)) #=> Date(2020, 7, 1)
-  #   to_by(Date(2021, 7, 2)) #=> Date(2021, 7, 1)
-  # @param date [Date] 日付
-  # @return [Date] 入力された日付に対応するBY、月日はBYの始まりである7/1となる
-  def to_by(date)
-    by_year = date.year - (date.month >= 7 ? 0 : 1)
-    # BYは年のみ、使わない月日はBY始まりの7/1とする
-    Date.new(by_year, 7)
-  end
-
   # 過去何年を酒情報に入力可能にするかの値
   # @type [Integer] 年数
   START_YEAR_LIMIT = 30
@@ -29,7 +17,7 @@ module SakesHelper
   # 現在日時から入力可能なBY年のレンジを作成する
   # @return [Range<Date>] 1年間隔で30年分のBYオブジェクトのレンジ
   def by_range
-    this_by = to_by(Time.current).year
+    this_by = Sake.to_by(Time.current).year
     years = (this_by - START_YEAR_LIMIT)..this_by
     years.map { |year| Date.new(year, 7) } # 7/1
   end
@@ -184,14 +172,5 @@ module SakesHelper
   def absolute_date(sake)
     date = latest_at(sake).to_date
     I18n.l(date)
-  end
-
-  # JSON APIで返す酒オブジェクトを作る
-  #
-  # @param sake [Sake] 酒オブジェクト
-  # @return [Hash] sakesの全カラムと写真のURL
-  def sake_json(sake)
-    photos = sake.photos.map { |photo| { id: photo.id, url: photo.image.url, thumb_url: photo.image.thumb.url } }
-    sake.as_json.merge(photos:)
   end
 end

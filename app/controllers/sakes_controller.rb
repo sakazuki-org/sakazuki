@@ -5,7 +5,6 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   # prependを外すとCSRF検証が先に走り、トークンなしのJSONのPOSTが401でなく422になる
   prepend_before_action :signed_in_user_or_api_token, only: %i[create]
 
-  include SakesHelper
   include SakesPhotos
   include SakesSearch
 
@@ -126,9 +125,18 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   # @return [Hash{Symbol => Integer, Date}] デフォルト酒情報のハッシュ
   def default_attributes
     {
-      brewery_year: to_by(Date.current),
+      brewery_year: Sake.to_by(Date.current),
       bindume_on: Date.current.beginning_of_month,
     }
+  end
+
+  # JSON APIで返す酒オブジェクトを作る
+  #
+  # @param sake [Sake] 酒オブジェクト
+  # @return [Hash] sakesの全カラムと写真のURL
+  def sake_json(sake)
+    photos = sake.photos.map { |photo| { id: photo.id, url: photo.image.url, thumb_url: photo.image.thumb.url } }
+    sake.as_json.merge(photos:)
   end
 
   # Use callbacks to share common setup or constraints between actions.

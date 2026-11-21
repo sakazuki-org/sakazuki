@@ -110,6 +110,34 @@ RSpec.describe Sake do
     end
   end
 
+  describe "Sake.to_by" do
+    let(:date) { Date.current }
+
+    it "always returns July" do
+      expect(described_class.to_by(date).month).to eq(7)
+    end
+
+    it "always returns day 1" do
+      expect(described_class.to_by(date).day).to eq(1)
+    end
+
+    context "with date after 7/1" do
+      let(:date) { Date.new(2021, 7, 1) }
+
+      it "returns same year" do
+        expect(described_class.to_by(date).year).to eq(date.year)
+      end
+    end
+
+    context "with date before 6/30" do
+      let(:date) { Date.new(2021, 6, 30) }
+
+      it "returns yeara ago" do
+        expect(described_class.to_by(date).year).to eq(date.year - 1)
+      end
+    end
+  end
+
   describe "Sake.new_arrival?" do
     before do
       travel_to(Time.zone.parse("2022-01-30 20:30:00"))
