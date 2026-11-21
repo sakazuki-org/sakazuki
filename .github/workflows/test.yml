@@ -44,8 +44,7 @@ jobs:
     timeout-minutes: 5
     services:
       postgres:
-        # postgres:18.0-trixie
-        image: postgres@sha256:6b8a8a9f35a6b4ac51e67ca9e73b16fb578155572055dcca32d75d1ed49045fa
+        image: postgres:18.0-trixie
         env:
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: password
