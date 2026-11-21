@@ -231,3 +231,22 @@ RSpec はファイルの場所から spec の種類を推定します。使っ�
 
 本番へのデプロイ手順は [デプロイの wiki](https://github.com/momocus/sakazuki/wiki/Deployment) にあります。
 Fly.io にデプロイできます（`fly.toml` を参照）。
+
+## Ruby バージョンアップ
+
+- .ruby-version のバージョンを上げる
+- Dockerfile の `ARG RUBY_VERSION` のバージョンを上げる
+- `bundle install` で Gemfile.lock を更新する
+- GitHub Actions の check/test で使っている ruby-setup のバージョンを上げる
+
+## Rails バージョンアップ
+
+[Rails ガイド - 一般的なアドバイス](https://railsguides.jp/upgrading_ruby_on_rails.html#%E4%B8%80%E8%88%AC%E7%9A%84%E3%81%AA%E3%82%A2%E3%83%89%E3%83%90%E3%82%A4%E3%82%B9) に従う
+
+- Gemfile で指定した rails バージョンを上げる
+- アップデートタスクを実行する
+  - このとき、Rails が自動生成するコメントやデフォルト値は最新に追従する
+  - Rails 自動生成デフォルトの後ろに SAKAZUKI のカスタマイズな値を追加する
+  - 最後に Rubocop によるフォーマットをかける
+- `config/initializers/new_framework_defaults_X_Y.rb` をすべて消しても動くようにする
+- `config/initializers/new_framework_defaults_X_Y.rb` を削除し、`config.load_defaults` を新しいバージョンにセットする
