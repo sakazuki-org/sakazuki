@@ -2,7 +2,6 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
   before_action :set_sake, only: %i[show edit update destroy]
   before_action :signed_in_user, only: %i[new create edit update destroy]
 
-  include SakesHelper
   include SakesPhotos
   include SakesSearch
 
@@ -117,6 +116,15 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
       brewery_year: Sake.to_by(Date.current),
       bindume_on: Date.current.beginning_of_month,
     }
+  end
+
+  # JSON APIで返す酒オブジェクトを作る
+  #
+  # @param sake [Sake] 酒オブジェクト
+  # @return [Hash] sakesの全カラムと写真のURL
+  def sake_json(sake)
+    photos = sake.photos.map { |photo| { id: photo.id, url: photo.image.url, thumb_url: photo.image.thumb.url } }
+    sake.as_json.merge(photos:)
   end
 
   # Use callbacks to share common setup or constraints between actions.
