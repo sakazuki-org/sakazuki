@@ -15,7 +15,8 @@ module SakesPhotos
   # @param
   # @note sake_paramsから写真を取り出して、酒に紐づく写真として保存する
   def store_photos(sake, sake_params)
-    photos = sake_params[:photos]
+    # JSONのボディでは写真が文字列で届くので、アップロードされたファイルだけを保存する
+    photos = sake_params[:photos]&.grep(ActionDispatch::Http::UploadedFile)
     photos&.each { |photo| sake.photos.create(image: photo) }
   end
 

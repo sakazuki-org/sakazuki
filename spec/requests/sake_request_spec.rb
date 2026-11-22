@@ -211,6 +211,11 @@ RSpec.describe "Sakes" do
       post sakes_path(format: :json), params: { sake: body }, headers: { Authorization: auth, **headers }, as: :json
     end
 
+    def post_multipart(photos)
+      post sakes_path(format: :json), params: { sake: sake_body.merge(photos:) },
+                                      headers: { Authorization: "Bearer #{token}" }
+    end
+
     def stub_api_token(value)
       env = ENV.to_h
       env["API_TOKEN"] = value
@@ -307,6 +312,20 @@ RSpec.describe "Sakes" do
       it "returns 422 for an unknown enum value" do
         post_sake(body: sake_body.merge(bottle_level: "foo"))
         expect(json[:errors].keys).to contain_exactly("bottle_level")
+      end
+
+      it "returns the photos sent by multipart" do
+        post_multipart(%w[sake_photo1.jpg sake_photo2.jpg].map { |name| fixture_file_upload(name, "image/jpeg") })
+        expect([response.status, json[:photos].size]).to eq [201, 2]
+      end
+
+      it "returns only saved photos when one has a disallowed extension" do
+        post_multipart([fixture_file_upload("sake_photo1.jpg", "image/jpeg"), fixture_file_upload("dummy.txt")])
+        expect(json[:photos].pluck("id")).to eq Sake.last.photos.ids
+      end
+
+      it "ignores photos sent as strings in the JSON body" do
+        expect { post_sake(body: sake_body.merge(photos: ["sake_photo1.jpg"])) }.not_to change(Photo, :count)
       end
     end
 
