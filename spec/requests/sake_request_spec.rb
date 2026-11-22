@@ -321,7 +321,7 @@ RSpec.describe "Sakes" do
 
       it "returns only saved photos when one has a disallowed extension" do
         post_multipart([fixture_file_upload("sake_photo1.jpg", "image/jpeg"), fixture_file_upload("dummy.txt")])
-        expect(json[:photos].pluck("id")).to eq Sake.last.photos.ids
+        expect(json[:photos].pluck("id")).to eq [Sake.last.photos.sole.id]
       end
 
       it "ignores photos sent as strings in the JSON body" do
