@@ -49,12 +49,12 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
     return render_invalid(:new) unless @sake.save
 
     @sake.initialize_bottle_state_timestamps
+    store_photos(@sake, sake_params)
     respond_to do |format|
       format.html do
-        store_photos(@sake, sake_params)
         redirect_to(@sake, status: :see_other, flash: { create_sake: { name: @sake.name, id: @sake.id } })
       end
-      format.json { render(json: sake_json(@sake), status: :created, location: @sake) }
+      format.json { render_created_json }
     end
   end
 
@@ -164,6 +164,12 @@ class SakesController < ApplicationController # rubocop:disable Metrics/ClassLen
       format.html { render(template, status: :unprocessable_content) }
       format.json { render(json: { errors: @sake.errors }, status: :unprocessable_content) }
     end
+  end
+
+  def render_created_json
+    # 保存に失敗した写真もphotosに残るので、読み直して保存できた写真だけを返す
+    @sake.photos.reload
+    render(json: sake_json(@sake), status: :created, location: @sake)
   end
 
   # update後のリダイレクト処理
