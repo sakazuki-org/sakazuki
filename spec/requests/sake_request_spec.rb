@@ -196,6 +196,18 @@ RSpec.describe "Sakes" do
     end
   end
 
+  describe "Turbo prefetch" do
+    let(:user) { create(:user) }
+    let(:sake) { create(:sake) }
+
+    it "does not change the path to return to after login" do
+      get sake_path(sake)
+      get menu_sakes_path, headers: { "X-Sec-Purpose": "prefetch" }
+      post user_session_path, params: { user: { email: user.email, password: user.password } }
+      expect(response).to redirect_to sake_path(sake)
+    end
+  end
+
   describe "JSON API with token" do
     let(:token) { "secret-token" }
     let(:sake_body) do
