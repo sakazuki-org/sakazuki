@@ -15,10 +15,12 @@
 }
 
 .sakazuki-header-title {
-  // 右上がりの筆文字は、おちょこと同じ高さにすると大きく見えるので、下端を揃えて上だけ低くする
-  align-self: flex-end;
+  // おちょこより上下にはみ出させる。負の margin はナビバーの高さを変えないため
+  align-self: flex-start;
   width: auto;
-  height: 1.8rem;
+  height: 2.4rem;
+  margin-top: -0.1rem;
+  margin-bottom: -0.4rem;
 }
 
 // ------ footer ------
