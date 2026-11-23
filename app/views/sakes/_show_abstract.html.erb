@@ -18,6 +18,9 @@
               <%= link_to(tag.i(class: "bi-pencil-square") + t(".edit"), edit_sake_path(sake), data: { testid: "edit-#{sake.id}" }) %>
             </li>
             <%= render(partial: "drink_button", locals: { sake: }) %>
+            <li>
+              <%= link_to(tag.i(class: "bi-front") + t(".copy"), new_sake_path(copied_from: sake.id), data: { testid: "copy_sake" }) %>
+            </li>
             <li data-controller="share"
               data-share-title-value="<%= sake.name %>"
               data-share-url-value="<%= request.url %>"
@@ -28,9 +31,6 @@
               <%# HACK: hiddenのtextareaをシェア機能から参照する %>
               <textarea hidden data-share-target="text"
                 data-testid="share_text"><%= t("helper.share.text", sake:) %></textarea>
-            </li>
-            <li>
-              <%= link_to(tag.i(class: "bi-front") + t(".copy"), new_sake_path(copied_from: sake.id), data: { testid: "copy_sake" }) %>
             </li>
           </ul>
         </div>
