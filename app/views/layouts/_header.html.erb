@@ -3,11 +3,10 @@
   <nav class="navbar bg-dark" data-bs-theme="dark">
     <div class="container-xxl">
       <%# ロゴ %>
-      <%= link_to(
-            sanitize("#{image_tag('choko.svg', class: 'sakazuki-header-logo')}SAKAZUKI", tag: %w[img]),
-            root_path,
-            { class: "navbar-brand d-flex align-items-center" },
-          ) %>
+      <%= link_to(root_path, class: "navbar-brand d-flex align-items-center") do %>
+        <%= image_tag("choko.svg", alt: "", class: "sakazuki-header-logo") %>
+        <%= image_tag("fudemoji-white.svg", alt: "SAKAZUKI", class: "sakazuki-header-title") %>
+      <% end %>
 
       <%# ハンバーガーメニューボタン %>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
