@@ -15,7 +15,8 @@
 }
 
 .sakazuki-header-title {
-  // おちょこより上下にはみ出させる。負の margin はナビバーの高さを変えないため
+  // 右上がり文字やアルファベットベースラインによる目の錯視がある
+  // おちょこより上下にはみ出させ、見た目の高さをおちょこに合わせる
   align-self: flex-start;
   width: auto;
   height: 2.4rem;
