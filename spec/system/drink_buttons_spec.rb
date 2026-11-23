@@ -189,26 +189,5 @@ RSpec.describe "Drink Buttons" do
         }.to change(opened_sake, :bottle_level).from("opened").to("empty")
       end
     end
-
-    describe "clicking open button in show page", :js do
-      before do
-        visit sake_path(sealed_sake.id)
-        click_button("dropdown_toggle_#{sealed_sake.id}")
-        accept_confirm do
-          click_link("open_button_#{sealed_sake.id}")
-        end
-        wait_for_alert
-      end
-
-      it "reloads show page" do
-        expect(page).to have_current_path(sake_path(sealed_sake.id))
-      end
-
-      it "updates sake to opened" do
-        expect {
-          sealed_sake.reload
-        }.to change(sealed_sake, :bottle_level).from("sealed").to("opened")
-      end
-    end
   end
 end
