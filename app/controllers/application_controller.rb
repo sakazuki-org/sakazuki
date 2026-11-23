@@ -52,18 +52,11 @@ class ApplicationController < ActionController::Base
   # - リクエストがGETメソッドである。
   # - Ajaxリクエストではない。
   # - JSONリクエストではない。
-  # - Turboの先読みではない。
-  #   （X-Requested-Withが付かずxhr?では除外できないため、別に判定する）
   # - ユーザー認証ページへのパスではない。
   #   （リダイレクトループが発生するのを避けるため）
   # 参考: https://github.com/heartcombo/devise/wiki/How-To:-Redirect-back-to-current-page-after-sign-in,-sign-out,-sign-up,-update
   # @return [Boolean] ユーザーが居たパスを保存していいときにtrueを返す。
   def storable_location?
-    request.get? && !request.xhr? && !request.format.json? && !turbo_prefetch? && !request.path.match?("/users/.*")
-  end
-
-  # @return [Boolean] Turboがリンクのhoverで送る先読みのリクエストならtrue
-  def turbo_prefetch?
-    request.headers["X-Sec-Purpose"] == "prefetch"
+    request.get? && !request.xhr? && !request.format.json? && !request.path.match?("/users/.*")
   end
 end
