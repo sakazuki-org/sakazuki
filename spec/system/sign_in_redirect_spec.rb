@@ -4,11 +4,16 @@ RSpec.describe "Redirect after sign in from signed out state", :js do
   let(:user) { create(:user) }
   let!(:sealed_sake) { create(:sake, bottle_level: "sealed") }
 
+  # sleep で待たずに、ブラウザの時計を進めて先読みのタイマーを発火させる
+  before do
+    page.driver.with_playwright_page { |pw| pw.clock.install }
+  end
+
   # Turbo は hover から 100ms 後に先読みを始める。
   # 先読みのリクエストを待つ書き方にしないのは、ログアウト中は先読みが飛ばない実装でも通すため。
   def hover_and_wait(element)
     element.hover
-    sleep(0.2)
+    page.driver.with_playwright_page { |pw| pw.clock.fast_forward(200) }
   end
 
   def hover_and_click(element)
