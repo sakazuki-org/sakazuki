@@ -20,7 +20,9 @@ ja:
       opened: 開封
       empty: 空
       no_price: 価格不明
-      share_button: シェアボタン
+      edit: :sakes.sake.edit
+      share: シェア
+      copy: 複製
     show_detail:
       detail: 詳細
       ingredient: 材料
@@ -69,8 +71,6 @@ ja:
     form_note:
       note: :sakes.show_note.note
     float_button:
-      edit: :sakes.sake.edit
-      copy: 複製
       new: 新規
     menu:
       title: お品書き

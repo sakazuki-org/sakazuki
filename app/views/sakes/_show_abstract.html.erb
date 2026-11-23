@@ -5,20 +5,35 @@
       <div class="col-lg col-12">
         <h1 class="mb-0"><%= title(sake.name) %></h1>
       </div>
-      <div class="col-auto order-lg-1 order-2 text-end mx-3"
-        data-controller="share"
-        data-share-title-value="<%= sake.name %>"
-        data-share-url-value="<%= request.url %>"
-        data-testid="share_button">
-        <a href="#" class="fs-3 link-dark" data-share-target="link">
-          <i class="bi bi-share"></i>
-          <span class="visually-hidden">
-            <%= t(".share_button") %>
-          </span>
-        </a>
-        <%# HACK: hiddenのtextareaをシェア機能から参照する %>
-        <textarea hidden data-share-target="text"
-          data-testid="share_text"><%= t("helper.share.text", sake:) %></textarea>
+      <div class="col-auto order-lg-1 order-2 text-end">
+        <div class="dropdown" data-testid="sake_buttons_<%= sake.id %>">
+          <% id = "dropdownMenuSake#{sake.id}" %>
+          <button class="btn btn-link dropdown-toggle py-0" type="button"
+            id="<%= id %>" data-bs-toggle="dropdown" aria-expanded="false"
+            data-testid="dropdown_toggle_<%= sake.id %>">
+            <i class="bi-three-dots-vertical fs-3 text-primary"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end fs-6" aria-labelledby="<%= id %>">
+            <li>
+              <%= link_to(tag.i(class: "bi-pencil-square") + t(".edit"), edit_sake_path(sake), data: { testid: "edit-#{sake.id}" }) %>
+            </li>
+            <%= render(partial: "drink_button", locals: { sake: }) %>
+            <li data-controller="share"
+              data-share-title-value="<%= sake.name %>"
+              data-share-url-value="<%= request.url %>"
+              data-testid="share_button">
+              <a href="#" data-share-target="link">
+                <i class="bi-share"></i><%= t(".share") %>
+              </a>
+              <%# HACK: hiddenのtextareaをシェア機能から参照する %>
+              <textarea hidden data-share-target="text"
+                data-testid="share_text"><%= t("helper.share.text", sake:) %></textarea>
+            </li>
+            <li>
+              <%= link_to(tag.i(class: "bi-front") + t(".copy"), new_sake_path(copied_from: sake.id), data: { testid: "copy_sake" }) %>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="col-lg-12 order-lg-2 col order-1 fs-3">
         <% if sake.kura.present? %>
