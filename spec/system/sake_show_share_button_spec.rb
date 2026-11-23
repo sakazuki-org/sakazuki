@@ -8,11 +8,8 @@ RSpec.describe "Sake Show Share Button" do
       visit sake_path(sake.id)
     end
 
-    it "has hidden text for accessibility" do
-      within(:test_id, "share_button") do
-        hidden_elem = find(".visually-hidden")
-        expect(hidden_elem).to have_text(I18n.t("sakes.show_abstract.share_button"))
-      end
+    it "has share text" do
+      expect(find(:test_id, "share_button")).to have_link(I18n.t("sakes.show_abstract.share"))
     end
   end
 

@@ -1,26 +1,6 @@
 <%# locals: (sake:) %>
 <div class="float-button">
   <div class="px-xxl-5 px-3 text-end">
-    <% if controller.action_name == "show" %>
-      <%= link_to(
-            tag.i(class: "bi-pencil-square me-2", style: "font-size: 1.05em;") + t(".edit"),
-            edit_sake_path(sake),
-            {
-              class: "float-button-secondary mx-1",
-              style: "font-size: 1.1em;",
-              "data-testid": "edit-#{sake.id}",
-            },
-          ) %>
-      <%= link_to(
-            tag.i(class: "bi-front me-2", style: "font-size: 0.95em;") + t(".copy"),
-            new_sake_path(copied_from: sake.id),
-            {
-              class: "float-button-primary mx-1",
-              style: "font-size: 1.1em;",
-              "data-testid": "copy_sake",
-            },
-          ) %>
-    <% end %>
     <% if %w[show index].include?(controller.action_name) %>
       <%= link_to(
             tag.i(class: "bi-plus-circle me-2", style: "font-size: 1.05em;") + t(".new"),

@@ -32,7 +32,7 @@ RSpec.describe "Copy Sakes" do
   describe "copy link" do
     it "has the copy text and link in show page" do
       visit sake_path(sake.id)
-      expect(find(:test_id, "copy_sake")).to have_text(I18n.t("sakes.float_button.copy"))
+      expect(find(:test_id, "copy_sake")).to have_text(I18n.t("sakes.show_abstract.copy"))
     end
   end
 
@@ -61,6 +61,7 @@ RSpec.describe "Copy Sakes" do
 
   describe "copied values" do
     before do
+      click_button("dropdown_toggle_#{sake.id}")
       click_link("copy_sake")
     end
 
