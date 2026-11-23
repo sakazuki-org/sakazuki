@@ -16,3 +16,6 @@ ja:
     failure:
       invited: 招待途中です。メールボックスを確認してください
       locked: アカウントはロックされています。メールボックスを確認するか、1時間後にもう一度お試しください。
+    passwords:
+      new:
+        send_me_reset_password_instructions: パスワードをリセット
