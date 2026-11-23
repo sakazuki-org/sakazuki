@@ -18,7 +18,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end fs-6" aria-labelledby="<%= id %>">
                   <li>
-                    <%= link_to(tag.i(class: "bi-pencil-square") + t(".edit"), edit_sake_path(sake)) %>
+                    <%= link_to(tag.i(class: "bi-pencil-square") + t(".edit"), edit_sake_path(sake), data: { testid: "edit-#{sake.id}" }) %>
                   </li>
                   <%= render(partial: "drink_button", locals: { sake: }) %>
                 </ul>
