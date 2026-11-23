@@ -14,6 +14,13 @@
   height: 2rem;
 }
 
+.sakazuki-header-title {
+  // 右上がりの筆文字は、おちょこと同じ高さにすると大きく見えるので、下端を揃えて上だけ低くする
+  align-self: flex-end;
+  width: auto;
+  height: 1.8rem;
+}
+
 // ------ footer ------
 
 .footer {
