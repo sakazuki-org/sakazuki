@@ -10,6 +10,13 @@ RSpec.describe "Sakes" do
         get sakes_path
         expect(response).to have_http_status :ok
       end
+
+      ["q=foo", "q[]=foo", "q[all_text_cont][x]=a"].product(%w[html json]).each do |query, format|
+        it "returns 400 with malformed #{query} in #{format}" do
+          get "#{sakes_path(format:)}?#{query}"
+          expect(response).to have_http_status :bad_request
+        end
+      end
     end
 
     describe "GET /sakes/[id] request (show)" do
