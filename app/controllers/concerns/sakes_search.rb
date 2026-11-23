@@ -115,8 +115,15 @@ module SakesSearch
   # params から検索語を取り出す
   #
   # @return [String, nil] 検索語（all_text_cont）。空文字列はnilとして扱う
+  # @raise [ActionController::BadRequest] qがハッシュでない、または検索語が文字列でないとき
   def search_word
-    params.dig(:q, :all_text_cont).presence
+    q = params.fetch(:q, {})
+    raise(ActionController::BadRequest, "q must be a hash") unless q.is_a?(ActionController::Parameters)
+
+    word = q[:all_text_cont]
+    raise(ActionController::BadRequest, "q[all_text_cont] must be a string") unless word.nil? || word.is_a?(String)
+
+    word.presence
   end
 
   # 検索フォームを使って検索中か
