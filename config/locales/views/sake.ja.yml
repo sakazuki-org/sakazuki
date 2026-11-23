@@ -34,9 +34,9 @@ ja:
     show_note:
       note: ノート
     drink_button:
-      open: 開封する
+      open: 開栓
       confirm_open: "%{name} の栓を開ける？"
-      empty: 空にする
+      empty: 飲みきり
       confirm_empty: "%{name} を飲みきった？"
     new:
       title: 新規登録
