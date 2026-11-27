@@ -34,6 +34,7 @@ jobs:
               - "package.json"
               - "yarn.lock"
               - ".ruby-version"
+              - ".node-version"
               - ".github/workflows/test.yml"
 
   test:
