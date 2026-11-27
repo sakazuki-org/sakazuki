@@ -4,7 +4,7 @@
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.10
 # Make sure NODE_VERSION matches the Node.js version in .node-version
-ARG NODE_VERSION=22
+ARG NODE_VERSION=26
 
 # ============== node =================
 FROM docker.io/library/node:${NODE_VERSION}-slim AS node
