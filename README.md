@@ -25,7 +25,7 @@
 
 - Ruby = (See .ruby-version file)
 - Bundler
-- Node.js >= 22
+- Node.js = (See .node-version file)
 - Yarn 🐈 = 1.22.22
 - PostgreSQL >= 18
 - libvips (development only)

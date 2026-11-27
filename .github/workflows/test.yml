@@ -34,6 +34,7 @@ jobs:
               - "package.json"
               - "yarn.lock"
               - ".ruby-version"
+              - ".node-version"
               - ".github/workflows/test.yml"
 
   test:
@@ -66,7 +67,7 @@ jobs:
           sudo apt-get install --yes libvips
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: "22"
+          node-version-file: .node-version
           cache: "yarn"
       - name: Install Yarn Dependencies
         run: yarn install --immutable

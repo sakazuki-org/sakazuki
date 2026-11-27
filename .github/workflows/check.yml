@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: "22"
+          node-version-file: .node-version
           cache: "yarn"
       - name: Install Dependencies
         run: yarn install --immutable
@@ -78,7 +78,7 @@ jobs:
         run: hadolint "$(git ls-files '*Dockerfile*')"
 
       - name: Run Docker Build Checks
-        run: docker build --build-arg RUBY_VERSION="$(cat .ruby-version)" --check .
+        run: docker build --build-arg RUBY_VERSION="$(cat .ruby-version)" --build-arg NODE_VERSION="$(cat .node-version)" --check .
 
       - name: Run jactionlint
         run: jactionlint
