@@ -1,9 +1,15 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# ============== base =================
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.10
+# Make sure NODE_VERSION matches the Node.js version in .node-version
+ARG NODE_VERSION=22
+
+# ============== node =================
+FROM docker.io/library/node:${NODE_VERSION}-slim AS node
+
+# ============== base =================
 FROM docker.io/library/ruby:${RUBY_VERSION}-slim-trixie AS base
 
 # hadolint ignore=DL3048
@@ -36,14 +42,11 @@ RUN apt-get update --quiet && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install JavaScript dependencies
-ARG NODE_VERSION=22.14.0
 ARG YARN_VERSION=1.22.22
-ENV PATH=/usr/local/node/bin:$PATH
-RUN curl --silent --location https://github.com/nodenv/node-build/archive/master.tar.gz | \
-    tar xz --directory=/tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    npm install --global yarn@$YARN_VERSION && \
-    rm -rf /tmp/node-build-master
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    npm install --global yarn@$YARN_VERSION
 
 # ============== build-production =================
 FROM build-base AS build-production
