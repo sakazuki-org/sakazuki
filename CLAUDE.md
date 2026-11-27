@@ -31,7 +31,7 @@ SAKAZUKI は Rails で作った日本酒の在庫管理アプリです。
 ```bash
 # 依存パッケージをインストールする
 bundle install
-corepack enable && yarn install
+yarn install
 yarn run playwright install chromium  # js: true を付けた system spec 用
 
 # .env を用意する
@@ -220,7 +220,7 @@ RSpec はファイルの場所から spec の種類を推定します。使っ�
 
 - Node.js のバージョンは `.node-version` でメジャーバージョンだけを管理する。CI、Dockerfile、Fly のデプロイもこのファイルを読む
 - Ruby のバージョンは `.ruby-version` にある
-- Yarn 4.7.0 を使う（`packageManager` フィールドで設定し、`corepack enable` で有効にする）
+- Yarn 4.7.0 を使う（`.yarnrc.yml` の `yarnPath` で固定しているので、グローバルの yarn 1 から起動しても 4.7.0 が動く）
 - 開発には libvips が必要（画像処理のため）
 - 並列テスト用のデータベースは `parallel:setup` タスクで用意する
 - Sake モデルにはバリデーションが多いので、属性を変えるときは注意する
