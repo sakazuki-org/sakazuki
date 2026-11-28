@@ -33,6 +33,6 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   def extension_allowlist
-    %w[jpg jpeg gif png webp avif]
+    %w[jpg jpeg gif png webp avif heic]
   end
 end
